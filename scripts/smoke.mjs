@@ -1,0 +1,57 @@
+import { chromium } from '@playwright/test';
+import { spawn } from 'node:child_process';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import assert from 'node:assert/strict';
+
+await mkdir('qa',{recursive:true});
+const server=spawn(process.execPath,['node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port','4173'],{stdio:'inherit'});
+let browser;
+const errors=[];
+try {
+  let ready=false;
+  for(let n=0;n<60;n++){try{const r=await fetch('http://127.0.0.1:4173');if(r.ok){ready=true;break;}}catch{}await new Promise(r=>setTimeout(r,300));}
+  assert.ok(ready,'preview responds');
+  browser=await chromium.launch({headless:true});
+  const page=await browser.newPage({viewport:{width:1440,height:1050},acceptDownloads:true});
+  page.on('pageerror',error=>errors.push(error.message));
+  await page.goto('http://127.0.0.1:4173');
+  await page.getByRole('heading',{name:'НИШ ЕМН · Петропавловск',exact:true}).waitFor();
+  const oldCount=Number(await page.locator('.result-type strong').first().textContent());
+  await page.getByLabel('Площадь зоны').fill('610');
+  await page.getByRole('button',{name:'Пересчитать',exact:true}).click();
+  assert.equal(Number(await page.locator('.result-type strong').first().textContent()),oldCount+2);
+  await page.screenshot({path:'qa/desktop-ru.png',fullPage:true});
+  const plan=await page.locator('.floor-diagram').screenshot();
+  await page.getByRole('button',{name:'План помещения',exact:true}).click();
+  await page.locator('input[type=file][accept="image/png,image/jpeg,image/webp"]').setInputFiles({name:'qa-plan.png',mimeType:'image/png',buffer:plan});
+  await page.locator('.plan-image-wrap img').waitFor();
+  await page.getByRole('button',{name:'Добавить метку',exact:true}).click();
+  await page.locator('.plan-image-wrap').click({position:{x:100,y:100}});
+  assert.equal(await page.locator('.plan-marker').count(),1);
+  await page.getByRole('button',{name:'Пересчитать',exact:true}).click();
+  await page.getByRole('button',{name:'PDF-отчёт',exact:true}).first().click();
+  const ruDownload=page.waitForEvent('download',{timeout:90000});
+  await page.getByRole('button',{name:'Скачать PDF',exact:true}).click();
+  await (await ruDownload).saveAs('qa/report-ru.pdf');
+  assert.equal((await readFile('qa/report-ru.pdf')).subarray(0,4).toString(),'%PDF');
+  await page.locator('dialog .modal-heading button').click();
+  await page.getByRole('button',{name:'ҚАЗ',exact:true}).click();
+  await page.getByRole('heading',{name:'ЖМБ НЗМ · Петропавл',exact:true}).waitFor();
+  await page.getByRole('button',{name:'PDF есебі',exact:true}).first().click();
+  const kkDownload=page.waitForEvent('download',{timeout:90000});
+  await page.getByRole('button',{name:'PDF жүктеу',exact:true}).click();
+  await (await kkDownload).saveAs('qa/report-kk.pdf');
+  assert.equal((await readFile('qa/report-kk.pdf')).subarray(0,4).toString(),'%PDF');
+  await page.locator('dialog .modal-heading button').click();
+  await page.getByRole('button',{name:'Қабаттар сызбасы',exact:true}).click();
+  await page.setViewportSize({width:390,height:844});
+  await page.screenshot({path:'qa/mobile-kk.png',fullPage:true});
+  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth);
+  assert.equal(overflow,false,'no horizontal page overflow on phone');
+  await page.reload();
+  await page.getByRole('heading',{name:'ЖМБ НЗМ · Петропавл',exact:true}).waitFor();
+  assert.equal(await page.getByLabel('Аймақ ауданы').inputValue(),'610');
+  assert.deepEqual(errors,[],'no browser runtime errors');
+  await writeFile('qa/checks.json',JSON.stringify({passed:true,checks:['area recalculation','plan upload and marker','RU PDF','KK PDF','mobile layout','local persistence','no runtime errors']},null,2));
+}catch(error){await writeFile('qa/checks.json',JSON.stringify({passed:false,error:String(error),errors},null,2));throw error;}
+finally{await browser?.close();server.kill();}
