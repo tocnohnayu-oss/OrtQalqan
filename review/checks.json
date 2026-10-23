@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "checks": [
+    "architectural rooms and furniture",
+    "keyboard room selection",
+    "plan zoom",
+    "light theme in dark OS preference",
+    "area recalculation",
+    "plan upload and marker",
+    "RU PDF",
+    "KK PDF",
+    "mobile layout",
+    "local persistence",
+    "no runtime errors"
+  ]
+}
