@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "sourceSha": "a3f792cbef3e95c15a968d4cf5e91b8c59371875",
+  "sourceSha": "3ae1c6b549881ce101dca727f25eea26cf1fc760",
   "checks": [
     "architectural rooms and furniture",
     "keyboard room selection",
@@ -8,6 +8,9 @@
     "light theme in dark OS preference",
     "stable walls when area changes",
     "area recalculation",
+    "non-mutating scenario comparison",
+    "explicit scenario application",
+    "inspection notes persist",
     "plan upload and marker",
     "RU PDF",
     "KK PDF",
