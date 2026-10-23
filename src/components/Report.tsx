@@ -5,15 +5,15 @@ import { SOURCE_URL } from '../domain/calculator.mjs';
 
 Font.register({ family: 'Noto', fonts: [{ src:'/fonts/NotoSans-Regular.ttf', fontWeight:400 }, { src:'/fonts/NotoSans-Bold.ttf', fontWeight:700 }] });
 const s = StyleSheet.create({
-  page:{ padding:38, paddingBottom:55, fontFamily:'Noto', fontSize:9, color:'#263a35' },
-  brand:{ fontSize:22, fontWeight:700, color:'#155e55', marginBottom:6 },
+  page:{ padding:38, paddingBottom:55, fontFamily:'Noto', fontSize:9, color:'#30352f' },
+  brand:{ fontSize:22, fontWeight:700, color:'#b64c32', marginBottom:6 },
   subtitle:{ fontSize:9, color:'#68746f', marginBottom:22 },
   title:{ fontSize:17, fontWeight:700, marginBottom:12 },
   heading:{ fontSize:12, fontWeight:700, marginTop:20, marginBottom:9 },
   label:{ fontSize:8, color:'#74817a' },
   line:{ marginBottom:6 },
   notice:{ padding:12, backgroundColor:'#fbf5e7', marginVertical:12, lineHeight:1.6 },
-  summary:{ flexDirection:'row', gap:20, padding:14, backgroundColor:'#edf3ef', marginBottom:12 },
+  summary:{ flexDirection:'row', gap:20, padding:14, backgroundColor:'#f3f0e7', marginBottom:12 },
   large:{ fontSize:25, fontWeight:700 },
   row:{ flexDirection:'row', paddingVertical:8, borderBottomWidth:.5, borderBottomColor:'#dce3dc' },
   cell:{ flex:1, paddingRight:8 },
@@ -28,7 +28,7 @@ function Report({ snapshot, language }: {snapshot:Snapshot; language:Language}) 
   const name=(x:{name:string;nameKk:string})=>language==='ru'?x.name:x.nameKk;
   return <Document title={`OrtQalqan — ${name(b)}`} author="OrtQalqan" language={language}>
     <Page size="A4" style={s.page}>
-      <Text style={s.brand}>OrtQalqan</Text><Text style={s.subtitle}>{t('reportDraft')} · {snapshot.rulesVersion}</Text>
+      <Text style={s.brand}>ortqalqan.</Text><Text style={s.subtitle}>{t('reportDraft')} · {snapshot.rulesVersion}</Text>
       <Text style={s.title}>{t('reportTitle')}</Text>
       <Text style={s.line}>{name(b)}</Text><Text style={s.line}>{language==='ru'?b.address:b.addressKk}</Text>
       <Text style={s.line}>{t('date')}: {b.date} · {t('inspector')}: {b.inspector || '—'}</Text>
@@ -37,7 +37,7 @@ function Report({ snapshot, language }: {snapshot:Snapshot; language:Language}) 
       <View style={s.summary}><View style={s.cell}><Text style={s.large}>{snapshot.totalOP}</Text><Text>ОП · {t('op')} · 4 кг ABC(E)</Text></View><View style={s.cell}><Text style={s.large}>{snapshot.totalOU}</Text><Text>ОУ · {t('ou')}</Text></View></View>
       <Text style={s.note}>{t('sourcesNote')}</Text><Text style={s.note}>{t('placement')}. {t('placementNote')}</Text>
       <Text style={s.heading}>{t('schematic')}</Text>
-      {b.floors.map(f=><View key={f.id} wrap={false} style={{marginBottom:12,padding:12,backgroundColor:'#f6f8f3',borderWidth:1,borderColor:'#e1e8dc'}}><Text style={{fontWeight:700,marginBottom:8}}>{name(f)}</Text><View style={{flexDirection:'row',flexWrap:'wrap',gap:6}}>{f.zones.map(z=>{const r=snapshot.rows.find(x=>x.zoneId===z.id)!;return <View key={z.id} style={{width:'31%',padding:9,backgroundColor:'#fff',borderWidth:1,borderColor:r.issues.length?'#dbcca8':'#cad8c7'}}><Text style={{fontSize:8,marginBottom:5}}>{name(z)}</Text><Text style={{fontSize:7,color:'#75866d'}}>{z.area} {t('sqm')} · {r.type?`${r.type==='OP'?'ОП':'ОУ'} ${r.count}`:'?'}</Text></View>;})}</View><Text style={{fontSize:7,color:'#93a088',marginTop:8}}>{t('noScale')}</Text></View>)}
+      {b.floors.map(f=><View key={f.id} wrap={false} style={{marginBottom:12,padding:12,backgroundColor:'#f7f4ec',borderWidth:1,borderColor:'#dfdacf'}}><Text style={{fontWeight:700,marginBottom:8}}>{name(f)}</Text><View style={{flexDirection:'row',flexWrap:'wrap',gap:6}}>{f.zones.map(z=>{const r=snapshot.rows.find(x=>x.zoneId===z.id)!;return <View key={z.id} style={{width:'31%',padding:9,backgroundColor:'#fff',borderWidth:1,borderColor:r.issues.length?'#dbcca8':'#cad8c7'}}><Text style={{fontSize:8,marginBottom:5}}>{name(z)}</Text><Text style={{fontSize:7,color:'#75866d'}}>{z.area} {t('sqm')} · {r.type?`${r.type==='OP'?'ОП':'ОУ'} ${r.count}`:'?'}</Text></View>;})}</View><Text style={{fontSize:7,color:'#93a088',marginTop:8}}>{t('noScale')}</Text></View>)}
       <Text style={s.heading}>{t('data')} / {t('result')}</Text>
       <View style={s.row}><Text style={s.nameCell}>{t('name')}</Text><Text style={s.cell}>{t('sqm')}</Text><Text style={s.cell}>{t('type')}</Text><Text style={s.cell}>{t('need')}</Text></View>
       {b.floors.map(f=><View key={f.id}>
@@ -54,7 +54,7 @@ function Report({ snapshot, language }: {snapshot:Snapshot; language:Language}) 
       <Text style={s.note}>{t('snapshot')}: {snapshot.id}. {t('sourceDate')}.</Text>
       <View style={s.footer} fixed><Text>OrtQalqan · {t('docStatus')}</Text><Text render={({pageNumber,totalPages})=>`${pageNumber} / ${totalPages}`} /></View>
     </Page>
-    {b.floors.filter(f=>f.plan).map(f=><Page size="A4" style={s.page} key={f.id}><Text style={s.brand}>OrtQalqan</Text><Text style={s.title}>{name(f)} · {t('plan')}</Text><Image src={f.plan!} style={s.image}/><Text style={s.note}>{t('planOnly')}</Text><Text style={s.heading}>{t('placementCount')}: {f.markers.length}</Text>{f.markers.map((m,i)=><Text key={m.id} style={s.line}>{i+1}. {m.type==='OP'?'ОП':'ОУ'} · {name(f.zones.find(z=>z.id===m.zoneId)!)} · X {Math.round(m.x*100)}%, Y {Math.round(m.y*100)}%</Text>)}<Text style={s.note}>{t('placement')}. {b.demo?t('demoNote'):''}</Text><View style={s.footer} fixed><Text>OrtQalqan</Text><Text render={({pageNumber,totalPages})=>`${pageNumber} / ${totalPages}`} /></View></Page>)}
+    {b.floors.filter(f=>f.plan).map(f=><Page size="A4" style={s.page} key={f.id}><Text style={s.brand}>ortqalqan.</Text><Text style={s.title}>{name(f)} · {t('plan')}</Text><Image src={f.plan!} style={s.image}/><Text style={s.note}>{t('planOnly')}</Text><Text style={s.heading}>{t('placementCount')}: {f.markers.length}</Text>{f.markers.map((m,i)=><Text key={m.id} style={s.line}>{i+1}. {m.type==='OP'?'ОП':'ОУ'} · {name(f.zones.find(z=>z.id===m.zoneId)!)} · X {Math.round(m.x*100)}%, Y {Math.round(m.y*100)}%</Text>)}<Text style={s.note}>{t('placement')}. {b.demo?t('demoNote'):''}</Text><View style={s.footer} fixed><Text>OrtQalqan</Text><Text render={({pageNumber,totalPages})=>`${pageNumber} / ${totalPages}`} /></View></Page>)}
   </Document>;
 }
 

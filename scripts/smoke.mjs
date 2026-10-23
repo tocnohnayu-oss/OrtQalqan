@@ -16,6 +16,16 @@ try {
   page.on('pageerror',error=>errors.push(error.message));
   await page.goto('http://127.0.0.1:4173');
   await page.getByRole('heading',{name:'НИШ ЕМН · Петропавловск',exact:true}).waitFor();
+  assert.equal(await page.locator('.plan-room').count(),4,'all floor zones have selectable architectural rooms');
+  assert.ok(await page.locator('.plan-furniture').count()>0,'room furniture is rendered');
+  await page.getByRole('button',{name:'Приблизить план',exact:true}).click();
+  assert.equal(await page.locator('.zoom-control output').textContent(),'125%');
+  await page.getByRole('button',{name:'Показать план целиком',exact:true}).click();
+  await page.locator('.plan-room').filter({has:page.locator('.room-name',{hasText:'Серверная'})}).press('Enter');
+  assert.equal(await page.locator('.zone-title h3').textContent(),'Серверная','keyboard selection opens the room parameters');
+  await page.locator('.plan-room').first().press('Enter');
+  await page.emulateMedia({colorScheme:'dark'});
+  assert.equal(await page.evaluate(()=>getComputedStyle(document.documentElement).colorScheme),'light','the workspace keeps its intentional light theme');
   const oldCount=Number(await page.locator('.result-type strong').first().textContent());
   await page.getByLabel('Площадь зоны').fill('610');
   await page.getByRole('button',{name:'Пересчитать',exact:true}).click();
@@ -52,6 +62,6 @@ try {
   await page.getByRole('heading',{name:'ЖМБ НЗМ · Петропавл',exact:true}).waitFor();
   assert.equal(await page.getByLabel('Аймақ ауданы').inputValue(),'610');
   assert.deepEqual(errors,[],'no browser runtime errors');
-  await writeFile('qa/checks.json',JSON.stringify({passed:true,checks:['area recalculation','plan upload and marker','RU PDF','KK PDF','mobile layout','local persistence','no runtime errors']},null,2));
+  await writeFile('qa/checks.json',JSON.stringify({passed:true,checks:['architectural rooms and furniture','keyboard room selection','plan zoom','light theme in dark OS preference','area recalculation','plan upload and marker','RU PDF','KK PDF','mobile layout','local persistence','no runtime errors']},null,2));
 }catch(error){await writeFile('qa/checks.json',JSON.stringify({passed:false,error:String(error),errors},null,2));throw error;}
 finally{await browser?.close();server.kill();}

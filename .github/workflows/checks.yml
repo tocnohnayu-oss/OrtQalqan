@@ -5,7 +5,7 @@ on:
   pull_request:
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   prototype:
     runs-on: ubuntu-latest
@@ -31,3 +31,6 @@ jobs:
             package-lock.json
             qa/
           retention-days: 14
+      - name: Save visual review images
+        if: success() && github.event_name == 'push'
+        run: bash scripts/publish-review.sh
