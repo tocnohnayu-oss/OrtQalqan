@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
-import { Layers3, Plus, Minus, ArrowLeft, ArrowUpRight, ChevronRight, FileDown, MapPin, SlidersHorizontal, X, RotateCcw, ChevronDown, CircleAlert, FileImage, Upload, Trash2, Download, FolderOpen, History, Maximize2, FireExtinguisher, Info, Building2, ArrowRight, CheckCheck, Sun } from 'lucide-react';
+import { Layers3, Plus, Minus, ArrowLeft, ArrowUpRight, ChevronRight, FileDown, MapPin, SlidersHorizontal, X, RotateCcw, ChevronDown, CircleAlert, FileImage, Upload, Trash2, Download, FolderOpen, History, Maximize2, FireExtinguisher, Info, Building2, ArrowRight, CheckCheck } from 'lucide-react';
 import type { Building, Zone, Language, Snapshot } from './domain/types';
 import { calculate, validateBuilding, SOURCE_URL } from './domain/calculator.mjs';
 import { createDemo } from './data/demo';
@@ -88,7 +88,7 @@ export default function App(){
     <header className="topbar">
       <a className="brand" href="#" onClick={e=>{e.preventDefault();setModal('object');}} aria-label="OrtQalqan"><BrandMark className="brand-symbol"/><span>ortqalqan<span className="brand-period">.</span><small>{t('tagline')}</small></span></a>
       <nav className="top-nav" aria-label={t('workspace')}><button className="nav-active" onClick={()=>setModal(null)}>{t('workspace')}</button><button onClick={()=>setModal('history')}>{t('history')}</button><button onClick={openScenarios}>{t('scenarios')}</button><button onClick={()=>setModal('help')}>{t('help')}<ArrowUpRight size={13}/></button></nav>
-      <div className="top-actions"><span className="theme-indicator" title={t('lightTheme')}><Sun size={17}/><span>{t('lightTheme')}</span></span><div className="language-switch" aria-label={t('language')}><button aria-pressed={language==='ru'} className={language==='ru'?'active':''} onClick={()=>setLanguage('ru')}>RU</button><button aria-pressed={language==='kk'} className={language==='kk'?'active':''} onClick={()=>setLanguage('kk')}>ҚАЗ</button></div><button className="avatar" onClick={()=>setModal('object')} aria-label={t('settings')}><SlidersHorizontal size={18}/></button></div>
+      <div className="top-actions"><div className="language-switch" aria-label={t('language')}><button aria-pressed={language==='ru'} className={language==='ru'?'active':''} onClick={()=>setLanguage('ru')}>RU</button><button aria-pressed={language==='kk'} className={language==='kk'?'active':''} onClick={()=>setLanguage('kk')}>ҚАЗ</button></div><button className="avatar" onClick={()=>setModal('object')} aria-label={t('settings')}><SlidersHorizontal size={18}/></button></div>
     </header>
 
     <main>

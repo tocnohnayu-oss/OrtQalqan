@@ -10,11 +10,13 @@ function roomKind(z:Zone){
   if(/библиот|кітап|медиа/.test(n))return 'library';
   if(/лаборат|зертхан/.test(n))return 'lab';
   if(/актов|мәжіліс/.test(n))return 'assembly';
-  return 'classroom';
+  if(/учеб|класс|оқу/.test(n))return 'classroom';
+  return 'generic';
 }
 
 function Furniture({box}:{box:RoomBox}){
   const {x,y,width:w,height:h,kind}=box,color='#9b9e8d',light='#d7d8c9';
+  if(kind==='generic')return <g className="plan-furniture"/>;
   if(kind==='gym')return <g className="plan-furniture" fill="none" stroke="#c4b8a1" strokeWidth="1.2">
     <rect x={x+17} y={y+23} width={w-34} height={h-45} fill="#f1ecdf"/>
     <rect x={x+24} y={y+30} width={w-48} height={h-59}/><path d={`M${x+w/2} ${y+30}v${h-59}`}/><circle cx={x+w/2} cy={y+h/2} r={Math.min(25,(h-70)/2)}/>

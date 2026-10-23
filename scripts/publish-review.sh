@@ -9,6 +9,8 @@ cp qa/mobile-kk.png "$task_review_dir/mobile.png"
 cp qa/mobile-room-kk.png "$task_review_dir/mobile-room.png"
 cp qa/mobile-map-kk.png "$task_review_dir/mobile-map.png"
 cp qa/scenarios-ru.png "$task_review_dir/scenarios.png"
+cp qa/report-ru.pdf "$task_review_dir/report-ru.pdf"
+cp qa/report-kk.pdf "$task_review_dir/report-kk.pdf"
 cp qa/checks.json "$task_review_dir/checks.json"
 
 if git ls-remote --exit-code --heads origin design-review >/dev/null 2>&1; then
@@ -25,10 +27,12 @@ cp "$task_review_dir/mobile.png" review/mobile.png
 cp "$task_review_dir/mobile-room.png" review/mobile-room.png
 cp "$task_review_dir/mobile-map.png" review/mobile-map.png
 cp "$task_review_dir/scenarios.png" review/scenarios.png
+cp "$task_review_dir/report-ru.pdf" review/report-ru.pdf
+cp "$task_review_dir/report-kk.pdf" review/report-kk.pdf
 cp "$task_review_dir/checks.json" review/checks.json
 git config user.name 'github-actions[bot]'
 git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-git add review/desktop.png review/mobile.png review/mobile-room.png review/mobile-map.png review/scenarios.png review/checks.json
+git add review/desktop.png review/mobile.png review/mobile-room.png review/mobile-map.png review/scenarios.png review/report-ru.pdf review/report-kk.pdf review/checks.json
 if ! git diff --cached --quiet; then
   git commit -m 'docs: refresh generated design review images'
   git push origin HEAD:refs/heads/design-review

@@ -6,7 +6,7 @@ export function sceneForZone(zone:Pick<Zone,'name'|'nameKk'>):Scene{
   if(/лаборат|зертхан/.test(n))return 'lab';
   if(/библио|кітап|медиа/.test(n))return 'library';
   if(/спорт/.test(n))return 'gym';
-  if(/учеб|кабинет|оқу/.test(n))return 'classroom';
+  if(/учеб|класс|оқу/.test(n))return 'classroom';
   return 'inspection';
 }
 function Person({x=245,y=116,flip=false}:{x?:number;y?:number;flip?:boolean}){
