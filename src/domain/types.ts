@@ -5,7 +5,7 @@ export type Zone = {
   id: string; name: string; nameKk: string; area: number; hazard: Hazard;
   category: 'public' | 'AB' | 'V' | 'GD'; sensitive: boolean;
   temperature: 'normal' | 'cold' | 'unknown'; automatic: 'no' | 'yes' | 'unknown';
-  existing: number;
+  existing: number; notes?: string;
 };
 export type Floor = { id: string; name: string; nameKk: string; zones: Zone[]; plan?: string; markers: Marker[] };
 export type Building = { id: string; name: string; nameKk: string; address: string; addressKk: string; inspector: string; date: string; demo: boolean; revision: number; floors: Floor[] };

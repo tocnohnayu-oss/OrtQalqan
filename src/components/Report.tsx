@@ -47,6 +47,7 @@ function Report({ snapshot, language }: {snapshot:Snapshot; language:Language}) 
       </View>)}
       <Text style={s.heading}>{t('notes')}</Text>
       {snapshot.rows.filter(r=>r.issues.length).map(r=>{const z=b.floors.flatMap(f=>f.zones).find(z=>z.id===r.zoneId)!; return <View key={r.zoneId} style={{marginBottom:7}} wrap={false}><Text style={{fontWeight:700}}>{name(z)}</Text>{r.issues.map((key,i)=><Text key={i} style={s.note}>• {t(issueKey[key])}</Text>)}</View>;})}
+      {b.floors.some(f=>f.zones.some(z=>z.notes?.trim()))&&<><Text style={s.heading}>{t('observations')}</Text>{b.floors.flatMap(f=>f.zones).filter(z=>z.notes?.trim()).map(z=><View key={z.id} style={{marginBottom:10}} wrap={false}><Text style={{fontWeight:700,marginBottom:4}}>{name(z)}</Text><Text style={s.note}>{z.notes}</Text></View>)}</>}
       <Text style={s.heading}>{t('source')}</Text>
       <Text style={s.note}>СТ РК 1487-2006: 5.2, 5.3, 5.9. {language==='ru'?'Правила пожарной безопасности РК: приложение 3, таблица 1, пункты 3 и 5.':'ҚР өрт қауіпсіздігі қағидалары: 3-қосымша, 1-кесте, 3 және 5-тармақтар.'}</Text>
       <Text style={s.note}>{t('formula')}: ОП ceil(S / 200); ОУ ceil(S / 400), E. {t('legalCheck')}</Text>

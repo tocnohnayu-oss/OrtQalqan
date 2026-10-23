@@ -34,6 +34,17 @@ try {
   assert.equal(Number(await page.locator('.result-type strong').first().textContent()),oldCount+2);
   if(await page.locator('.toast').count())await page.locator('.toast button').click();
   await page.screenshot({path:'qa/desktop-ru.png',fullPage:true});
+  await page.getByRole('button',{name:'Сценарии',exact:true}).click();
+  await page.getByRole('slider').press('End');
+  assert.match(await page.locator('.proposed-state strong').textContent(),/10/);
+  assert.equal(await page.getByLabel('Площадь зоны').inputValue(),'610','a scenario preview does not change the real draft');
+  await page.screenshot({path:'qa/scenarios-ru.png',fullPage:false});
+  await page.getByRole('button',{name:'Применить к черновику',exact:true}).click();
+  assert.equal(await page.getByLabel('Площадь зоны').inputValue(),'1830','applying a scenario updates the draft');
+  await page.getByLabel('Площадь зоны').fill('610');
+  await page.locator('.notes-details summary').click();
+  await page.getByLabel('Что нужно уточнить или проверить на объекте').fill('Проверить паспорт. Ә Ғ Қ Ң Ө Ұ Ү Һ І.');
+  await page.getByRole('button',{name:'Пересчитать',exact:true}).click();
   const plan=await page.locator('.floor-diagram').screenshot();
   await page.getByRole('button',{name:'План помещения',exact:true}).click();
   await page.locator('input[type=file][accept="image/png,image/jpeg,image/webp"]').setInputFiles({name:'qa-plan.png',mimeType:'image/png',buffer:plan});
@@ -68,11 +79,12 @@ try {
   await page.getByRole('heading',{name:'ЖМБ НЗМ · Петропавл',exact:true}).waitFor();
   await page.locator('.zone-navigation button').first().click();
   assert.equal(await page.getByLabel('Аймақ ауданы').inputValue(),'610');
+  assert.equal(await page.getByLabel('Нысанда нені нақтылау немесе тексеру керек').inputValue(),'Проверить паспорт. Ә Ғ Қ Ң Ө Ұ Ү Һ І.');
   await page.screenshot({path:'qa/mobile-room-kk.png',fullPage:false});
   await page.locator('.inspector-sheet .modal-heading button').click();
   await page.setViewportSize({width:320,height:720});
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false,'no page overflow on a narrow phone');
   assert.deepEqual(errors,[],'no browser runtime errors');
-  await writeFile('qa/checks.json',JSON.stringify({passed:true,sourceSha:process.env.GITHUB_SHA||'local',checks:['architectural rooms and furniture','keyboard room selection','plan zoom','light theme in dark OS preference','stable walls when area changes','area recalculation','plan upload and marker','RU PDF','KK PDF','mobile room sheet','390px and 320px layouts','local persistence','no runtime errors']},null,2));
+  await writeFile('qa/checks.json',JSON.stringify({passed:true,sourceSha:process.env.GITHUB_SHA||'local',checks:['architectural rooms and furniture','keyboard room selection','plan zoom','light theme in dark OS preference','stable walls when area changes','area recalculation','non-mutating scenario comparison','explicit scenario application','inspection notes persist','plan upload and marker','RU PDF','KK PDF','mobile room sheet','390px and 320px layouts','local persistence','no runtime errors']},null,2));
 }catch(error){await writeFile('qa/checks.json',JSON.stringify({passed:false,error:String(error),errors},null,2));throw error;}
 finally{await browser?.close();server.kill();}

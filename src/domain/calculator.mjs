@@ -54,6 +54,7 @@ export function validateBuilding(value) {
     return f.zones.every(z => {
       if (!z || typeof z.id !== 'string' || ids.has(z.id)) return false;
       ids.add(z.id);
+      if(z.notes!==undefined && (typeof z.notes!=='string'||z.notes.length>3000))return false;
       return typeof z.name === 'string' && typeof z.nameKk === 'string' && Number.isFinite(z.area) && z.area >= 0 && z.area <= 1000000 && ['A','AE','E','B','C','D','special'].includes(z.hazard) && ['public','AB','V','GD'].includes(z.category) && typeof z.sensitive === 'boolean' && ['normal','cold','unknown'].includes(z.temperature) && ['yes','no','unknown'].includes(z.automatic) && Number.isInteger(z.existing) && z.existing >= 0;
     }) && f.markers.every(m => m && typeof m.id === 'string' && Number.isFinite(m.x) && Number.isFinite(m.y) && m.x >= 0 && m.x <= 1 && m.y >= 0 && m.y <= 1 && ['OP','OU'].includes(m.type) && f.zones.some(z => z.id === m.zoneId));
   });
