@@ -70,7 +70,9 @@ try {
   assert.equal(await page.getByLabel('Аймақ ауданы').inputValue(),'610');
   await page.screenshot({path:'qa/mobile-room-kk.png',fullPage:false});
   await page.locator('.inspector-sheet .modal-heading button').click();
+  await page.setViewportSize({width:320,height:720});
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false,'no page overflow on a narrow phone');
   assert.deepEqual(errors,[],'no browser runtime errors');
-  await writeFile('qa/checks.json',JSON.stringify({passed:true,checks:['architectural rooms and furniture','keyboard room selection','plan zoom','light theme in dark OS preference','area recalculation','plan upload and marker','RU PDF','KK PDF','mobile layout','local persistence','no runtime errors']},null,2));
+  await writeFile('qa/checks.json',JSON.stringify({passed:true,sourceSha:process.env.GITHUB_SHA||'local',checks:['architectural rooms and furniture','keyboard room selection','plan zoom','light theme in dark OS preference','stable walls when area changes','area recalculation','plan upload and marker','RU PDF','KK PDF','mobile room sheet','390px and 320px layouts','local persistence','no runtime errors']},null,2));
 }catch(error){await writeFile('qa/checks.json',JSON.stringify({passed:false,error:String(error),errors},null,2));throw error;}
 finally{await browser?.close();server.kill();}
