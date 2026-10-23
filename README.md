@@ -32,6 +32,8 @@ npm run dev
 
 Первая сборка и проверки браузера [прошли в GitHub Actions](https://github.com/tocnohnayu-oss/OrtQalqan/actions/runs/39940598222). Готовая сборка, снимки экрана и примеры PDF доступны в [артефакте проверки](https://github.com/tocnohnayu-oss/OrtQalqan/actions/runs/39940598222/artifacts/12496071631).
 
+Актуальный интерфейс: [рабочее место](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/desktop.png), [мобильный лист параметров](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/mobile-room.png), [сценарии](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/scenarios.png). Демонстрационные отчёты: [RU](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/report-ru.pdf), [KK](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/report-kk.pdf). Последняя функциональная проверка: [run 39946301992](https://github.com/tocnohnayu-oss/OrtQalqan/actions/runs/39946301992).
+
 Демонстрационный объект — НИШ ЕМН г. Петропавловска. Название и адрес подтверждены публичными источниками школы; помещения, площади, условия и оборудование в демо синтетические. Прототип не является обследованием школы. Подробности — в нормативном исследовании.
 
 Состояние функций и границы нормативной проверки поддерживаются в [HANDOFF.md](docs/HANDOFF.md).
