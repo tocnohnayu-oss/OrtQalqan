@@ -27,9 +27,12 @@ try {
   await page.emulateMedia({colorScheme:'dark'});
   assert.equal(await page.evaluate(()=>getComputedStyle(document.documentElement).colorScheme),'light','the workspace keeps its intentional light theme');
   const oldCount=Number(await page.locator('.result-type strong').first().textContent());
+  const initialWidth=await page.locator('.plan-room .room-fill').first().getAttribute('width');
   await page.getByLabel('Площадь зоны').fill('610');
+  assert.equal(await page.locator('.plan-room .room-fill').first().getAttribute('width'),initialWidth,'parameter changes do not rearrange the floor plan');
   await page.getByRole('button',{name:'Пересчитать',exact:true}).click();
   assert.equal(Number(await page.locator('.result-type strong').first().textContent()),oldCount+2);
+  if(await page.locator('.toast').count())await page.locator('.toast button').click();
   await page.screenshot({path:'qa/desktop-ru.png',fullPage:true});
   const plan=await page.locator('.floor-diagram').screenshot();
   await page.getByRole('button',{name:'План помещения',exact:true}).click();
@@ -55,12 +58,18 @@ try {
   await page.locator('dialog .modal-heading button').click();
   await page.getByRole('button',{name:'Қабаттар сызбасы',exact:true}).click();
   await page.setViewportSize({width:390,height:844});
-  await page.screenshot({path:'qa/mobile-kk.png',fullPage:true});
+  await page.evaluate(()=>window.scrollTo(0,0));
+  await page.screenshot({path:'qa/mobile-kk.png',fullPage:false});
+  await page.evaluate(()=>document.getElementById('visual-workspace').scrollIntoView({block:'start'}));
+  await page.screenshot({path:'qa/mobile-map-kk.png',fullPage:false});
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth);
   assert.equal(overflow,false,'no horizontal page overflow on phone');
   await page.reload();
   await page.getByRole('heading',{name:'ЖМБ НЗМ · Петропавл',exact:true}).waitFor();
+  await page.locator('.zone-navigation button').first().click();
   assert.equal(await page.getByLabel('Аймақ ауданы').inputValue(),'610');
+  await page.screenshot({path:'qa/mobile-room-kk.png',fullPage:false});
+  await page.locator('.inspector-sheet .modal-heading button').click();
   assert.deepEqual(errors,[],'no browser runtime errors');
   await writeFile('qa/checks.json',JSON.stringify({passed:true,checks:['architectural rooms and furniture','keyboard room selection','plan zoom','light theme in dark OS preference','area recalculation','plan upload and marker','RU PDF','KK PDF','mobile layout','local persistence','no runtime errors']},null,2));
 }catch(error){await writeFile('qa/checks.json',JSON.stringify({passed:false,error:String(error),errors},null,2));throw error;}

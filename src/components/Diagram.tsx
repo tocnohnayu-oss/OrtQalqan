@@ -42,15 +42,17 @@ export function Diagram({floor,snapshot,selected,onSelect,language,stale}:{floor
   const width=Math.max(960,topCount*188+320),run=width-362,start=110,wing=start+run+24;
   const boxes:RoomBox[]=[];
   [floor.zones.slice(0,topCount),floor.zones.slice(topCount)].forEach((zones,side)=>{
-    const weights=zones.map(z=>Math.max(10,Math.min(25,Math.sqrt(Math.max(1,z.area))))),sum=weights.reduce((a,b)=>a+b,0);
+    const proportions:Record<string,number>={classroom:1.7,library:1.3,server:.9,gym:2.4,lab:1.2,assembly:2};
+    // A parameter edit must not move the walls underneath the inspector.
+    const weights=zones.map(z=>proportions[roomKind(z)]||1.2),sum=weights.reduce((a,b)=>a+b,0);
     let current=start;
     zones.forEach((zone,i)=>{const roomWidth=(run-(zones.length-1)*8)*weights[i]/sum;boxes.push({zone,x:current,y:side===0?124:370,width:roomWidth,height:side===0?176:174,top:side===0,kind:roomKind(zone)});current+=roomWidth+8;});
   });
-  return <svg className="floor-diagram architectural-plan" viewBox={`0 0 ${width} 660`} role="group" aria-label={`${language==='ru'?floor.name:floor.nameKk}. ${t('noScale')}`}>
+  return <svg className="floor-diagram architectural-plan" viewBox={`60 90 ${width-120} 565`} role="group" aria-label={`${language==='ru'?floor.name:floor.nameKk}. ${t('noScale')}`}>
     <defs><pattern id={`${id}-grid`} width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#e9e6dd" strokeWidth=".65"/></pattern><pattern id={`${id}-corridor`} width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V8" stroke="#dfdfd0" strokeWidth=".7"/></pattern></defs>
     <rect width={width} height="660" fill="#fbfaf5"/><rect x="30" y="45" width={width-60} height="564" fill={`url(#${id}-grid)`}/>
     <g className="plan-axis" stroke="#c9c9b8" strokeWidth=".8" strokeDasharray="4 5"><path d={`M83 82H${width-40}M83 576H${width-40}M82 80V578M${width-64} 80V578`}/></g>
-    {['A','B','C','D'].map((letter,i)=><g key={letter}><circle cx={110+i*(width-220)/3} cy="66" r="11" fill="#fbfaf5" stroke="#c9c9b8"/><text x={110+i*(width-220)/3} y="70" textAnchor="middle" className="axis-text">{letter}</text></g>)}
+
     <path d={`M96 110H${wing}V214H${width-82}V558H96Z`} fill="#fffdf8" stroke="#39463a" strokeWidth="5" strokeLinejoin="miter"/>
     <path d={`M110 310H${wing+9}V356H110Z`} fill={`url(#${id}-corridor)`}/><path d={`M110 310H${wing+9}M110 356H${wing+9}`} stroke="#bfc4b4" strokeWidth="1.5"/>
     <text x={start+run/2} y="338" className="corridor-label" textAnchor="middle">{language==='ru'?'КОРИДОР':'ДӘЛІЗ'}</text>
@@ -73,7 +75,7 @@ export function Diagram({floor,snapshot,selected,onSelect,language,stale}:{floor
         <g className="equipment-map-tag" transform={`translate(${doorX-4} ${top?y+h-14:y+14})`}><rect x="-4" y="-13" width="68" height="27" rx="3" fill={active?'#b44a30':issue?'#e9d9ab':'#324d40'} stroke="#fffdf8" strokeWidth="2"/><path d="M3-5h7v15H3Zm1-5h5v5m0-5h6v9" fill="none" stroke={active||!issue?'#fffdf2':'#786128'} strokeWidth="1.3"/><text x="22" y="6" fill={active||!issue?'#fffdf2':'#786128'} className="equipment-tag-label">{stale?'—':row?.type?`${row.type==='OP'?'ОП':'ОУ'} ${row.count}`:'?'}</text></g>
       </g>;
     })}
-    <g transform={`translate(${width-47} 95)`}><path d="M0 22V-3l-5 10 5-4 5 4Z" fill="#4b5e4e"/><text y="-12" textAnchor="middle" className="north-label">N</text></g>
+    <g transform={`translate(${width-47} 95)`}><path d="M0 22V-3l-5 10 5-4 5 4Z" fill="#4b5e4e"/><text y="-12" textAnchor="middle" className="north-label">Y</text></g>
     <g className="plan-caption"><path d={`M96 598H${width-81}`} stroke="#b8beaa"/><text x="96" y="622">{t('illustrativePlan')}</text><text x={width-82} y="622" textAnchor="end">OQ / {String(snapshot.building.floors.findIndex(f=>f.id===floor.id)+1).padStart(2,'0')}</text><text x="96" y="643" className="plan-disclaimer">{t('notSchoolPlan')}</text></g>
   </svg>;
 }
