@@ -1,5 +1,5 @@
 /* A room leaf in the field atlas: context first, one editable source of truth. */
-.simple-inspector .room-context{margin-bottom:18px;min-width:0}
+.simple-inspector .room-context{display:block;margin-bottom:18px;min-width:0}
 .room-context-floor{font-size:11px;line-height:1.5;color:#52675c;margin-bottom:9px;overflow-wrap:anywhere}
 .room-context-identity{display:grid;grid-template-columns:minmax(0,1fr) 62px;gap:12px;align-items:start}
 .simple-inspector .room-context h3{font:600 27px/1.12 var(--display);color:#253b42;margin:0;overflow-wrap:anywhere;letter-spacing:-.2px;outline-offset:4px}
