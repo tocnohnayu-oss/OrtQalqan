@@ -192,3 +192,17 @@ button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visi
   .studio-object-name h1{font-size:31px}.simple-nav{gap:23px}.room-kits-heading>small{font-size:8px}.room-kit{width:128px}.room-kit-preview{width:39px}.room-kit strong{font-size:13px}
   .walk-record .walk-room-heading h3{font-size:29px}.quick-check legend{font-size:11px}.quick-check legend>span{min-width:18px;height:19px}.quick-answer>span{font-size:9px;gap:3px;padding-inline:3px}
 }
+
+/* The plan is an interactive sheet; controls stay reachable below it on phones. */
+.floor-plan-view .built-floor-plan{touch-action:none;user-select:none;cursor:grab;outline-offset:-3px}
+.floor-plan-view .built-floor-plan.is-panning,.floor-plan-view .is-panning .drawn-room{cursor:grabbing}
+.plan-view-footer{flex-wrap:wrap;gap:12px}
+.plan-view-caption{flex:1;min-width:170px;color:#52695e;font-size:10px;line-height:1.6}
+.plan-view-caption small{display:block;font-size:9px;color:#67796d;margin-top:3px}
+.plan-view-controls{display:flex;align-items:stretch;gap:8px;flex-shrink:0}
+.plan-count-toggle{min-height:44px;padding:7px 11px;border:1px solid #b9c7be;color:#4e6760;background:#fffdf8;font:500 13px var(--display);white-space:nowrap}
+.plan-count-toggle[aria-pressed=true]{background:#253b42;border-color:#253b42;color:#fffdf8}
+.floor-plan-view .plan-zoom button{width:44px;min-width:44px;height:44px}
+.floor-plan-view .plan-zoom button:disabled{opacity:.35;cursor:default}
+.plan-count{fill:#a13d26;font-weight:700}.plan-count-manual{fill:#89631f}
+@media(max-width:720px){.plan-view-footer{padding:10px 12px;gap:9px}.plan-view-caption{flex-basis:100%;font-size:10px}.plan-view-caption small{font-size:9px}.plan-view-controls{width:100%;justify-content:space-between}}
