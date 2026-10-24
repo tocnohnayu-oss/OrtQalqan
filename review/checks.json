@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "sourceSha": "106c7f9a6569ddbce37bb9e74794f027a4f0ebea",
+  "sourceSha": "010ea733448855ba7c1ffe6d8cbe6230004cd698",
   "checks": [
     "architectural rooms and furniture",
     "keyboard room selection",
@@ -11,6 +11,14 @@
     "non-mutating scenario comparison",
     "explicit scenario application",
     "inspection notes persist",
+    "explicit inspection completion",
+    "equipment registry and deadlines",
+    "CSV export",
+    "unsaved equipment guard",
+    "independent object library",
+    "warehouse scope boundary",
+    "object switching and reload",
+    "mobile inspection workspace",
     "plan upload and marker",
     "RU PDF",
     "KK PDF",
