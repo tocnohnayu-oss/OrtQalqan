@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "sourceSha": "05b2521bbe8dc2841ff1f640e7f498e5537dbb8a",
+  "sourceSha": "c7d14e201523aba111f4afd68404b79e1c677478",
   "checks": [
     "simplified workspace and no automatic fake plan",
     "drag themed furnished room blocks",
@@ -16,7 +16,7 @@
     "scenario preview",
     "guided room-by-room inspection and equipment",
     "CSV export",
-    "multi-object switching",
+    "multi-object switching through an explicit labeled button",
     "warehouse scope boundary",
     "constructed floor in RU and KK PDF",
     "keyboard room selection",
