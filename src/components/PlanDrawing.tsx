@@ -41,9 +41,9 @@ export function PlanGrid(){
 type View = {x:number;y:number;width:number;height:number};
 type Gesture = {view:View;rect:DOMRect;start:Point;distance:number;room:string;dragged:boolean;multi:boolean};
 
-export function FloorPlanView({layout,zones,language,selected,onSelect,snapshot,stale,showCounts,onToggleCounts}:{layout:FloorLayout;zones:Zone[];language:Language;selected:string;onSelect:(id:string)=>void;snapshot:Snapshot;stale:boolean;showCounts:boolean;onToggleCounts:()=>void}) {
+export function FloorPlanView({layout,zones,language,selected,onSelect,snapshot,stale,showCounts,onToggleCounts,focusRequest=0}:{layout:FloorLayout;zones:Zone[];language:Language;selected:string;onSelect:(id:string)=>void;snapshot:Snapshot;stale:boolean;showCounts:boolean;onToggleCounts:()=>void;focusRequest?:number}) {
   const [view,setView]=useState(()=>layoutBounds(layout)),[dragging,setDragging]=useState(false),[hiddenLabels,setHiddenLabels]=useState(0),p=planWords(language),hintId=useId();
-  const lastSelection=useRef('');
+  const lastSelection=useRef(''),lastFocusRequest=useRef(0);
   const svgRef=useRef<SVGSVGElement>(null),viewRef=useRef(view),pointers=useRef(new Map<number,Point>()),gesture=useRef<Gesture|null>(null);
   const viewport=usePlanViewport(svgRef);
   viewRef.current=view;
@@ -52,11 +52,11 @@ export function FloorPlanView({layout,zones,language,selected,onSelect,snapshot,
   const focusRoom=()=>{if(room)setView(layoutBounds({...layout,rooms:[room]},1.5));};
   const zoom=(ratio:number)=>{const rect=svgRef.current?.getBoundingClientRect();if(rect)setView(v=>navigateView(v,rect,{x:rect.left+rect.width/2,y:rect.top+rect.height/2},{x:rect.left+rect.width/2,y:rect.top+rect.height/2},ratio));};
   useEffect(()=>{
-    const changed=lastSelection.current!==selected;lastSelection.current=selected;
+    const changed=lastSelection.current!==selected,requested=lastFocusRequest.current!==focusRequest;lastSelection.current=selected;lastFocusRequest.current=focusRequest;
     if(!room)return;
     const box=roomBounds(room.points),x=box.x+box.width/2,y=box.y+box.height/2,v=viewRef.current;
-    if(changed&&window.matchMedia('(max-width:720px)').matches||x<v.x||x>v.x+v.width||y<v.y||y>v.y+v.height)focusRoom();
-  },[selected,layout]);
+    if(requested||changed&&window.matchMedia('(max-width:720px)').matches||x<v.x||x>v.x+v.width||y<v.y||y>v.y+v.height)focusRoom();
+  },[selected,layout,focusRequest]);
   useEffect(()=>{
     const svg=svgRef.current;if(!svg)return;
     const wheel=(event:WheelEvent)=>{if(!event.ctrlKey&&!event.metaKey)return;event.preventDefault();const point={x:event.clientX,y:event.clientY},rect=svg.getBoundingClientRect();setView(v=>navigateView(v,rect,point,point,Math.exp(Math.max(-.5,Math.min(.5,event.deltaY*.002)))));};

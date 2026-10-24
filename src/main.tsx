@@ -10,5 +10,6 @@ import './styles/guide.css';
 import './styles/proof.css';
 import './styles/plan-workspace.css';
 import './styles/plan-labels.css';
+import './styles/inspector.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);
