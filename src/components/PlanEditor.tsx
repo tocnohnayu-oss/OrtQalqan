@@ -118,7 +118,7 @@ export function PlanEditor({floor,language,buildingKind='other',onSave,onCancel,
     else if(active.kind!=='pan'&&active.room){const points=active.kind==='vertex'?moveVertex(active.room.points,active.index,at):active.room.points.map(p=>({x:round(p.x+at.x-active.start.x),y:round(p.y+at.y-active.start.y)}));updateRoom({...active.room,points});}
   };
   const vertexDown=(event:PointerEvent,room:LayoutRoom,index:number)=>{if(tool!=='select')return;event.stopPropagation();event.preventDefault();capture(event,'vertex',room,index);};
-  const roomDown=(event:PointerEvent,room:LayoutRoom)=>{if(tool!=='select')return;event.stopPropagation();setSelected(room.id);setOpeningId('');capture(event,'move',room);};
+  const roomDown=(event:PointerEvent,room:LayoutRoom)=>{if(tool!=='select')return;event.preventDefault();event.stopPropagation();setSelected(room.id);setOpeningId('');capture(event,'move',room);};
   const alterNumber=(key:'x'|'y'|'width'|'height',value:number)=>{
     if(!selectedRoom||!Number.isFinite(value))return false;
     const box=roomBounds(selectedRoom.points);

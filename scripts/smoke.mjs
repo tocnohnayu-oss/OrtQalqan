@@ -23,11 +23,11 @@ try {
   await page.getByLabel('Дата',{exact:true}).fill('2026-10-24');
   await page.locator('dialog .modal-heading button').click();
   await page.getByRole('button',{name:'Создать план',exact:true}).first().click();
-  const editor=page.locator('.plan-editor-modal');
+  const editor=page.locator('.plan-editor-modal'),toolbox=editor.locator('.editor-tools');
   const world=async(x,y)=>page.locator('.floor-editor-svg').evaluate((svg,at)=>{const p=new DOMPoint(at.x,at.y).matrixTransform(svg.getScreenCTM());return {x:p.x,y:p.y};},{x,y});
   const clickWorld=async(x,y)=>{const at=await world(x,y);await page.mouse.click(at.x,at.y);};
   const drawRect=async(x,y,width,height,binding)=>{
-    await editor.getByRole('button',{name:'Помещение',exact:true}).click();
+    await toolbox.getByRole('button',{name:'Помещение',exact:true}).click();
     if(binding)await page.getByLabel('Связь с расчётом',{exact:true}).selectOption(binding);
     const start=await world(x,y),end=await world(x+width,y+height);
     await page.mouse.move(start.x,start.y);await page.mouse.down();await page.mouse.move(end.x,end.y,{steps:12});await page.mouse.up();
@@ -46,12 +46,12 @@ try {
   await dragBlock('Серверная',2,10);
   await page.getByLabel('Ширина, м',{exact:true}).fill('5');await page.getByLabel('Ширина, м',{exact:true}).press('Tab');
   await page.getByLabel('Глубина, м',{exact:true}).fill('5');await page.getByLabel('Глубина, м',{exact:true}).press('Tab');
-  await editor.getByRole('button',{name:'Контур',exact:true}).click();
+  await toolbox.getByRole('button',{name:'Контур',exact:true}).click();
   await page.getByLabel('Связь с расчётом',{exact:true}).selectOption({label:'Спортивный зал'});
   for(const [x,y] of [[5,8],[14,8],[14,13],[10,13],[10,11],[5,11]])await clickWorld(x,y);
   await editor.getByRole('button',{name:'Замкнуть контур',exact:true}).click();
   assert.equal(await page.locator('.floor-editor-svg .drawn-room').count(),5,'a concave room and a common corridor can be drawn');
-  await editor.getByRole('button',{name:'Выбрать',exact:true}).click();
+  await toolbox.getByRole('button',{name:'Выбрать',exact:true}).click();
   await clickWorld(3,3);
   await page.getByLabel('Ширина, м',{exact:true}).fill('10');await page.getByLabel('Ширина, м',{exact:true}).press('Tab');
   await page.getByRole('alert').filter({hasText:'Помещения пересекаются'}).waitFor();
@@ -64,11 +64,11 @@ try {
   await page.getByRole('button',{name:'Повторить действие',exact:true}).click();
   await expect(page.getByLabel('Координата X, м',{exact:true})).toHaveValue('-1');
   await page.getByRole('button',{name:'Отменить действие',exact:true}).click();
-  await editor.getByRole('button',{name:'Дверь',exact:true}).click();await clickWorld(8,8);
-  await editor.getByRole('button',{name:'Окно',exact:true}).click();await clickWorld(12,13);
+  await toolbox.getByRole('button',{name:'Дверь',exact:true}).click();await clickWorld(8,8);
+  await toolbox.getByRole('button',{name:'Окно',exact:true}).click();await clickWorld(12,13);
   assert.equal(await page.locator('.floor-editor-svg .plan-opening').count(),7,'template doors and windows connect to corridors and accept manual additions');
   await page.getByLabel('Ширина проёма, м',{exact:true}).fill('2');await page.getByLabel('Ширина проёма, м',{exact:true}).press('Tab');
-  await editor.getByRole('button',{name:'Выбрать',exact:true}).click();
+  await toolbox.getByRole('button',{name:'Выбрать',exact:true}).click();
   await clickWorld(3,3);
   await page.screenshot({path:'qa/editor-ru.png',fullPage:false});
   page.once('dialog',dialog=>dialog.dismiss());await editor.locator('.modal-heading button').click();
