@@ -355,3 +355,6 @@ button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visi
   .simple-inspector .zone-title{grid-column:1/-1}
   .simple-zone-result{padding:17px 22px}
 }
+
+@media(max-width:1150px) and (min-width:721px){.studio-object-name h1.long-object-name{font-size:34px;line-height:1.08}}
+@media(max-width:720px){.studio-object-name h1.long-object-name{font-size:28px;line-height:1.1;letter-spacing:-.45px}}
