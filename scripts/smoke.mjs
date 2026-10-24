@@ -147,9 +147,15 @@ try {
   await page.evaluate(()=>document.querySelector('.inspection-modal').scrollTop=0);
   await page.screenshot({path:'qa/mobile-inspection-kk.png',fullPage:false});
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false,'inspection workspace fits a phone');
+  await page.locator('.walk-record').evaluate(el=>el.scrollIntoView({block:'start'}));
+  const actionBounds=await page.locator('.walk-footer-actions button').first().boundingBox();
+  assert.ok(actionBounds&&actionBounds.y>=0&&actionBounds.y+actionBounds.height<=844,'phone inspection actions stay inside the visible viewport');
+  await page.setViewportSize({width:320,height:720});
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false,'inspection fits a 320px phone');
   await page.locator('dialog .modal-heading button').click();
   await page.getByRole('link',{name:'OrtQalqan',exact:true}).click();
   assert.equal(await page.locator('.library-object').count(),3,'all object drafts persist after reload');
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false,'object library fits a 320px phone');
   await page.locator('dialog .modal-heading button').click();
   await page.setViewportSize({width:320,height:720});
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false,'no page overflow on a narrow phone');
