@@ -1,0 +1,30 @@
+.simple-nav .guide-nav-button{gap:6px;margin-left:auto;color:#526b5c}
+.guide-nav-button>svg{flex-shrink:0}
+.quick-guide{position:fixed;inset:0;width:100vw;max-width:none;height:100dvh;max-height:none;margin:0;padding:0;border:0;background:transparent;color:#253b42;overflow:hidden}
+.quick-guide::backdrop{background:transparent}
+.guide-spotlight{position:absolute;inset:0;pointer-events:none}
+.guide-card{position:fixed;left:calc(50% - 190px);top:15%;width:380px;max-width:calc(100vw - 28px);max-height:calc(100dvh - 28px);overflow:auto;padding:26px 25px 22px;background:#fffdf8;border:1px solid #aabbb0;border-top:3px solid #b5452b;box-shadow:7px 8px 0 #203b4226,0 15px 40px #1c343a20}
+.guide-card.guide-welcome{width:460px}
+.guide-close{position:absolute;right:7px;top:7px;width:40px;min-width:40px;height:40px}
+.guide-eyebrow{display:block;font:500 11px/1.6 var(--display);letter-spacing:1.5px;color:#8c402c;padding-right:32px;margin-bottom:14px}
+.guide-copy h2{font:600 30px/1.12 var(--display);letter-spacing:-.3px;color:#253b42;max-width:95%;margin:0 0 15px;padding-right:10px}
+.guide-copy p{font-size:13px;line-height:1.85;color:#465f53;margin:0}
+.guide-copy>small{display:block;font-size:11px;line-height:1.8;color:#5b7054;border-left:2px solid #c3cdb7;padding-left:11px;margin-top:15px}
+.guide-route{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:28px 0 25px}
+.guide-route>span{position:relative;display:flex;align-items:center;justify-content:center;flex-direction:column;width:48px;gap:8px;color:#536d4b}
+.guide-route>span:not(:last-child):after{content:'';position:absolute;left:calc(100% + 3px);top:12px;width:21px;height:1px;background:#a7ba9b}
+.guide-route small{font:500 10px var(--display);color:#617653}
+.guide-progress{display:flex;gap:5px;margin:24px 0 21px}
+.guide-progress>span{height:3px;flex:1;background:#d7dfcf}.guide-progress>.done{background:#8d9e7b}.guide-progress>.active{background:#b5452b}
+.guide-actions{position:sticky;bottom:-22px;display:flex;gap:10px;align-items:stretch;margin-top:0;padding:9px 0 0;background:#fffdf8}
+.guide-actions>.button{font-size:12px;min-height:44px;flex:1;white-space:normal;line-height:1.5;padding-inline:12px;gap:8px}
+.guide-actions>.primary{flex:1.45;justify-content:space-between;padding-left:17px}
+@media(max-width:720px){
+  .simple-nav .guide-nav-button{font-size:11px;gap:5px}
+  .guide-nav-button>svg{width:14px;height:14px}
+  .guide-card{padding:23px 20px 19px;box-shadow:4px 5px 0 #203b4226,0 12px 30px #1c343a20}
+  .guide-copy h2{font-size:27px;margin-bottom:13px}.guide-copy p{font-size:12px;line-height:1.8}.guide-copy>small{font-size:10px;line-height:1.75}
+  .guide-eyebrow{font-size:10px;letter-spacing:1px;margin-bottom:12px}.guide-route{gap:10px;padding-block:23px}.guide-route>span{width:35px}.guide-route>span:not(:last-child):after{width:13px}
+  .guide-actions{gap:8px;bottom:-19px}.guide-actions>.button{font-size:11px;padding-inline:9px}.guide-actions>.primary{padding-left:15px}
+}
+@media(max-width:360px){.simple-nav{gap:18px}.simple-nav .guide-nav-button{font-size:10px;gap:4px}.guide-nav-button>svg{width:13px;height:13px}.guide-copy h2{font-size:25px}.guide-route>span{width:31px}.guide-route>span>svg{width:23px;height:23px}.guide-route>span:not(:last-child):after{width:11px}}

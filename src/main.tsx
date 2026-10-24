@@ -6,5 +6,6 @@ import './styles/fieldwork.css';
 import './styles/studio.css';
 import './styles/atlas.css';
 import './styles/account.css';
+import './styles/guide.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);

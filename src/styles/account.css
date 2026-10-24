@@ -1,7 +1,8 @@
 /* Shared archive / personal folio. The floor plan remains the primary workspace. */
-.account-trigger{display:grid;place-items:center;min-width:37px;width:37px;height:36px;border:1px solid #b9c6bd;background:linear-gradient(135deg,transparent 5px,#e9eee3 5.5px);color:#253b42}
-.account-trigger>span{font:600 16px var(--display)}
-.account-trigger:hover{background-color:#dbe4d5}
+.account-trigger{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;max-width:240px;padding:5px 6px;border:0;background:transparent;color:#253b42;font-size:12px;line-height:1.4;font-weight:500}
+.account-trigger:hover{color:#a14229}.account-trigger:hover .account-name,.account-trigger:hover .account-login-label{text-decoration:underline;text-underline-offset:4px}
+.account-avatar{display:grid;place-items:center;flex-shrink:0;width:30px;height:30px;border-radius:50%;background:#e7eddf;color:#526b45;font:600 15px var(--display)}
+.account-name{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.account-full-name{max-width:165px}.account-short-name{display:none}.account-arrow{color:#607756;flex-shrink:0}.account-trigger>svg{flex-shrink:0}
 .account-modal{width:1140px;max-height:94dvh}
 .account-modal>.modal-body{padding:0}
 .account-entry{display:grid;grid-template-columns:1.05fr 1fr;min-height:585px}
@@ -128,7 +129,7 @@
   .account-entry-form{padding:30px}.account-entry-story{padding:32px}.account-entry-story h3{font-size:48px}.team-heading{gap:20px}.team-title h3{font-size:31px}.team-passport{min-width:220px}.team-object{grid-template-columns:minmax(0,1fr) 220px}.team-object-open{gap:12px}.team-object-open>.object-illustration{width:72px}.team-object-open h4{font-size:21px}.team-object-owner{padding-left:14px}.team-object-index{font-size:21px}
 }
 @media(max-width:720px){
-  .account-trigger{width:34px;min-width:34px;height:35px}.simple-shell .top-actions{gap:8px}
+  .simple-shell .simple-topbar{gap:10px}.account-trigger{width:auto;min-width:0;min-height:44px;height:auto;padding:4px;gap:6px;max-width:115px}.account-avatar{width:26px;height:26px;font-size:14px}.account-full-name{display:none}.account-short-name{display:block;max-width:52px}.account-arrow{width:10px}.simple-shell .top-actions{gap:8px}
   .account-modal{max-width:100%;width:100%;height:100dvh;max-height:100dvh;margin:0;inset:0}.account-modal>.modal-heading{padding:12px 16px}
   .account-entry{display:block;min-height:0}.account-entry-story{display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:0 8px;padding:22px;border-right:0;border-bottom:1px solid #b3c3aa;min-height:0}
   .account-entry-story h3{grid-column:1/-1;font-size:41px;max-width:none;line-height:1.02;margin:14px 0 10px;overflow-wrap:anywhere}.account-entry-story>.eyebrow{grid-column:1/-1;font-size:8px}
@@ -153,7 +154,7 @@
   .team-workspace>.account-error{margin:17px 18px 0}.studio-cloud-state{margin-top:-8px;padding-bottom:17px;gap:9px}.studio-cloud-state>span{font-size:10px;flex-basis:100%}.studio-cloud-state>.button{min-height:40px;font-size:11px}.remote-save-error{padding:10px 12px;gap:1px 15px}.remote-save-error>p{font-size:11px}
 }
 @media(max-width:360px){
-  .simple-shell .top-actions{gap:6px}.account-trigger{width:31px;min-width:31px}.language-switch button{min-width:29px}.simple-shell .brand{font-size:27px;gap:7px}.simple-shell .brand-symbol{width:24px}
+  .simple-shell .simple-topbar{column-gap:8px}.simple-shell .top-actions{gap:8px}.account-trigger{width:auto;max-width:84px}.account-avatar{display:none}.account-short-name{max-width:58px}.language-switch button{min-width:29px}.simple-shell .brand{font-size:25px;gap:6px}.simple-shell .brand-symbol{width:24px}
   .account-entry-story{padding:20px 18px;grid-template-columns:minmax(0,1fr) 90px;min-height:0}.account-entry-story h3{font-size:33px;max-width:none}.account-entry-story>.account-illustration{width:90px;height:57px}.account-entry-form{padding:20px 18px 24px}.account-auth-tabs{gap:22px}.account-auth-tabs>button{font-size:21px}
   .team-tabs{gap:16px;padding-inline:15px}.team-tabs>button:not(.icon-button){font-size:17px;gap:5px}.team-tabs>.icon-button{min-width:23px;width:23px}.team-tabs small,.team-tabs>button>span{display:none}.team-object-open>.object-illustration{width:53px}.team-object-open h4{font-size:21px}.team-object-open{gap:8px}.team-object-index{min-width:16px;font-size:18px}.team-title h3{font-size:29px}.team-passport strong{font-size:18px}.team-member-list>div>span:last-child{font-size:10px;max-width:85px}
 }

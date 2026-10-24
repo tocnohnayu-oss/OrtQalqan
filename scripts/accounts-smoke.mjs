@@ -5,10 +5,11 @@ import { expect } from '@playwright/test';
 export async function accountsSmoke(browser,errors){
   const a=await browser.newContext({viewport:{width:1440,height:1050},acceptDownloads:true});
   const b=await browser.newContext({viewport:{width:1440,height:1050},acceptDownloads:true});
+  await Promise.all([a.addInitScript(()=>localStorage.setItem('ortqalqan.guide.v1','seen')),b.addInitScript(()=>localStorage.setItem('ortqalqan.guide.v1','seen'))]);
   const first=await a.newPage(),second=await b.newPage();
   for(const page of [first,second])page.on('pageerror',error=>errors.push(error.message));
   const password='Atlas inspection demo passphrase';
-  const account=page=>page.getByRole('button',{name:'Аккаунт и команда',exact:true});
+  const account=page=>page.getByRole('button',{name:/^(?:Войти|Кіру) · OrtQalqan$|^(?:Аккаунт и команда|Аккаунт және топ): /});
   const panel=page=>page.locator('.account-modal');
   const close=page=>page.locator('.account-modal .modal-heading button').click();
   const register=async(page,email,name,workspace)=>{
@@ -68,20 +69,21 @@ export async function accountsSmoke(browser,errors){
     const download=first.waitForEvent('download');await first.getByRole('button',{name:'Скачать свою копию',exact:true}).click();assert.equal((await download).suggestedFilename(),'ortqalqan-backup.json');
     first.once('dialog',dialog=>dialog.accept());await first.getByRole('button',{name:'Открыть версию из базы',exact:true}).click();
     await expect(first.getByRole('heading',{name:'Корпус после совместного обхода',exact:true})).toBeVisible();
+    await first.screenshot({path:'qa/profile-desktop.png',fullPage:false});
     await account(first).click();await panel(first).getByRole('button',{name:/Журнал/}).click();
     await expect(panel(first).locator('.team-activity')).toContainText('Данияр Омаров');await first.screenshot({path:'qa/team-activity.png',fullPage:false});
     await panel(first).getByRole('button',{name:'Выйти',exact:true}).click();
     await expect(first.locator('.studio-cloud-state')).toHaveCount(0);await expect(first.getByRole('heading',{name:'НИШ ЕМН · Петропавловск',exact:true})).toBeVisible();
     await account(first).click();await panel(first).getByLabel('Почта',{exact:true}).fill('coordinator@example.test');await panel(first).getByLabel('Пароль',{exact:true}).fill(password);await panel(first).locator('form button[type=submit]').click();
     await expect(panel(first).locator('.team-object')).toHaveCount(1);await expect(panel(first).locator('.team-object')).toContainText('Корпус после совместного обхода');
-    await close(first);await first.getByRole('button',{name:'ҚАЗ',exact:true}).click();await first.setViewportSize({width:390,height:844});await first.getByRole('button',{name:'Аккаунт және топ',exact:true}).click();
+    await close(first);await first.getByRole('button',{name:'ҚАЗ',exact:true}).click();await first.setViewportSize({width:390,height:844});await first.screenshot({path:'qa/profile-mobile-kk.png',fullPage:false});await account(first).click();
     await first.locator('.team-object').waitFor();await first.screenshot({path:'qa/team-mobile-kk.png',fullPage:false});
     await first.setViewportSize({width:320,height:720});
     assert.equal(await first.locator('.account-modal').evaluate(el=>el.scrollWidth>el.clientWidth),false,'the team archive fits 320px');
     const tabs=await first.locator('.team-tabs').boundingBox();assert.ok(tabs.x>=0&&tabs.x+tabs.width<=320,'all workspace tabs fit the narrow phone');
     await first.getByRole('button',{name:/Қатысушылар/}).click();await first.locator('.team-member-list').waitFor();await first.screenshot({path:'qa/team-members-mobile-kk.png',fullPage:false});
-    await close(first);await first.getByRole('button',{name:'Аккаунт және топ',exact:true}).click();
-    await first.locator('.team-workspace').waitFor();await first.getByRole('button',{name:'Шығу',exact:true}).click();await first.getByRole('button',{name:'Аккаунт және топ',exact:true}).click();
+    await close(first);await account(first).click();
+    await first.locator('.team-workspace').waitFor();await first.getByRole('button',{name:'Шығу',exact:true}).click();await account(first).click();
     await first.screenshot({path:'qa/account-entry-mobile-kk.png',fullPage:false});
     assert.equal(await first.locator('.account-modal').evaluate(el=>el.scrollWidth>el.clientWidth),false,'Kazakh sign-in fits 320px');
     const titleBox=await first.locator('.account-entry-story h3').boundingBox(),artBox=await first.locator('.account-entry-story .account-illustration').boundingBox();

@@ -4,6 +4,7 @@ import { mkdir, mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { accountsSmoke } from './accounts-smoke.mjs';
+import { guideSmoke } from './guide-smoke.mjs';
 import assert from 'node:assert/strict';
 
 await mkdir('qa',{recursive:true});
@@ -20,6 +21,7 @@ try {
   browser=await chromium.launch({headless:true});
   page=await browser.newPage({viewport:{width:1440,height:1050},acceptDownloads:true});
   page.on('pageerror',error=>errors.push(error.message));
+  await page.addInitScript(()=>localStorage.setItem('ortqalqan.guide.v1','seen'));
   await page.goto('http://127.0.0.1:4173');
   await page.getByRole('heading',{name:'НИШ ЕМН · Петропавловск',exact:true}).waitFor();
   assert.ok(await page.evaluate(async()=>{await document.fonts.ready;return (await document.fonts.load('600 32px Atlas','Ә Ғ Қ Ң Ө Ұ Ү Һ І')).length>0;}),'the local display font loads before visual review, including Kazakh headings');
@@ -135,6 +137,7 @@ try {
   await page.getByRole('button',{name:'Нысанды ауыстыру',exact:true}).click();assert.equal(await page.locator('.library-object').count(),3);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false);await page.locator('dialog .modal-heading button').click();assert.deepEqual(errors,[]);
   const touchPage=await browser.newPage({viewport:{width:390,height:844},hasTouch:true});
   touchPage.on('pageerror',error=>errors.push(error.message));
+  await touchPage.addInitScript(()=>localStorage.setItem('ortqalqan.guide.v1','seen'));
   await touchPage.goto('http://127.0.0.1:4173');await touchPage.getByRole('button',{name:'Создать план',exact:true}).first().click();
   await touchPage.getByRole('button',{name:'Добавить блок: Класс',exact:true}).locator('strong').tap();
   assert.equal(await touchPage.locator('.floor-editor-svg .drawn-room').count(),1,'a room kit can be added by a real touch tap');
@@ -144,6 +147,7 @@ try {
   await touchPage.getByRole('button',{name:'Добавить блок: Библиотека',exact:true}).locator('strong').tap();
   assert.equal(await touchPage.locator('.floor-editor-svg .drawn-room').count(),2,'touch addition still works after moving a room');await touchPage.close();assert.deepEqual(errors,[]);
   await accountsSmoke(browser,errors);
-  await writeFile('qa/checks.json',JSON.stringify({passed:true,sourceSha:process.env.GITHUB_SHA||'local',checks:['simplified workspace and no automatic fake plan','drag themed furnished room blocks','orthogonal concave contour','shared walls and overlap rejection','move, rotate furnished room and undo/redo','doors and windows on walls','unsaved drawing guard','manual areas unchanged by drawing','explicit area transfer','SVG export','fire parameter changes preserve geometry','scenario preview','guided room-by-room inspection and equipment','CSV export','multi-object switching through an explicit labeled button','warehouse scope boundary','constructed floor in RU and KK PDF','keyboard room selection','light theme','image upload and marker','390px and 320px editor','touch room-kit addition after dragging','mobile parameter sheet','persistent geometry and observations','own-account registration and sign-in','server persistence and isolated workspaces','one-use invitation joins a second identity','coordinator-only assignment','concurrent edits preserve the newer version','database objects do not leak into local storage','logout restores device draft','team archive and sign-in at 390/320px','session expiry preserves the draft and switching identities clears private state','no runtime errors']},null,2));
+  await guideSmoke(browser,errors);
+  await writeFile('qa/checks.json',JSON.stringify({passed:true,sourceSha:process.env.GITHUB_SHA||'local',checks:['simplified workspace and no automatic fake plan','drag themed furnished room blocks','orthogonal concave contour','shared walls and overlap rejection','move, rotate furnished room and undo/redo','doors and windows on walls','unsaved drawing guard','manual areas unchanged by drawing','explicit area transfer','SVG export','fire parameter changes preserve geometry','scenario preview','guided room-by-room inspection and equipment','CSV export','multi-object switching through an explicit labeled button','warehouse scope boundary','constructed floor in RU and KK PDF','keyboard room selection','light theme','image upload and marker','390px and 320px editor','touch room-kit addition after dragging','mobile parameter sheet','persistent geometry and observations','own-account registration and sign-in','server persistence and isolated workspaces','one-use invitation joins a second identity','coordinator-only assignment','concurrent edits preserve the newer version','database objects do not leak into local storage','logout restores device draft','team archive and sign-in at 390/320px','session expiry preserves the draft and switching identities clears private state','first-visit guide, skip preference and manual restart','five real-control tour steps in RU and KK at 320px','guide escape restores page scrolling','no runtime errors']},null,2));
 }catch(error){if(page){await page.screenshot({path:'qa/failure.png',fullPage:false}).catch(()=>{});const labels=await page.locator('input,select,button').evaluateAll(elements=>elements.filter(e=>e.getBoundingClientRect().width).slice(-30).map(e=>({tag:e.tagName,label:e.getAttribute('aria-label'),text:e.textContent.slice(0,120)}))).catch(()=>[]);console.log('Visible controls at failure:',JSON.stringify(labels));console.log('Geometry at failure:',await page.locator('.floor-editor-svg .drawn-room').evaluateAll(rooms=>rooms.map(r=>({name:r.getAttribute('aria-label'),path:r.querySelector('.drawn-room-fill')?.getAttribute('d')}))));console.log('Editor message:',await page.locator('.editor-error').allTextContents());}await writeFile('qa/checks.json',JSON.stringify({passed:false,error:String(error),errors},null,2));throw error;}
 finally{await browser?.close();server.kill();if(apiServer.exitCode===null){const ended=new Promise(resolve=>apiServer.once('exit',resolve));apiServer.kill();await ended;}await rm(apiDirectory,{recursive:true,force:true});}

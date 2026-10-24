@@ -22,7 +22,7 @@ cp qa/editor-mobile-kk.png "$task_review_dir/editor-mobile.png"
 cp qa/floor.svg "$task_review_dir/floor.svg"
 cp qa/checks.json "$task_review_dir/checks.json"
 
-for task_account_image in account-entry team-objects team-members team-activity team-mobile-kk team-members-mobile-kk account-entry-mobile-kk; do
+for task_account_image in account-entry team-objects team-members team-activity team-mobile-kk team-members-mobile-kk account-entry-mobile-kk profile-desktop profile-mobile-kk guide-welcome guide-desktop guide-mobile-kk guide-mobile-plan-kk; do
   cp "qa/$task_account_image.png" "$task_review_dir/$task_account_image.png"
 done
 
@@ -52,7 +52,7 @@ cp "$task_review_dir/editor.png" review/editor.png
 cp "$task_review_dir/editor-mobile.png" review/editor-mobile.png
 cp "$task_review_dir/floor.svg" review/floor.svg
 cp "$task_review_dir/checks.json" review/checks.json
-for task_account_image in account-entry team-objects team-members team-activity team-mobile-kk team-members-mobile-kk account-entry-mobile-kk; do
+for task_account_image in account-entry team-objects team-members team-activity team-mobile-kk team-members-mobile-kk account-entry-mobile-kk profile-desktop profile-mobile-kk guide-welcome guide-desktop guide-mobile-kk guide-mobile-plan-kk; do
   cp "$task_review_dir/$task_account_image.png" "review/$task_account_image.png"
   git add "review/$task_account_image.png"
 done
