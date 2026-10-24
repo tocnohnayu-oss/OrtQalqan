@@ -1,3 +1,8 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-export default defineConfig({ plugins: [react()], build: { chunkSizeWarningLimit: 900 } });
+export default defineConfig({
+  plugins:[react()],
+  server:{proxy:{'/api':'http://127.0.0.1:8787'},fs:{deny:['**/.env','**/.env.*','**/*.{crt,pem}','**/.git/**','**/*.sqlite*','**/var/**']}},
+  preview:{proxy:{'/api':'http://127.0.0.1:8787'}},
+  build:{chunkSizeWarningLimit:900}
+});

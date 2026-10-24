@@ -1,9 +1,14 @@
 import { chromium, expect } from '@playwright/test';
 import { spawn } from 'node:child_process';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { accountsSmoke } from './accounts-smoke.mjs';
 import assert from 'node:assert/strict';
 
 await mkdir('qa',{recursive:true});
+const apiDirectory=await mkdtemp(join(tmpdir(),'ortqalqan-browser-'));
+const apiServer=spawn(process.execPath,['server/index.mjs'],{stdio:'inherit',env:{...process.env,ORTQALQAN_ORIGIN:'http://127.0.0.1:4173',ORTQALQAN_DATABASE:join(apiDirectory,'demo.sqlite'),PORT:'8787'}});
 const server=spawn(process.execPath,['node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port','4173'],{stdio:'inherit'});
 let browser,page;
 const errors=[];
@@ -11,6 +16,7 @@ try {
   let ready=false;
   for(let n=0;n<60;n++){try{if((await fetch('http://127.0.0.1:4173')).ok){ready=true;break;}}catch{}await new Promise(r=>setTimeout(r,300));}
   assert.ok(ready,'preview responds');
+  for(let n=0;n<60;n++){try{if((await fetch('http://127.0.0.1:4173/api/health')).ok)break;}catch{}if(n===59)throw Error('API is not ready');await new Promise(r=>setTimeout(r,300));}
   browser=await chromium.launch({headless:true});
   page=await browser.newPage({viewport:{width:1440,height:1050},acceptDownloads:true});
   page.on('pageerror',error=>errors.push(error.message));
@@ -137,6 +143,7 @@ try {
   await expect(touchPage.getByLabel('Координата X, м',{exact:true})).toHaveValue('1');
   await touchPage.getByRole('button',{name:'Добавить блок: Библиотека',exact:true}).locator('strong').tap();
   assert.equal(await touchPage.locator('.floor-editor-svg .drawn-room').count(),2,'touch addition still works after moving a room');await touchPage.close();assert.deepEqual(errors,[]);
-  await writeFile('qa/checks.json',JSON.stringify({passed:true,sourceSha:process.env.GITHUB_SHA||'local',checks:['simplified workspace and no automatic fake plan','drag themed furnished room blocks','orthogonal concave contour','shared walls and overlap rejection','move, rotate furnished room and undo/redo','doors and windows on walls','unsaved drawing guard','manual areas unchanged by drawing','explicit area transfer','SVG export','fire parameter changes preserve geometry','scenario preview','guided room-by-room inspection and equipment','CSV export','multi-object switching','warehouse scope boundary','constructed floor in RU and KK PDF','keyboard room selection','light theme','image upload and marker','390px and 320px editor','touch room-kit addition after dragging','mobile parameter sheet','persistent geometry and observations','no runtime errors']},null,2));
+  await accountsSmoke(browser,errors);
+  await writeFile('qa/checks.json',JSON.stringify({passed:true,sourceSha:process.env.GITHUB_SHA||'local',checks:['simplified workspace and no automatic fake plan','drag themed furnished room blocks','orthogonal concave contour','shared walls and overlap rejection','move, rotate furnished room and undo/redo','doors and windows on walls','unsaved drawing guard','manual areas unchanged by drawing','explicit area transfer','SVG export','fire parameter changes preserve geometry','scenario preview','guided room-by-room inspection and equipment','CSV export','multi-object switching','warehouse scope boundary','constructed floor in RU and KK PDF','keyboard room selection','light theme','image upload and marker','390px and 320px editor','touch room-kit addition after dragging','mobile parameter sheet','persistent geometry and observations','own-account registration and sign-in','server persistence and isolated workspaces','one-use invitation joins a second identity','coordinator-only assignment','concurrent edits preserve the newer version','database objects do not leak into local storage','logout restores device draft','team archive and sign-in at 390/320px','no runtime errors']},null,2));
 }catch(error){if(page){await page.screenshot({path:'qa/failure.png',fullPage:false}).catch(()=>{});const labels=await page.locator('input,select,button').evaluateAll(elements=>elements.filter(e=>e.getBoundingClientRect().width).slice(-30).map(e=>({tag:e.tagName,label:e.getAttribute('aria-label'),text:e.textContent.slice(0,120)}))).catch(()=>[]);console.log('Visible controls at failure:',JSON.stringify(labels));console.log('Geometry at failure:',await page.locator('.floor-editor-svg .drawn-room').evaluateAll(rooms=>rooms.map(r=>({name:r.getAttribute('aria-label'),path:r.querySelector('.drawn-room-fill')?.getAttribute('d')}))));console.log('Editor message:',await page.locator('.editor-error').allTextContents());}await writeFile('qa/checks.json',JSON.stringify({passed:false,error:String(error),errors},null,2));throw error;}
-finally{await browser?.close();server.kill();}
+finally{await browser?.close();server.kill();if(apiServer.exitCode===null){const ended=new Promise(resolve=>apiServer.once('exit',resolve));apiServer.kill();await ended;}await rm(apiDirectory,{recursive:true,force:true});}

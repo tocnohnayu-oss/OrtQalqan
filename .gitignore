@@ -152,3 +152,10 @@ vite.config.ts.timestamp-*
 .sites-runtime/
 qa/
 
+# Private server records, sessions and runtime backups
+var/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite-journal
+

@@ -22,6 +22,10 @@ cp qa/editor-mobile-kk.png "$task_review_dir/editor-mobile.png"
 cp qa/floor.svg "$task_review_dir/floor.svg"
 cp qa/checks.json "$task_review_dir/checks.json"
 
+for task_account_image in account-entry team-objects team-members team-activity team-mobile-kk team-members-mobile-kk account-entry-mobile-kk; do
+  cp "qa/$task_account_image.png" "$task_review_dir/$task_account_image.png"
+done
+
 if git ls-remote --exit-code --heads origin design-review >/dev/null 2>&1; then
   git fetch origin design-review
   git checkout -B design-review FETCH_HEAD
@@ -48,6 +52,10 @@ cp "$task_review_dir/editor.png" review/editor.png
 cp "$task_review_dir/editor-mobile.png" review/editor-mobile.png
 cp "$task_review_dir/floor.svg" review/floor.svg
 cp "$task_review_dir/checks.json" review/checks.json
+for task_account_image in account-entry team-objects team-members team-activity team-mobile-kk team-members-mobile-kk account-entry-mobile-kk; do
+  cp "$task_review_dir/$task_account_image.png" "review/$task_account_image.png"
+  git add "review/$task_account_image.png"
+done
 git config user.name 'github-actions[bot]'
 git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
 git add review/desktop.png review/mobile.png review/mobile-room.png review/mobile-map.png review/scenarios.png review/report-ru.pdf review/report-kk.pdf review/checks.json review/inspection.png review/mobile-inspection.png review/objects.png review/warehouse.png review/brand.png review/desktop-empty.png review/editor.png review/editor-mobile.png review/floor.svg
