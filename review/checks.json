@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "sourceSha": "ea1b8493d918390e9f3b989ec67e7f14f39eb322",
+  "sourceSha": "6d78cf063c0c43e2754ad23f5dbf1f516ff986e2",
   "checks": [
     "simplified workspace and no automatic fake plan",
     "drag themed furnished room blocks",
@@ -26,6 +26,14 @@
     "touch room-kit addition after dragging",
     "mobile parameter sheet",
     "persistent geometry and observations",
+    "own-account registration and sign-in",
+    "server persistence and isolated workspaces",
+    "one-use invitation joins a second identity",
+    "coordinator-only assignment",
+    "concurrent edits preserve the newer version",
+    "database objects do not leak into local storage",
+    "logout restores device draft",
+    "team archive and sign-in at 390/320px",
     "no runtime errors"
   ]
 }
