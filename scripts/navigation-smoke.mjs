@@ -22,7 +22,7 @@ export async function navigationSmoke(browser,errors){
     await page.mouse.move(anchor.x,anchor.y);await page.keyboard.down('Control');await page.mouse.wheel(0,-180);await page.keyboard.up('Control');
     await expect.poll(camera).not.toBe(initial);const after=await world(anchor);assert.ok(Math.hypot(before.x-after.x,before.y-after.y)<.02,'wheel zoom keeps the pointed room anchored');
     await footer.getByRole('button',{name:'ОП / ОУ на плане',exact:true}).click();await expect(svg.locator('.plan-count')).toHaveCount(3);await expect(svg.locator('.plan-count-manual')).toHaveCount(1);
-    assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('ortqalqan.building.v1')).buildings[0]),building,'camera gestures never write geometry or fire parameters');
+    assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('ortqalqan.building.v1')).buildings[0]),JSON.parse(JSON.stringify(building)),'camera gestures never write geometry or fire parameters');
     await page.screenshot({path:'qa/navigation-desktop.png',fullPage:true});
     await page.getByRole('button',{name:'Рассчитать объект',exact:true}).click();
     await page.locator('.calculation-proof').getByRole('button',{name:'Параметры помещения: Серверная',exact:true}).last().click();
