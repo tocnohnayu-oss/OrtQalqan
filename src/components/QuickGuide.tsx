@@ -1,5 +1,5 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, Building2, Check, ClipboardCheck, FileDown, PencilRuler, UserRound, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Building2, Check, FolderOpen, ClipboardCheck, FileDown, PencilRuler, UserRound, X } from 'lucide-react';
 import type { Language } from '../domain/types';
 import { guideWords } from '../locales/guide';
 
@@ -8,7 +8,7 @@ type Box={x:number;y:number;width:number;height:number};
 const sameBox=(a:Box|null,b:Box|null)=>a===b||!!a&&!!b&&Object.keys(a).every(key=>a[key as keyof Box]===b[key as keyof Box]);
 
 /** A read-only tour of actual controls; no example building or data mutations. */
-export function QuickGuide({language,welcome,onClose}:{language:Language;welcome:boolean;onClose:()=>void}){
+export function QuickGuide({language,welcome,onExample,exampleDisabled=false,onClose}:{language:Language;welcome:boolean;onExample:()=>void;exampleDisabled?:boolean;onClose:()=>void}){
   const w=guideWords(language),[step,setStep]=useState(welcome?-1:0),[spot,setSpot]=useState<Box|null>(null),[position,setPosition]=useState<{left:number;top:number}|null>(null),[limit,setLimit]=useState<number>();
   const dialog=useRef<HTMLDialogElement>(null),card=useRef<HTMLElement>(null),primary=useRef<HTMLButtonElement>(null);
   const restore=useRef({focus:document.activeElement,x:window.scrollX,y:window.scrollY});
@@ -58,6 +58,7 @@ export function QuickGuide({language,welcome,onClose}:{language:Language;welcome
       <span className="guide-eyebrow">{step<0?w.eyebrow:`${w.step} ${step+1} ${w.of} ${w.steps.length}`}</span>
       <div className="guide-copy" aria-live="polite"><h2 id={titleId}>{current?.title||w.welcomeTitle}</h2><p id={bodyId}>{current?.body||w.welcomeBody}</p>{current?.note&&<small>{current.note}</small>}</div>
       {step<0?<div className="guide-route" aria-hidden="true">{icons.map((Icon,index)=><span key={index}><Icon size={25}/><small>{String(index+1).padStart(2,'0')}</small></span>)}</div>:<div className="guide-progress" aria-hidden="true">{w.steps.map((item,index)=><span className={index===step?'active':index<step?'done':''} key={item.target}/>)}</div>}
+      <button className="guide-example" disabled={exampleDisabled} onClick={onExample}><FolderOpen size={15}/>{w.example}<ArrowRight size={14}/></button>
       <div className="guide-actions"><button className="button subtle" onClick={()=>step<=0?onClose():setStep(n=>n-1)}>{step<=0?w.later:<><ArrowLeft size={15}/>{w.back}</>}</button><button className="button primary" ref={primary} onClick={()=>step===w.steps.length-1?onClose():setStep(n=>n+1)}>{step<0?w.start:step===w.steps.length-1?w.finish:w.next}{step===w.steps.length-1?<Check size={16}/>:<ArrowRight size={16}/>}</button></div>
     </section>
   </dialog>;
