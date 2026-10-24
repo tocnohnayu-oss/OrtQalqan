@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "sourceSha": "1ef1831b82a562bf411f77d3f046b2003228cda2",
+  "sourceSha": "07590beca1b1ad0c9dcfe1d3089983094b9b6898",
   "checks": [
     "simplified workspace and no automatic fake plan",
     "drag themed furnished room blocks",
@@ -23,6 +23,7 @@
     "light theme",
     "image upload and marker",
     "390px and 320px editor",
+    "touch room-kit addition after dragging",
     "mobile parameter sheet",
     "persistent geometry and observations",
     "no runtime errors"
