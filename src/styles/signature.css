@@ -60,6 +60,8 @@
   .studio-sidebar .room-index-more{color:#f0d5be;border-color:#536e60}
   .studio-sidebar .room-index-empty{color:#d1ddcd}.studio-sidebar .room-index-empty>svg{color:#b8cbb8}.studio-sidebar .room-index-empty>strong{color:#f0f5eb}
   .studio-sidebar .room-index-empty .text-button{color:#f0c3a6}
+  .studio-sidebar button:focus-visible{outline:2px solid #edb78c;outline-offset:-3px}
+  .studio-sidebar .studio-floor.active:focus-visible,.studio-sidebar .room-index-search button:focus-visible{outline-color:#b5452b}
 }
 @media(min-width:721px) and (max-width:1150px){
   .object-heading-block{grid-template-columns:78px minmax(0,1fr);column-gap:16px}.studio-object-header .object-sketch{width:78px;height:78px}
@@ -74,7 +76,12 @@
   .object-type-label{font-size:10px;letter-spacing:1.5px}
   .studio-actions{margin-top:17px}
   .studio-sidebar{background:#f7f7f0;border-color:#bac9b6}
-  .studio-plan-toolbar{padding-block:12px}.floor-sheet-title h2{font-size:20px}
+  .studio-plan-toolbar{display:grid;grid-template-columns:minmax(0,1fr);gap:9px;padding-block:12px}
+  .studio-floor-heading{width:100%;flex-direction:row;align-items:center;justify-content:space-between;gap:12px}
+  .floor-sheet-title h2{font-size:20px}
+  .studio-plan-actions{width:100%;gap:6px}
+  .studio-plan-toolbar .studio-plan-actions>.icon-button{display:grid;width:44px;min-width:44px;height:44px}
+  .studio-plan-actions>button[data-guide=plan]{flex:1;justify-content:center;min-height:44px;font-size:11px;padding-inline:9px}
   .studio-zone-list{gap:10px;padding-top:8px;padding-bottom:0}
   .studio-zone-list>.room-index-room{min-height:48px;gap:7px;padding:8px 3px;border:0;border-bottom:2px solid transparent;background:transparent;color:#425c4e}
   .studio-zone-list>.room-index-room>.room-index-name{font-size:12px;white-space:nowrap}
