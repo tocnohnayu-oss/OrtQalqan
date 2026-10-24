@@ -35,7 +35,7 @@ try{
   assert.equal(registered.user.email,credentials.email);
   response=await fetch(base+'/api/auth/register',{method:'POST',headers:{Origin:base,'Content-Type':'application/json'},body:'x'.repeat(6_000_001)});assert.equal(response.status,413);assert.equal((await response.json()).error,'tooLarge');
   assert.equal((await fetch(base+'/server/application.mjs')).status,403,'server implementation is not a public Vite module');
-  assert.equal((await fetch(base+'/var/test.sqlite')).status,403,'database paths are not served by Vite');
+  assert.equal((await fetch(base+'/@fs'+database)).status,403,'database paths are not served by Vite');
   await stop();
   base=await start(['node_modules/vite/bin/vite.js','--host','127.0.0.1','--port','5180','--strictPort'],5180);
   const resumed=await(await fetch(base+'/api/session',{headers:{Cookie:cookie}})).json();assert.equal(resumed.user.id,registered.user.id,'the real SQLite session survives a Vite restart');
