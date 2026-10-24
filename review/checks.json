@@ -1,12 +1,12 @@
 {
   "passed": true,
-  "sourceSha": "6564871aee3e4f7cd6dd4ff754287760a02c3443",
+  "sourceSha": "137c6aa3170eb082f65e13dfb90108f3351d6b9b",
   "checks": [
     "simplified workspace and no automatic fake plan",
     "drag themed furnished room blocks",
     "orthogonal concave contour",
     "shared walls and overlap rejection",
-    "move room and undo/redo",
+    "move, rotate furnished room and undo/redo",
     "doors and windows on walls",
     "unsaved drawing guard",
     "manual areas unchanged by drawing",
@@ -14,7 +14,7 @@
     "SVG export",
     "fire parameter changes preserve geometry",
     "scenario preview",
-    "field inspections and equipment",
+    "guided room-by-room inspection and equipment",
     "CSV export",
     "multi-object switching",
     "warehouse scope boundary",
