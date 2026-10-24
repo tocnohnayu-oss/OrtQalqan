@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "sourceSha": "d915e66c2f8149ea3fb458d90de5fd7f903659d6",
+  "sourceSha": "fb1cf4d55d42a42cbb52eb4e834af59c513e3612",
   "checks": [
     "simplified workspace and no automatic fake plan",
     "drag themed furnished room blocks",
@@ -38,6 +38,9 @@
     "first-visit guide, skip preference and manual restart",
     "five real-control tour steps in RU and KK at 320px",
     "guide escape restores page scrolling",
+    "opt-in prepared example preserves device and shared objects",
+    "visible calculation derivation and real 400-to-401 area change",
+    "demonstration PDF, source access and narrow calculation view",
     "no runtime errors"
   ]
 }
