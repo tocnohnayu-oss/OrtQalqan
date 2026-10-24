@@ -39,7 +39,7 @@
 .room-result-stale{display:grid;grid-template-columns:20px minmax(0,1fr);gap:7px 10px;align-items:start;color:#925239}
 .room-result-stale>svg{margin-top:2px}.room-result-stale>p{font-size:12px;line-height:1.6;margin:0}.room-result-stale>.button{grid-column:1/-1;justify-content:center;margin-top:3px;min-height:44px;font-size:12px;white-space:normal}
 .room-result-manual{display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px 10px;color:#8b5635;align-items:start}
-.room-result-manual>strong{font:500 20px/1.25 var(--display);color:#815036}.room-result-manual>.text-button{grid-column:1/-1;min-height:38px}
+.room-result-manual>strong{font:500 20px/1.25 var(--display);color:#815036}.room-result-manual>.text-button{grid-column:1/-1;min-height:44px}
 @media(min-width:721px) and (max-width:1050px){
   .simple-inspector .room-context{grid-column:1/-1}.room-context-identity{grid-template-columns:minmax(0,1fr) 74px}.room-context-picture{width:74px;height:74px}
   .room-context-nav{max-width:420px}.room-calculation{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 24px}
