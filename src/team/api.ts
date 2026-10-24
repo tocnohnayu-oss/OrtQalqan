@@ -5,7 +5,7 @@ export type User={id:string;name:string;email:string};
 export type Workspace={id:string;name:string;role:Role};
 export type Session={user:User|null;workspaces:Workspace[]};
 export type Member=User&{role:Role};
-export type RemoteObject={id:string;workspaceId:string;building:Building;assigneeId:string|null;phase:Phase;version:number;updatedBy:string;updatedAt:string};
+export type RemoteObject={id:string;workspaceId:string;building:Building;assigneeId:string|null;assigneeName:string|null;phase:Phase;version:number;updatedBy:string;updatedAt:string};
 export type ObjectSummary={id:string;name:string;nameKk:string;address:string;addressKk:string;kind:BuildingKind;demo:boolean;floors:number;assigneeId:string|null;phase:Phase;version:number;updatedBy:string;updatedAt:string};
 export type TeamBoard={workspace:{id:string;name:string};members:Member[];objects:ObjectSummary[];events:{id:number;action:string;label:string;objectId:string|null;createdAt:string;actor:string}[];invitations:{id:string;expiresAt:number}[]};
 export class ApiError extends Error {code:string;status:number;constructor(code:string,status=0){super(code);this.code=code;this.status=status;}}

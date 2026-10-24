@@ -7,7 +7,7 @@
     "dev": "node --env-file-if-exists=.env scripts/dev.mjs",
     "start": "node --env-file-if-exists=.env server/index.mjs",
     "build": "tsc -b && vite build",
-    "preview": "vite preview --host 127.0.0.1",
+    "preview": "node --env-file-if-exists=.env scripts/dev.mjs --preview",
     "test": "node scripts/test.mjs && node --test server/application.test.mjs",
     "smoke": "node scripts/smoke.mjs"
   },

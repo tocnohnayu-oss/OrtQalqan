@@ -3,7 +3,7 @@ import { readFile, stat } from 'node:fs/promises';
 import { resolve, extname, sep } from 'node:path';
 import { createApplication, BODY_LIMIT } from './application.mjs';
 
-const origin=process.env.ORTQALQAN_ORIGIN||'http://127.0.0.1:5173';
+const origin=process.env.ORTQALQAN_ORIGIN||'http://127.0.0.1:8787';
 const app=createApplication({databasePath:process.env.ORTQALQAN_DATABASE||'var/ortqalqan.sqlite',origin});
 const root=resolve('dist'),mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.ttf':'font/ttf','.json':'application/json'};
 const server=createServer(async(req,res)=>{

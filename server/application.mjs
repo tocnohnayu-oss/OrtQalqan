@@ -55,7 +55,7 @@ export function createApplication({databasePath='var/ortqalqan.sqlite',origin='h
   };
   const expensive=async fn=>{if(activeHashes>=2)fail(429,'rateLimited');activeHashes++;try{return await fn();}finally{activeHashes--;}};
   const objectRow=(workspaceId,id)=>{const row=db.prepare('SELECT * FROM objects WHERE workspace_id=? AND id=?').get(workspaceId,id);if(!row)fail(404,'objectMissing');return row;};
-  const objectData=row=>({id:row.id,workspaceId:row.workspace_id,building:JSON.parse(row.building_json),assigneeId:row.assignee_id,phase:row.phase,version:row.version,updatedBy:row.updated_by,updatedAt:row.updated_at});
+  const objectData=row=>({id:row.id,workspaceId:row.workspace_id,building:JSON.parse(row.building_json),assigneeId:row.assignee_id,assigneeName:row.assignee_id?db.prepare('SELECT name FROM users WHERE id=?').get(row.assignee_id)?.name||null:null,phase:row.phase,version:row.version,updatedBy:row.updated_by,updatedAt:row.updated_at});
   const summary=row=>{const b=JSON.parse(row.building_json);return {id:row.id,name:b.name,nameKk:b.nameKk,address:b.address,addressKk:b.addressKk,kind:b.kind||'other',demo:!!b.demo,floors:b.floors.length,assigneeId:row.assignee_id,phase:row.phase,version:row.version,updatedBy:row.updated_by,updatedAt:row.updated_at};};
   const headers={'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer'};
   const json=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{...headers,...extra}});

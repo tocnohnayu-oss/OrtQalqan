@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useId, useState, type FormEvent } from 'react';
 import { ArrowRight, ArrowUpRight, Check, ChevronDown, Clipboard, FilePlus2, FolderOpen, LogOut, Plus, RefreshCw, Search, UserPlus, Users, X } from 'lucide-react';
 import type { Building, BuildingKind, Language } from '../domain/types';
 import { api, ApiError, initials, type Session, type TeamBoard, type RemoteObject, type ObjectSummary, type Phase } from '../team/api';
@@ -10,6 +10,7 @@ import { AccountIllustration } from './AccountIllustration';
 type Props={language:Language;session:Session;onSession:(session:Session)=>void;onOpen:(object:RemoteObject)=>void;onLocal:()=>void;onSignOut:()=>Promise<void>;draft:Building;isRemote:boolean;initialWorkspaceId?:string;inviteToken:string;onInviteDismiss:()=>void};
 export function AccountWorkspace({language,session,onSession,onOpen,onLocal,onSignOut,draft,isRemote,initialWorkspaceId,inviteToken,onInviteDismiss}:Props){
   const w=accountWords(language),[register,setRegister]=useState(false),[error,setError]=useState(''),[busy,setBusy]=useState(false);
+  const passwordHintId=useId(),workspaceHintId=useId();
   const [workspaceId,setWorkspaceId]=useState(initialWorkspaceId||session.workspaces[0]?.id||'');
   const [board,setBoard]=useState<TeamBoard|null>(null),[reload,setReload]=useState(0),[loading,setLoading]=useState(false);
   const [tab,setTab]=useState<'objects'|'team'|'activity'>('objects'),[search,setSearch]=useState(''),[filter,setFilter]=useState('all'),[kind,setKind]=useState<BuildingKind>('education');
@@ -37,11 +38,11 @@ export function AccountWorkspace({language,session,onSession,onOpen,onLocal,onSi
   const invitationBanner=inviteToken?<div className="join-banner"><UserPlus size={22}/><div><strong>{w.joinTitle}</strong><p>{w.joinHint}</p></div>{session.user&&<button className="button primary small" disabled={busy} onClick={join}>{w.join}<ArrowRight size={15}/></button>}<button className="icon-button" onClick={onInviteDismiss} aria-label={w.dismiss}><X size={17}/></button></div>:null;
   if(!session.user)return <div className="account-entry">
     <section className="account-entry-story"><span className="eyebrow">ORTQALQAN / TEAM</span><h3>{w.headline}</h3><AccountIllustration/><p>{w.intro}</p><span className="account-story-index" aria-hidden="true">OQ — 01 / TEAM</span></section>
-    <section className="account-entry-form">{invitationBanner}<div className="account-auth-tabs"><button aria-pressed={!register} onClick={()=>{setRegister(false);setError('');}}>{w.signIn}</button><button aria-pressed={register} onClick={()=>{setRegister(true);setError('');}}>{w.register}</button></div><form onSubmit={authenticate}>
+    <section className="account-entry-form">{invitationBanner}<div className="account-auth-tabs"><button aria-pressed={!register} onClick={()=>{setRegister(false);setError('');}}>{w.signIn}</button><button aria-pressed={register} onClick={()=>{setRegister(true);setError('');}}>{w.register}</button></div><form key={register?'register':'login'} onSubmit={authenticate}>
       {register&&<label className="field"><span>{w.name}</span><input name="name" autoComplete="name" required maxLength={80}/></label>}
       <label className="field"><span>{w.email}</span><input name="email" type="email" autoComplete="username" required maxLength={254}/></label>
-      <label className="field"><span>{w.password}</span><input name="password" type="password" autoComplete={register?'new-password':'current-password'} required minLength={12} maxLength={128}/>{register&&<small>{w.passwordHint}</small>}</label>
-      {register&&<label className="field"><span>{w.workspace}</span><input name="workspace" required maxLength={120}/><small>{w.workspaceHint}</small></label>}
+      <label className="field"><span>{w.password}</span><input name="password" aria-label={w.password} aria-describedby={register?passwordHintId:undefined} type="password" autoComplete={register?'new-password':'current-password'} required minLength={12} maxLength={128}/>{register&&<small id={passwordHintId}>{w.passwordHint}</small>}</label>
+      {register&&<label className="field"><span>{w.workspace}</span><input name="workspace" aria-label={w.workspace} aria-describedby={workspaceHintId} required maxLength={120}/><small id={workspaceHintId}>{w.workspaceHint}</small></label>}
       {error&&<p className="account-error" role="alert">{error}</p>}
       <button className="button primary wide" disabled={busy} type="submit">{busy?w.loading:register?w.register:w.signIn}<ArrowRight size={16}/></button>
     </form><div className="account-local"><button className="text-button" onClick={onLocal}><FolderOpen size={16}/>{w.local}<ArrowUpRight size={14}/></button><p>{w.localHint}</p></div></section>
