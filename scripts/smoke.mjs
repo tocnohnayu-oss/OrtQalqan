@@ -16,6 +16,7 @@ try {
   page.on('pageerror',error=>errors.push(error.message));
   await page.goto('http://127.0.0.1:4173');
   await page.getByRole('heading',{name:'НИШ ЕМН · Петропавловск',exact:true}).waitFor();
+  assert.ok(await page.evaluate(async()=>{await document.fonts.ready;return (await document.fonts.load('600 32px Atlas','Ә Ғ Қ Ң Ө Ұ Ү Һ І')).length>0;}),'the local display font loads before visual review, including Kazakh headings');
   assert.equal(await page.locator('.results-bar,.walk-entry,.plan-furniture,.architectural-plan').count(),0,'the simplified screen has no floating summary, progress strip or invented architecture');
   assert.equal(await page.locator('.simple-inspector').count(),0,'room parameters are closed until selected');
   await page.screenshot({path:'qa/desktop-empty.png',fullPage:true});
