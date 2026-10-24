@@ -35,7 +35,7 @@ export async function accountsSmoke(browser,errors){
     await first.getByRole('button',{name:'Сохранить в базу',exact:true}).click();await expect(first.getByRole('button',{name:'Сохранить в базу',exact:true})).toBeDisabled();
     const saved=await first.evaluate(async()=>{const s=await(await fetch('/api/session')).json();const board=await(await fetch('/api/workspaces/'+s.workspaces[0].id)).json();return {wid:s.workspaces[0].id,id:board.objects[0].id,user:s.user.id};});
     assert.equal(await first.evaluate(()=>JSON.parse(localStorage.getItem('ortqalqan.building.v1')).buildings.some(b=>b.name==='Учебный корпус · ДЕМО')),false,'server objects do not leak into the device library');
-    await account(first).click();await panel(first).getByRole('button',{name:/Участники/}).click();
+    await first.getByRole('button',{name:'Сменить объект',exact:true}).click();await panel(first).getByRole('button',{name:/Участники/}).click();
     await first.screenshot({path:'qa/team-members.png',fullPage:false});
     await panel(first).getByRole('button',{name:'Пригласить коллегу',exact:true}).click();
     const link=await panel(first).getByLabel('Ссылка приглашения',{exact:true}).inputValue();assert.match(link,/#join=[A-Za-z0-9_-]{32}$/);
