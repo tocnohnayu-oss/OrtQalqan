@@ -18,6 +18,11 @@ test('letterboxed cameras attach callouts to the actual room centre',()=>{
   const [item]=items,result=placePlanLabels([item],view,{width:320,height:800}),label=result.labels[0];
   assert.ok(result.offsetY>0);assert.equal(label.anchor.x,result.offsetX+(item.center.x-view.x)*result.scale);assert.equal(label.anchor.y,result.offsetY+(item.center.y-view.y)*result.scale);
 });
+test('room names use free interior anchors and leave the editor caption unobstructed',()=>{
+  const result=placePlanLabels(items,view,{width:320,height:240,topInset:32});
+  assert.ok(result.labels.every(label=>label.y>=32));
+  assert.ok(result.labels.some(label=>label.id.endsWith('library')&&!label.callout),'the large room can keep its own interior nameplate');
+});
 test('crowded plans prioritise the selected room without shrinking or overlapping labels',()=>{
   const dense=Array.from({length:100},(_,index)=>({id:String(index),name:'Сервер бөлмесі '+index,detail:'4 м²',center:{x:5+index%10*.2,y:5+Math.floor(index/10)*.2},bounds:{x:5,y:5,width:.2,height:.2},priority:index===99?10:1}));
   const result=placePlanLabels(dense,{x:0,y:0,width:12,height:12},{width:320,height:240});assert.ok(result.hidden>0);assert.equal(result.labels[0].id,'99');assert.equal(new Set(result.labels.map(label=>label.id)).size,result.labels.length);

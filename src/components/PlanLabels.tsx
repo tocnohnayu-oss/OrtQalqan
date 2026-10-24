@@ -4,7 +4,7 @@ import { labelBounds, labelPoint, polygonArea } from '../domain/layout.mjs';
 import { placePlanLabels } from '../domain/plan-labels.mjs';
 import { planWords } from '../locales/plan';
 
-export type PlanViewport = { width:number;height:number };
+export type PlanViewport = { width:number;height:number;topInset?:number };
 export type PlanView = { x:number;y:number;width:number;height:number };
 
 export function usePlanViewport(ref:RefObject<SVGSVGElement|null>) {

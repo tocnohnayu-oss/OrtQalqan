@@ -30,7 +30,7 @@ export function wrapPlanText(text, width, measure, maxLines = 2) {
 
 /** Try an interior label, then nearby leader labels; never overlap other labels. */
 export function placePlanLabels(items, view, viewport, measure = estimate) {
-  const { width, height } = viewport;
+  const { width, height, topInset = 6 } = viewport;
   const scale = Math.min(width / view.width, height / view.height);
   if (!Number.isFinite(scale) || scale <= 0 || width < 40 || height < 40) return { labels: [], hidden: 0, scale: 1, offsetX: 0, offsetY: 0 };
   const offsetX = (width - view.width * scale) / 2, offsetY = (height - view.height * scale) / 2;
@@ -49,12 +49,17 @@ export function placePlanLabels(items, view, viewport, measure = estimate) {
     const full = build(item, Math.min(166, width - 30)), availableWidth = item.bounds.width * scale - 16, availableHeight = item.bounds.height * scale - 16;
     const inner = availableWidth >= 60 ? build(item, Math.min(166, availableWidth)) : null;
     const candidates = [];
-    if (inner && inner.height <= availableHeight && (!inner.truncated || full.truncated)) candidates.push({ ...inner, x: anchor.x - inner.width / 2, y: anchor.y - inner.height / 2, callout: false });
-    const dx = Math.min(item.bounds.width * scale / 2, 35) + full.width / 2 + 9, dy = Math.min(item.bounds.height * scale / 2, 35) + full.height / 2 + 9;
-    for (const [x, y] of [[dx, 0], [-dx, 0], [0, -dy], [0, dy], [dx, -full.height - 6], [-dx, -full.height - 6], [dx, full.height + 6], [-dx, full.height + 6]]) {
-      candidates.push({ ...full, x: clamp(anchor.x + x - full.width / 2, 7, width - full.width - 7), y: clamp(anchor.y + y - full.height / 2, 7, height - full.height - 7), callout: true });
+    if (inner && inner.height <= availableHeight && (!inner.truncated || full.truncated)) {
+      const left=offsetX+(item.bounds.x-view.x)*scale+8,right=left+availableWidth-inner.width,top=offsetY+(item.bounds.y-view.y)*scale+8,bottom=top+availableHeight-inner.height;
+      const x=anchor.x-inner.width/2,y=anchor.y-inner.height/2;
+      for(const [dx,dy] of [[0,0],[0,-8],[0,8],[-8,0],[8,0],[0,-inner.height-6],[0,inner.height+6],[-inner.width-6,0],[inner.width+6,0]])candidates.push({...inner,x:clamp(x+dx,left,right),y:clamp(y+dy,top,bottom),callout:false});
+      for(const [px,py] of [[x,top],[x,bottom],[left,y],[right,y],[left,top],[right,top],[left,bottom],[right,bottom]])candidates.push({...inner,x:clamp(px,left,right),y:clamp(py,top,bottom),callout:false});
     }
-    const placed = candidates.find(candidate => candidate.x >= 6 && candidate.y >= 6 && candidate.x + candidate.width <= width - 6 && candidate.y + candidate.height <= height - 6 && (!candidate.callout || !contains(candidate, anchor)) && !labels.some(label => overlaps(candidate, label)) && !items.some(other => other.id !== item.id && contains(candidate, {x:offsetX+(other.center.x-view.x)*scale,y:offsetY+(other.center.y-view.y)*scale})));
+    const dx = Math.min(item.bounds.width * scale / 2, 35) + full.width / 2 + 9, dy = Math.min(item.bounds.height * scale / 2, 35) + full.height / 2 + 9;
+    for (const [x, y] of [[dx, 0], [-dx, 0], [0, -dy], [0, dy], [dx, -full.height - 6], [-dx, -full.height - 6], [dx, full.height + 6], [-dx, full.height + 6], [dx+full.width+8,0],[-dx-full.width-8,0],[0,-dy-full.height-8],[0,dy+full.height+8]]) {
+      candidates.push({ ...full, x: clamp(anchor.x + x - full.width / 2, 7, width - full.width - 7), y: clamp(anchor.y + y - full.height / 2, Math.max(7,topInset), height - full.height - 7), callout: true });
+    }
+    const placed = candidates.find(candidate => candidate.x >= 6 && candidate.y >= Math.max(6,topInset) && candidate.x + candidate.width <= width - 6 && candidate.y + candidate.height <= height - 6 && (!candidate.callout || !contains(candidate, anchor)) && !labels.some(label => overlaps(candidate, label)) && !items.some(other => other.id !== item.id && contains(candidate, {x:offsetX+(other.center.x-view.x)*scale,y:offsetY+(other.center.y-view.y)*scale})));
     if (placed) labels.push({ ...placed, id: item.id, anchor, index: item.index });
     else hidden++;
   }
