@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "sourceSha": "c93e74dba6c107b7b932f1986430c1b424831d97",
+  "sourceSha": "2eb4c94e5373711b1b603ae15b93c720ee058414",
   "checks": [
     "simplified workspace and no automatic fake plan",
     "drag themed furnished room blocks",
@@ -49,6 +49,8 @@
     "equipment lookup opens a focused record without editing",
     "resume unfinished inspections and respect search/filter when advancing",
     "unplaced rooms, large search lists and 320px keyboard focus",
+    "six object identities and thematic empty-plan artwork",
+    "long Kazakh masthead, tablet inspector and phone action geometry",
     "no runtime errors"
   ]
 }
