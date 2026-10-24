@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "sourceSha": "588c39439e54535cb2b6b6c4e3bc75e6cdd05de0",
+  "sourceSha": "1aa93954b208c1ff8ecc8fdfde61efdc4315184b",
   "checks": [
     "simplified workspace and no automatic fake plan",
     "drag themed furnished room blocks",
@@ -51,6 +51,10 @@
     "unplaced rooms, large search lists and 320px keyboard focus",
     "six object identities and thematic empty-plan artwork",
     "long Kazakh masthead, tablet inspector and phone action geometry",
+    "expanded plan restores camera, focus and scroll without changing the draft",
+    "nested editor Escape preserves the expanded stage and unsaved guard",
+    "phone stage supports real pinch, room search and accessible rotation",
+    "expanded image annotations retain their percentage positions",
     "no runtime errors"
   ]
 }
