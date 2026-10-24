@@ -36,3 +36,5 @@
 
 @media(max-width:720px){.walk-record .walk-room-heading>.scene-illustration{width:88px;height:68px}.walk-record .walk-room-heading h3{font-size:22px}.quick-check>p{font-size:9px;line-height:1.55}}
 @media(max-width:360px){.walk-record .walk-room-heading>.scene-illustration{display:none}.walk-record .walk-room-heading{min-height:0;padding-bottom:12px}.walk-record .walk-room-heading h3{font-size:22px;line-height:1.25}.walk-record .walk-room-heading .eyebrow{font-size:8px}.walk-record .walk-room-heading .text-button{min-height:29px}.quick-check>p{display:none}.quick-check-options{margin-top:10px}.quick-check{padding:11px 0}.quick-check legend{font-size:11px}.walk-simple-top{padding:11px 17px}}
+/* Keep answer rows below the legend even when compact view hides the helper paragraph. */
+.quick-check-options{clear:both;width:100%}
