@@ -14,6 +14,8 @@
 | [Дизайн и экраны](docs/EXPERIENCE.md) | Визуальная система, графика, мобильный интерфейс |
 | [Бренд и визуальное ревью](docs/BRAND.md) | Светлая тема, айдентика полевого атласа, иллюстрации и сравнение с другими продуктами |
 | [Аккаунты и база](docs/ACCOUNTS.md) | Запуск сервера, группы, роли, назначения, API и конфликты версий |
+| [Инструкция](docs/ONBOARDING.md) | Первый запуск, экскурc по пяти действиям, подписи входа |
+| [Подготовка к жюри](docs/JURY_REVIEW.md) | Что показать за четыре минуты, учебный объект и честные границы готовности |
 | [Конструктор этажа](docs/FLOOR_EDITOR.md) | Тематические блоки, автоматическая обстановка, размеры, поворот, SVG/PDF |
 | [Объекты и полевой журнал](docs/FIELD_WORKFLOW.md) | Библиотека объектов, шаблоны, осмотр, оборудование, сроки, CSV/PDF |
 | [Исследование сценариев](docs/RESEARCH_SCENARIOS.md) | Шесть ситуаций, восемь иллюстраций и наблюдения инспектора |
@@ -33,7 +35,11 @@ npm run dev
 
 Собранный проект с сервером: `npm run build`, затем `npm start`; адрес `http://127.0.0.1:8787`. `npm run preview` запускает собранный интерфейс и API для просмотра на 4173. Параметры внешнего HTTPS origin и постоянного диска описаны в [ACCOUNTS.md](docs/ACCOUNTS.md). Сейчас общего размещённого сервера нет; база при локальном запуске находится в `var/ortqalqan.sqlite`.
 
+Быстрое знакомство: **«Инструкция» → «Открыть учебный пример» → «Рассчитать»**. Учебный объект открывается отдельной копией с готовым планом, без регистрации. Результат показывает количества ОП/ОУ, исходные числа, округление и неподдержанные случаи, затем позволяет скачать PDF. Это предварительный профиль прототипа; экспертная нормативная проверка не завершена.
+
 Сборка: `npm run build`. Проверки ядра и серверных прав/хранения: `npm test`. Браузерный сценарий: `npm run smoke` после установки Chromium для Playwright.
+
+Обучение и демонстрация: [экскурс](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/guide-welcome.png), [учебный план](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/demo-plan.png), [обоснование расчёта](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/demo-result.png), [учебный PDF](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/demo-report-ru.pdf). Короткий показ для защиты — [DELIVERY.md](docs/DELIVERY.md).
 
 Визуальный стиль — полевой атлас: прямые края листов, выразительные заголовки, нумерованные каталоги и терракотовые срезы основных действий. Система и правила продолжения описаны в [BRAND.md](docs/BRAND.md).
 
@@ -41,7 +47,7 @@ npm run dev
 
 Новые экраны: [конструктор](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/editor.png), [конструктор на телефоне](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/editor-mobile.png), [объекты](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/objects.png), [обход](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/inspection.png), [журнал на телефоне](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/mobile-inspection.png), [знак](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/brand.png).
 
-Актуальный интерфейс: [рабочее место](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/desktop.png), [мобильный лист параметров](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/mobile-room.png), [сценарии](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/scenarios.png). Демонстрационные отчёты: [RU](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/report-ru.pdf), [KK](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/report-kk.pdf). Последняя функциональная проверка: [run 40075985906](https://github.com/tocnohnayu-oss/OrtQalqan/actions/runs/40075985906): 38 проверок ядра, четыре серверные группы тестов, сборка и браузерный сценарий с двумя аккаунтами.
+Актуальный интерфейс: [рабочее место](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/desktop.png), [мобильный лист параметров](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/mobile-room.png), [сценарии](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/scenarios.png). Демонстрационные отчёты: [RU](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/report-ru.pdf), [KK](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/report-kk.pdf). Последняя функциональная проверка: [run 40078175703](https://github.com/tocnohnayu-oss/OrtQalqan/actions/runs/40078175703): 40 проверок ядра, четыре серверные группы тестов, сборка и браузерный сценарий с двумя аккаунтами.
 
 Сервис предназначен для учебных заведений, офисов, магазинов, складов, производственных и других объектов. Для складского и производственного назначения пока доступны план, обход и реестр; автоматический расчёт требует отдельного проверенного профиля. Шаблоны не выдумывают площади и классы пожара.
 
