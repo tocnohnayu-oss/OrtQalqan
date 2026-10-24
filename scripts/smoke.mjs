@@ -1,4 +1,4 @@
-import { chromium } from '@playwright/test';
+import { chromium, expect } from '@playwright/test';
 import { spawn } from 'node:child_process';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
@@ -58,11 +58,11 @@ try {
   assert.equal(await page.getByLabel('Ширина, м',{exact:true}).inputValue(),'8','overlapping edits are rejected');
   const start=await world(2.5,10.5),end=await world(1.5,10.5);
   await page.mouse.move(start.x,start.y);await page.mouse.down();await page.mouse.move(end.x,end.y,{steps:10});await page.mouse.up();
-  assert.equal(await page.getByLabel('Координата X, м',{exact:true}).inputValue(),'-1','rooms can be moved');
+  await expect(page.getByLabel('Координата X, м',{exact:true})).toHaveValue('-1');
   await page.getByRole('button',{name:'Отменить действие',exact:true}).click();
-  assert.equal(await page.getByLabel('Координата X, м',{exact:true}).inputValue(),'0');
+  await expect(page.getByLabel('Координата X, м',{exact:true})).toHaveValue('0');
   await page.getByRole('button',{name:'Повторить действие',exact:true}).click();
-  assert.equal(await page.getByLabel('Координата X, м',{exact:true}).inputValue(),'-1');
+  await expect(page.getByLabel('Координата X, м',{exact:true})).toHaveValue('-1');
   await page.getByRole('button',{name:'Отменить действие',exact:true}).click();
   await editor.getByRole('button',{name:'Дверь',exact:true}).click();await clickWorld(8,8);
   await editor.getByRole('button',{name:'Окно',exact:true}).click();await clickWorld(12,13);
@@ -123,5 +123,5 @@ try {
   await page.getByRole('button',{name:'Аралау',exact:true}).click();assert.equal(await page.locator('.asset-row').count(),1);await page.evaluate(()=>document.querySelector('.inspection-modal').scrollTop=0);await page.screenshot({path:'qa/mobile-inspection-kk.png',fullPage:false});await page.locator('dialog .modal-heading button').click();
   await page.getByRole('link',{name:'OrtQalqan',exact:true}).click();assert.equal(await page.locator('.library-object').count(),3);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false);await page.locator('dialog .modal-heading button').click();assert.deepEqual(errors,[]);
   await writeFile('qa/checks.json',JSON.stringify({passed:true,sourceSha:process.env.GITHUB_SHA||'local',checks:['simplified workspace and no automatic fake plan','drag themed furnished room blocks','orthogonal concave contour','shared walls and overlap rejection','move room and undo/redo','doors and windows on walls','unsaved drawing guard','manual areas unchanged by drawing','explicit area transfer','SVG export','fire parameter changes preserve geometry','scenario preview','field inspections and equipment','CSV export','multi-object switching','warehouse scope boundary','constructed floor in RU and KK PDF','keyboard room selection','light theme','image upload and marker','390px and 320px editor','mobile parameter sheet','persistent geometry and observations','no runtime errors']},null,2));
-}catch(error){if(page){await page.screenshot({path:'qa/failure.png',fullPage:false}).catch(()=>{});const labels=await page.locator('input,select,button').evaluateAll(elements=>elements.filter(e=>e.getBoundingClientRect().width).slice(-30).map(e=>({tag:e.tagName,label:e.getAttribute('aria-label'),text:e.textContent.slice(0,120)}))).catch(()=>[]);console.log('Visible controls at failure:',JSON.stringify(labels));}await writeFile('qa/checks.json',JSON.stringify({passed:false,error:String(error),errors},null,2));throw error;}
+}catch(error){if(page){await page.screenshot({path:'qa/failure.png',fullPage:false}).catch(()=>{});const labels=await page.locator('input,select,button').evaluateAll(elements=>elements.filter(e=>e.getBoundingClientRect().width).slice(-30).map(e=>({tag:e.tagName,label:e.getAttribute('aria-label'),text:e.textContent.slice(0,120)}))).catch(()=>[]);console.log('Visible controls at failure:',JSON.stringify(labels));console.log('Geometry at failure:',await page.locator('.floor-editor-svg .drawn-room').evaluateAll(rooms=>rooms.map(r=>({name:r.getAttribute('aria-label'),path:r.querySelector('.drawn-room-fill')?.getAttribute('d')}))));console.log('Editor message:',await page.locator('.editor-error').allTextContents());}await writeFile('qa/checks.json',JSON.stringify({passed:false,error:String(error),errors},null,2));throw error;}
 finally{await browser?.close();server.kill();}
