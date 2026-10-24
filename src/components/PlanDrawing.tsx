@@ -41,6 +41,7 @@ type Gesture = {view:View;rect:DOMRect;start:Point;distance:number;room:string;d
 
 export function FloorPlanView({layout,zones,language,selected,onSelect,snapshot,stale,showCounts,onToggleCounts}:{layout:FloorLayout;zones:Zone[];language:Language;selected:string;onSelect:(id:string)=>void;snapshot:Snapshot;stale:boolean;showCounts:boolean;onToggleCounts:()=>void}) {
   const [view,setView]=useState(()=>layoutBounds(layout)),[dragging,setDragging]=useState(false),p=planWords(language),hintId=useId();
+  const lastSelection=useRef('');
   const svgRef=useRef<SVGSVGElement>(null),viewRef=useRef(view),pointers=useRef(new Map<number,Point>()),gesture=useRef<Gesture|null>(null);
   viewRef.current=view;
   const room=layout.rooms.find(item=>item.id===selected||item.zoneId===selected);
@@ -48,9 +49,10 @@ export function FloorPlanView({layout,zones,language,selected,onSelect,snapshot,
   const focusRoom=()=>{if(room)setView(layoutBounds({...layout,rooms:[room]},1.5));};
   const zoom=(ratio:number)=>{const rect=svgRef.current?.getBoundingClientRect();if(rect)setView(v=>navigateView(v,rect,{x:rect.left+rect.width/2,y:rect.top+rect.height/2},{x:rect.left+rect.width/2,y:rect.top+rect.height/2},ratio));};
   useEffect(()=>{
+    const changed=lastSelection.current!==selected;lastSelection.current=selected;
     if(!room)return;
     const box=roomBounds(room.points),x=box.x+box.width/2,y=box.y+box.height/2,v=viewRef.current;
-    if(x<v.x||x>v.x+v.width||y<v.y||y>v.y+v.height)focusRoom();
+    if(changed&&window.matchMedia('(max-width:720px)').matches||x<v.x||x>v.x+v.width||y<v.y||y>v.y+v.height)focusRoom();
   },[selected,layout]);
   useEffect(()=>{
     const svg=svgRef.current;if(!svg)return;

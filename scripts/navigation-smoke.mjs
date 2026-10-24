@@ -40,11 +40,11 @@ export async function navigationSmoke(browser,errors){
     await touch('touchEnd',[]);await expect.poll(camera).not.toBe(mobileInitial);assert.equal(await page.locator('.inspector-sheet').count(),0,'pinching is never a room tap');
     const beforePan=await camera();await touch('touchStart',[{x:cx,y:cy}]);await touch('touchMove',[{x:cx+35,y:cy+30}]);await touch('touchEnd',[]);await expect.poll(camera).not.toBe(beforePan);
     await footer.getByRole('button',{name:'Жоспарды толық көрсету',exact:true}).click();
-    const room=svg.locator('.drawn-room[data-room-id="camera-upper-room-classroom"]');await room.tap();await expect(page.locator('.inspector-sheet')).toBeVisible();await expect(page.locator('[data-zone-area]')).toHaveValue('48');await page.locator('.inspector-sheet .modal-heading button').click();
+    const room=svg.locator('.drawn-room[data-room-id="camera-upper-room-classroom"]');await room.tap();await expect(page.locator('.inspector-sheet')).toBeVisible();await expect(page.locator('[data-zone-area]')).toHaveValue('48');await page.locator('.inspector-sheet .modal-heading button').click();await expect.poll(camera).not.toBe(mobileInitial);
     await page.getByRole('button',{name:'Нысанды қайта есептеу',exact:true}).click();await page.locator('.calculation-proof').getByRole('button',{name:'Бөлме параметрлері: Сервер бөлмесі',exact:true}).last().click();await expect(page.locator('[data-zone-area]')).toBeFocused();await expect(page.locator('[data-zone-area]')).toHaveValue('401');await page.locator('.inspector-sheet .modal-heading button').click();
     await footer.scrollIntoViewIfNeeded();await expect(footer.getByRole('button',{name:'Жоспардағы ОП / ОУ',exact:true})).toBeVisible();assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
     const controls=await footer.locator('button').evaluateAll(items=>items.map(item=>{const r=item.getBoundingClientRect();return {left:r.left,right:r.right,width:r.width,height:r.height};}));assert.ok(controls.every(r=>r.left>=0&&r.right<=320&&r.width>=44&&r.height>=44),'every phone plan control fits and has a 44px target');
-    await page.screenshot({path:'qa/navigation-mobile-kk.png',fullPage:true});
+    await page.locator('.toast').waitFor({state:'hidden'});await page.screenshot({path:'qa/navigation-mobile-kk.png',fullPage:true});
     assert.deepEqual(errors,[]);
   }catch(error){await page.screenshot({path:'qa/navigation-failure.png',fullPage:true}).catch(()=>{});throw error;}
   finally{await context.close();}
