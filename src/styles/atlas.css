@@ -206,3 +206,41 @@ button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visi
 .floor-plan-view .plan-zoom button:disabled{opacity:.35;cursor:default}
 .plan-count{fill:#a13d26;font-weight:700}.plan-count-manual{fill:#89631f}
 @media(max-width:720px){.plan-view-footer{padding:10px 12px;gap:9px}.plan-view-caption{flex-basis:100%;font-size:10px}.plan-view-caption small{font-size:9px}.plan-view-controls{width:100%;justify-content:space-between}}
+
+/* A room index, not another dashboard: search stays inside the floor folio. */
+.room-index{min-width:0;margin-top:16px}
+.room-index-search{display:flex;align-items:center;min-height:44px;gap:6px;padding-left:9px;border:1px solid #b9c7be;background:#fffdf8;color:#536b61}
+.room-index-search:focus-within{outline:2px solid #b5452b;outline-offset:2px}
+.room-index-search>svg{flex-shrink:0}
+.room-index-search input{width:100%;min-width:0;min-height:44px;padding:8px 0;border:0;outline:0;background:transparent;color:#253b42;font:11px Noto,Arial,sans-serif;border-radius:0}
+.room-index-search input::-webkit-search-cancel-button{display:none}
+.room-index-search button{width:44px;min-width:44px;min-height:44px;display:grid;place-items:center;color:#536b61}
+.room-index-scope{display:block;margin:6px 0 14px;font-size:9px;line-height:1.6;color:#5d7165}
+.room-index-found{margin:9px 0 0;padding-bottom:9px;display:flex;justify-content:space-between;gap:7px;font-size:10px;color:#526a5d;border-bottom:1px solid #c2cebe}
+.room-index-found strong{font-weight:500;font-variant-numeric:tabular-nums}
+.room-index-matches{max-height:450px;overflow:auto;scrollbar-width:thin}
+.room-index-matches section{margin-top:13px}
+.room-index-matches h3{margin:0;padding:0 0 7px;font:500 16px/1.25 var(--display);color:#344d48;overflow-wrap:anywhere}
+.room-index-match{width:100%;display:grid;grid-template-columns:18px minmax(0,1fr) 14px;align-items:center;gap:7px;min-height:56px;padding:9px 4px;border-top:1px solid #cdd6c9;text-align:left;color:#3c564d}
+.room-index-match:hover{background:#fffdf8}
+.room-index-match>span:nth-child(2){display:flex;flex-direction:column;gap:4px;min-width:0}
+.room-index-match strong{font-size:11px;font-weight:400;line-height:1.6;overflow-wrap:anywhere}
+.room-index-match small{font-size:10px;line-height:1.7;color:#677363;overflow-wrap:anywhere}
+.room-index-match small b{font-weight:500;color:#963d28}
+.room-index-marker{display:grid;place-items:center;color:#963d28}
+.room-index-marker>span{width:6px;height:6px;border:1px solid #7e9084}
+.room-index-marker.placed>span{background:#7e9084}
+.room-index-more{min-height:44px;width:100%;margin-top:10px;text-align:left;font-size:10px;line-height:1.5;color:#3f5b4f;border-top:1px solid #bccab9}
+.room-index-empty{padding:23px 3px;color:#637567;line-height:1.8}
+.room-index-empty>svg{color:#8c9c8d;margin-bottom:7px}
+.room-index-empty>strong{display:block;font:500 18px var(--display);color:#334d47}
+.room-index-empty p{font-size:10px;margin:9px 0}
+.room-index-empty .text-button{font-size:10px;min-height:44px;white-space:normal;text-align:left}
+.walk-zone-shortcut>span{display:flex;flex-direction:column;align-items:flex-start;gap:4px;line-height:1.7;min-width:0}
+.walk-zone-shortcut strong{font-weight:400;color:#435d50}.walk-zone-shortcut small{font-size:9px;color:#647660}
+.asset-row.is-found{border-left:3px solid #b5452b;background:#f8ece1}
+.asset-row.is-found .asset-open>span>strong{color:#983f28}
+.walk-search-match{display:flex;align-items:center;gap:5px;color:#963d28!important;overflow-wrap:anywhere}
+@media(max-width:720px){.room-index{margin-top:9px}.room-index-search input{font-size:16px}.room-index-scope{margin:5px 0 3px;font-size:9px}.room-index-matches{max-height:230px}.room-index-matches h3{font-size:18px}.room-index-match{min-height:56px;padding-inline:5px}.room-index-match strong{font-size:12px}.room-index-match small{font-size:11px}.room-index-empty{padding:17px 5px}.room-index-empty p,.room-index-empty .text-button{font-size:11px}.room-index-more{font-size:12px}.walk-zone-shortcut small{font-size:10px}}
+
+@media(min-width:721px){.studio-floor-list{max-height:220px;overflow:auto;scrollbar-width:thin}.room-index .studio-zone-list{max-height:380px;overflow:auto;scrollbar-width:thin}}

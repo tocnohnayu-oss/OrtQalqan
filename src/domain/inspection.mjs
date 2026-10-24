@@ -41,6 +41,21 @@ export function inspectionSummary(building) {
   };
 }
 
+/** A deliberate room choice wins; otherwise resume unfinished answers before untouched rooms. */
+export function resumeInspection(entries,date,initialId='') {
+  return entries.find(entry=>entry.zone.id===initialId)
+    || entries.find(entry=>inspectionStatus(entry.zone,date)==='started')
+    || entries.find(entry=>inspectionStatus(entry.zone,date)!=='visited')
+    || entries[0];
+}
+
+/** Continue inside the current search/filter. Attention review stops at the end instead of cycling. */
+export function nextInspection(entries,currentId,date,filter='all',matches=entries) {
+  const index=entries.findIndex(entry=>entry.zone.id===currentId),allowed=new Set(matches.map(entry=>entry.zone.id));
+  const ordered=filter==='attention'?entries.slice(index+1):[...entries.slice(index+1),...entries.slice(0,index)];
+  return ordered.find(entry=>allowed.has(entry.zone.id)&&entry.zone.id!==currentId&&(filter==='attention'?needsAttention(entry.zone,date):inspectionStatus(entry.zone,date)!=='visited'));
+}
+
 export function validateFieldRecords(zone, usedIds) {
   const inspection = zone.inspection;
   if (inspection !== undefined && (!inspection || typeof inspection !== 'object' || Array.isArray(inspection) || !CHECK_KEYS.every(key => CHECK_ANSWERS.includes(inspection[key])) || (inspection.checkedOn !== undefined && (!validDate(inspection.checkedOn) || !inspectionReady(inspection))))) return false;

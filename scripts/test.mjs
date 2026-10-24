@@ -5,3 +5,4 @@ import '../src/domain/layout.test.mjs';
 import '../src/domain/blocks.test.mjs';
 import '../src/domain/showcase.test.mjs';
 import '../src/domain/view-navigation.test.mjs';
+import '../src/domain/room-search.test.mjs';

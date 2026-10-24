@@ -1,0 +1,43 @@
+import assert from 'node:assert/strict';
+import { expect } from '@playwright/test';
+import { createShowcase } from '../src/data/showcase.mjs';
+
+export async function fieldSearchSmoke(browser,errors){
+  const building=createShowcase({id:'field-search',date:'2026-10-24'}),upper=createShowcase({id:'field-upper',date:building.date}).floors[0];
+  upper.name='Второй этаж';upper.nameKk='Екінші қабат';building.floors.push(upper);
+  const done={access:'ok',marking:'ok',passport:'na',checkedOn:building.date};
+  building.floors[0].zones[0].inspection={...done};building.floors[0].zones[2].inspection={access:'ok',marking:'unknown',passport:'unknown'};
+  building.floors[0].zones[3].inspection={...done,marking:'attention'};upper.zones[1].inspection={...done,access:'attention'};
+  upper.zones.push({...structuredClone(upper.zones[2]),id:'unplaced-hall',name:'Актовый зал',nameKk:'Акт залы',area:100});
+  const other=createShowcase({id:'other-field'});other.floors[0].zones[0].assets[0].label='OTHER-PRIVATE-99';
+  const context=await browser.newContext({viewport:{width:1440,height:1050},hasTouch:true}),page=await context.newPage();
+  page.on('pageerror',error=>errors.push(error.message));
+  await context.addInitScript(({building,other})=>{localStorage.setItem('ortqalqan.guide.v1','seen');localStorage.setItem('ortqalqan.building.v1',JSON.stringify({version:2,activeId:building.id,buildings:[building,other]}));},{building,other});
+  const search=()=>page.locator('.room-index-search input'),close=()=>page.locator('dialog .modal-heading button').click(),walk=()=>page.locator('.inspection-modal');
+  try{
+    await page.goto('http://127.0.0.1:4173');await search().fill('екінші сервер');
+    await expect(page.locator('.room-index-match')).toHaveCount(1);await page.getByRole('button',{name:'Открыть помещение: Серверная · Второй этаж',exact:true}).click();
+    await expect(page.locator('.studio-floor.active')).toContainText('Второй этаж');await expect(page.locator('[data-zone-area]')).toHaveValue('24');await expect(page.locator('.built-floor-plan .drawn-room.selected')).toHaveAttribute('data-room-id','field-upper-room-server');await page.locator('.simple-inspector-heading button').click();
+    await search().fill('demo–01');await expect(page.locator('.room-index-match')).toHaveCount(2);await page.evaluate(()=>document.fonts.ready);await page.screenshot({path:'qa/field-search-desktop.png',fullPage:true});
+    await page.getByRole('button',{name:'Открыть оборудование: DEMO-01 · Библиотека · Второй этаж',exact:true}).click();
+    await expect(walk().locator('.walk-room-heading h3')).toHaveText('Библиотека');await expect(walk().locator('.asset-row.is-found .asset-open')).toBeFocused();assert.equal(await walk().locator('.asset-editor').count(),0,'finding equipment never starts an edit');await expect(walk().locator('.asset-row.is-found')).toContainText('DEMO-01');
+    assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('ortqalqan.building.v1')).buildings.find(item=>item.id==='field-search').revision),1,'finding and opening a record never edit the building');
+    await page.screenshot({path:'qa/field-asset-desktop.png',fullPage:false});
+    await walk().getByRole('button',{name:'Открыть на плане',exact:true}).click();await expect(page.locator('.built-floor-plan .drawn-room.selected')).toHaveAttribute('data-room-id','field-upper-room-library');
+    await page.getByRole('button',{name:'Обход',exact:true}).click();await expect(walk().locator('.walk-room-heading h3')).toHaveText('Серверная');await expect(walk().locator('.eyebrow')).toContainText('Первый этаж');
+    await walk().getByRole('group',{name:'Маркировка и внешний вид',exact:true}).getByRole('radio',{name:'В порядке',exact:true}).check();await close();
+    await page.getByRole('button',{name:'Обход',exact:true}).click();await expect(walk().locator('.walk-room-heading h3')).toHaveText('Серверная');await expect(walk().getByRole('group',{name:'Маркировка и внешний вид',exact:true}).getByRole('radio',{name:'В порядке',exact:true})).toBeChecked();
+    await walk().getByRole('group',{name:'Паспорт и условия',exact:true}).getByRole('radio',{name:'Не относится',exact:true}).check();await walk().getByRole('button',{name:'Сохранить и перейти дальше',exact:true}).click();await expect(walk().locator('.walk-room-heading h3')).toHaveText('Библиотека');await expect(walk().locator('.eyebrow')).toContainText('Второй этаж');
+    await walk().locator('.walk-search input').fill('Сынып');await walk().locator('.walk-filters').getByRole('button',{name:/^Требует внимания/}).click();await expect(walk().locator('.walk-room')).toHaveCount(1);await walk().locator('.walk-room').click();await expect(walk().locator('.walk-room-heading h3')).toHaveText('Класс');await expect(walk().locator('.walk-footer-actions button')).toBeDisabled();
+    await walk().locator('.walk-filters').getByRole('button',{name:/^Осталось/}).click();await walk().locator('.walk-search input').fill('Лаборатория');await expect(walk().locator('.walk-room')).toHaveCount(1);await walk().getByRole('button',{name:'Следующее помещение',exact:true}).click();await expect(walk().locator('.walk-room-heading h3')).toHaveText('Лаборатория');await expect(walk().locator('.eyebrow')).toContainText('Второй этаж');await close();
+    await search().fill('OTHER-PRIVATE-99');await expect(page.locator('.room-index-empty')).toBeVisible();await search().press('Escape');await expect(search()).toHaveValue('');await expect(search()).toBeFocused();
+    await search().fill('Актовый зал');await expect(page.locator('.room-index-match')).toContainText('Без чертежа');await page.getByRole('button',{name:'Открыть помещение: Актовый зал · Второй этаж',exact:true}).click();await expect(page.locator('[data-zone-area]')).toHaveValue('100');await expect(page.locator('.built-floor-plan .drawn-room')).toHaveCount(5);await expect(page.locator('.built-floor-plan .drawn-room.selected')).toHaveCount(0);await page.locator('.simple-inspector-heading button').click();
+    await page.setViewportSize({width:320,height:844});await page.getByRole('button',{name:'ҚАЗ',exact:true}).click();await search().fill('demo-01');await page.screenshot({path:'qa/field-search-mobile-kk.png',fullPage:true});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+    await page.getByRole('button',{name:'Жабдықты ашу: DEMO-01 · Кітапхана · Екінші қабат',exact:true}).click();await expect(walk().locator('.asset-row.is-found .asset-open')).toBeFocused();await expect(walk().locator('.asset-row.is-found')).toBeVisible();assert.equal(await walk().locator('.asset-editor').count(),0);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);await page.screenshot({path:'qa/field-asset-mobile-kk.png',fullPage:false});await close();await expect(search()).toBeFocused();
+    await search().fill('акт залы');await page.getByRole('button',{name:'Бөлмені ашу: Акт залы · Екінші қабат',exact:true}).click();await expect(page.locator('.inspector-sheet [data-zone-area]')).toHaveValue('100');await page.screenshot({path:'qa/field-room-mobile-kk.png',fullPage:false});await close();
+    const large=structuredClone(building);large.id='large-index';large.floors=large.floors.slice(0,1);delete large.floors[0].layout;large.floors[0].zones=Array.from({length:40},(_,index)=>({...structuredClone(upper.zones[2]),id:'bulk-'+index,name:'Кабинет '+(index+1),nameKk:(index+1)+'-кабинет'}));
+    const bulk=await browser.newPage({viewport:{width:1440,height:1050}});try{await bulk.addInitScript(building=>{localStorage.setItem('ortqalqan.guide.v1','seen');localStorage.setItem('ortqalqan.building.v1',JSON.stringify({version:2,activeId:building.id,buildings:[building]}));},large);await bulk.goto('http://127.0.0.1:4173');await bulk.locator('.room-index-search input').fill('Кабинет');await expect(bulk.locator('.room-index-match')).toHaveCount(30);await bulk.locator('.room-index-more').click();await expect(bulk.locator('.room-index-match')).toHaveCount(40);await expect(bulk.locator('.room-index-more')).toHaveCount(0);assert.ok((await bulk.locator('.room-index-matches').boundingBox()).height<=450,'a large result list does not stretch the floor canvas');}finally{await bulk.close();}
+    assert.deepEqual(errors,[]);
+  }catch(error){await page.screenshot({path:'qa/field-search-failure.png',fullPage:true}).catch(()=>{});throw error;}
+  finally{await context.close();}
+}
