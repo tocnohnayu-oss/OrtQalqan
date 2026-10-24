@@ -89,6 +89,11 @@ export function moveVertex(points, index, point) {
   next[index] = { ...point };
   return next;
 }
+export function rotateRoom(room, direction = 1) {
+  const box = roomBounds(room.points), cx = box.x + box.width / 2, cy = box.y + box.height / 2, sign = direction < 0 ? -1 : 1;
+  return { ...room, rotation: ((room.rotation || 0) + sign * 90 + 360) % 360,
+    points: room.points.map(p => ({ x: round(cx - sign * (p.y - cy)), y: round(cy + sign * (p.x - cx)) })) };
+}
 export function nearestWall(room, point) {
   let best = null;
   for (const { a, b, index } of edges(room.points)) {
@@ -147,6 +152,7 @@ export function validateLayout(layout, zoneIds) {
     ids.add(room.id);
     if (room.preset !== undefined && !Object.hasOwn(ROOM_PRESETS, room.preset)) return false;
     if (room.autoOpenings !== undefined && typeof room.autoOpenings !== 'boolean') return false;
+    if (room.rotation !== undefined && ![0,90,180,270].includes(room.rotation)) return false;
     if (room.zoneId !== undefined) {
       if (typeof room.zoneId !== 'string' || !room.zoneId || linked.has(room.zoneId) || zoneIds && !zoneIds.has(room.zoneId)) return false;
       linked.add(room.zoneId);

@@ -10,7 +10,7 @@ export type Asset = {
 };
 export type Point = { x:number; y:number };
 export type RoomPreset = 'classroom'|'library'|'lab'|'gym'|'office'|'meeting'|'server'|'shop'|'storage'|'workshop'|'loading'|'corridor'|'stairs'|'toilet'|'generic';
-export type LayoutRoom = { id:string; zoneId?:string; name:string; nameKk:string; points:Point[]; preset?:RoomPreset; autoOpenings?:boolean };
+export type LayoutRoom = { id:string; zoneId?:string; name:string; nameKk:string; points:Point[]; preset?:RoomPreset; autoOpenings?:boolean; rotation?:0|90|180|270 };
 export type LayoutOpening = { id:string; roomId:string; edge:number; position:number; width:number; type:'door'|'window'; hinge:'start'|'end'; swing:'in'|'out'; auto?:boolean };
 export type FloorLayout = { version:1; rooms:LayoutRoom[]; openings:LayoutOpening[]; example?:boolean };
 export type Zone = {

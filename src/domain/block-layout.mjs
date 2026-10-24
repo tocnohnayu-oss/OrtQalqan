@@ -20,11 +20,11 @@ export function decorateBlocks(layout) {
   for(const room of layout.rooms){
     const preset=ROOM_PRESETS[room.preset];if(!preset||preset.common||room.autoOpenings===false)continue;
     const wall=edges(room.points),connected=corridors.map(c=>sharedWall(room,c)).find(Boolean);
-    const bottom=[...wall].filter(e=>e.a.y===e.b.y).sort((a,b)=>b.a.y-a.a.y)[0]||wall[0];
+    const bottom=wall[2]||wall[0];
     const door={id:`auto-${room.id}-door`,roomId:room.id,edge:connected?.edge??bottom.index,position:connected?.position??.5,width:.9,type:'door',hinge:'start',swing:'in',auto:true};
     if(!result.openings.some(o=>o.roomId===room.id&&o.type==='door')&&openingFits(room,door)&&!openingCollision(result,door))result.openings.push(door);
     if(preset.windows&&!result.openings.some(o=>o.roomId===room.id&&o.type==='window')){
-      const exterior=wall.filter(e=>e.a.y===e.b.y&&!layout.rooms.some(r=>r.id!==room.id&&sharedWall(room,r)?.edge===e.index)).sort((a,b)=>a.a.y-b.a.y)[0];
+      const exterior=wall.filter(e=>!layout.rooms.some(r=>r.id!==room.id&&sharedWall(room,r)?.edge===e.index)).sort((a,b)=>a.index-b.index)[0];
       if(exterior){const window={id:`auto-${room.id}-window`,roomId:room.id,edge:exterior.index,position:.5,width:1.5,type:'window',hinge:'start',swing:'in',auto:true};if(openingFits(room,window)&&!openingCollision(result,window))result.openings.push(window);}
     }
   }

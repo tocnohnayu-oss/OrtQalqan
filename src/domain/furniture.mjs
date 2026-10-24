@@ -1,10 +1,17 @@
 /** Portable schematic fittings shared by SVG, PDF and room-kit previews. These are symbols, not an inventory. */
 /**
- * @typedef {{tag:'rect',attrs:{x:number,y:number,width:number,height:number,fill:string,stroke:string,strokeWidth:number,rx?:number}} | {tag:'circle',attrs:{cx:number,cy:number,r:number,fill:string,stroke:string,strokeWidth:number}} | {tag:'path',attrs:{d:string,fill:string,stroke:string,strokeWidth:number,strokeDasharray?:string}}} FurnitureShape
+ * @typedef {{tag:'rect',attrs:{x:number,y:number,width:number,height:number,fill:string,stroke:string,strokeWidth:number,rx?:number,transform?:string}} | {tag:'circle',attrs:{cx:number,cy:number,r:number,fill:string,stroke:string,strokeWidth:number,transform?:string}} | {tag:'path',attrs:{d:string,fill:string,stroke:string,strokeWidth:number,strokeDasharray?:string,transform?:string}}} FurnitureShape
  * @param {import('./types').LayoutRoom} room
  * @returns {FurnitureShape[]}
  */
 export function furniturePrimitives(room) {
+  if (!room.rotation) return rawFurniture(room);
+  const points=room.points,x=Math.min(...points.map(p=>p.x)),y=Math.min(...points.map(p=>p.y)),w=Math.max(...points.map(p=>p.x))-x,h=Math.max(...points.map(p=>p.y))-y,cx=x+w/2,cy=y+h/2;
+  const angle=-room.rotation*Math.PI/180,cos=Math.cos(angle),sin=Math.sin(angle);
+  const local={...room,points:points.map(p=>({x:Math.round((cx+(p.x-cx)*cos-(p.y-cy)*sin)*1000)/1000,y:Math.round((cy+(p.x-cx)*sin+(p.y-cy)*cos)*1000)/1000}))};
+  return rawFurniture(local).map(shape=>({...shape,attrs:{...shape.attrs,transform:`rotate(${room.rotation} ${cx} ${cy})`}}));
+}
+function rawFurniture(room) {
   const points=room.points,x=Math.min(...points.map(p=>p.x)),y=Math.min(...points.map(p=>p.y)),w=Math.max(...points.map(p=>p.x))-x,h=Math.max(...points.map(p=>p.y))-y;
   if(w<1.6||h<1.6)return [];
   const shapes=[],stroke='#a7ad9f',fill='#e8e7da',dark='#c2c9ba';
