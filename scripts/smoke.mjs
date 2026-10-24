@@ -54,7 +54,7 @@ try {
   await page.getByLabel('Маркировка и внешний вид',{exact:true}).selectOption('attention');
   await page.getByLabel('Паспорт и условия',{exact:true}).selectOption('na');
   await page.getByRole('button',{name:'Добавить оборудование',exact:true}).click();
-  await page.getByLabel('Инвентарный / серийный номер *',{exact:true}).fill('ДЕМО-001');
+  await page.getByLabel('Инвентарный / серийный номер',{exact:true}).fill('ДЕМО-001');
   await page.getByLabel('Модель по паспорту',{exact:true}).fill('ОП-4 · учебная запись');
   await page.getByLabel('Состояние по осмотру',{exact:true}).selectOption('service');
   await page.getByLabel('Следующее обслуживание',{exact:true}).fill('2026-10-20');
@@ -63,6 +63,7 @@ try {
   await page.getByRole('button',{name:'Завершить осмотр',exact:true}).click();
   assert.match(await page.locator('.visit-stamp').textContent(),/2026-10-24/);
   assert.equal(await page.locator('.walk-progress-label>strong').textContent(),'1 / 9');
+  await page.evaluate(()=>document.querySelector('.inspection-modal').scrollTop=0);
   await page.screenshot({path:'qa/inspection-ru.png',fullPage:false});
   const csvDownload=page.waitForEvent('download');
   await page.getByRole('button',{name:'Скачать реестр CSV',exact:true}).click();
@@ -72,7 +73,7 @@ try {
   assert.equal(await page.locator('.walk-room-heading h3').textContent(),'Библиотека');
   await page.locator('.walk-room').filter({hasText:'Учебные кабинеты'}).first().click();
   await page.getByRole('button',{name:'Добавить оборудование',exact:true}).click();
-  await page.getByLabel('Инвентарный / серийный номер *',{exact:true}).fill('НЕ СОХРАНЕНО');
+  await page.getByLabel('Инвентарный / серийный номер',{exact:true}).fill('НЕ СОХРАНЕНО');
   page.once('dialog',d=>d.dismiss());
   await page.locator('dialog .modal-heading button').click();
   assert.equal(await page.locator('.asset-editor').isVisible(),true,'closing asks before discarding an equipment form');
