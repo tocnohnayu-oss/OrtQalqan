@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "sourceSha": "7fbebfd5fc2a10ef261e54f8f820d8eec7f8cae3",
+  "sourceSha": "1f3ef4868c8971c3723f5eaa64929c15e18a1373",
   "checks": [
     "simplified workspace and no automatic fake plan",
     "drag themed furnished room blocks",
@@ -59,6 +59,11 @@
     "phone callout taps select their own room and preserve camera gestures",
     "dense plans keep readable type and explain hidden labels",
     "readable SVG and PDF plan labels share placement logic",
+    "room parameters show actual geometry, floor context and separate area sources",
+    "previous/next room navigation preserves edits and stops at floor boundaries",
+    "inline recalculation keeps the room open and manual availability editable",
+    "locate returns to the selected drawing or an existing image marker with focus",
+    "long Kazakh unplaced-room context and 44px phone navigation",
     "no runtime errors"
   ]
 }
