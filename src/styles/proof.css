@@ -40,3 +40,10 @@
 .proof-edit-zone{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:7px 9px;border:1px solid #b9c7be;color:#3f5a50;background:#fffdf8;font-size:11px}
 .proof-edit-zone:hover{background:#edf1e8}.proof-edit-zone:disabled{opacity:.45;cursor:default}
 @media(max-width:480px){.proof-zone-heading{gap:10px}.proof-zone-actions{gap:6px}.proof-edit-zone{padding:7px;font-size:10px}.proof-zone h4{font-size:21px}}
+
+/* OP/OU are equipment types, expressed with the same ink and paper as the atlas. */
+.proof-totals{border-color:#b3bfb0;background:#fffdf8}.proof-totals>section:first-child{background:#f7e8dc}.proof-totals>section:last-child{background:#eaf0ec}.proof-totals>section+section{border-color:#b3bfb0}
+.proof-totals strong{font-size:50px;letter-spacing:-1px}.proof-totals>section>div>span{color:#4f6255}.proof-totals>section:last-child strong>small{color:#506f74}
+.proof-equation{border-block:1px solid #d2d5c7;background:#f3f1e6}.proof-equation strong{color:#253b42}.proof-equation>.proof-answer{border-bottom:2px solid #b5452b;padding-bottom:4px}.proof-equation>b{color:#657d66}
+@media(max-width:720px){.proof-totals strong{font-size:39px}.proof-equation>.proof-answer{padding-bottom:2px}}
+@media(max-width:360px){.proof-totals strong{font-size:35px}}

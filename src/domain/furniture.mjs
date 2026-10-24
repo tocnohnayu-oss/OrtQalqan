@@ -14,7 +14,7 @@ export function furniturePrimitives(room) {
 function rawFurniture(room) {
   const points=room.points,x=Math.min(...points.map(p=>p.x)),y=Math.min(...points.map(p=>p.y)),w=Math.max(...points.map(p=>p.x))-x,h=Math.max(...points.map(p=>p.y))-y;
   if(w<1.6||h<1.6)return [];
-  const shapes=[],stroke='#a7ad9f',fill='#e8e7da',dark='#c2c9ba';
+  const shapes=[],stroke='#8e9f92',fill='#e9e4d5',dark='#b7c6b8';
   const rect=(x,y,width,height,extra={})=>({tag:'rect',attrs:{x,y,width,height,fill,stroke,strokeWidth:.025,...extra}});
   const path=(d,extra={})=>({tag:'path',attrs:{d,fill:'none',stroke,strokeWidth:.035,...extra}});
   const circle=(cx,cy,r,extra={})=>({tag:'circle',attrs:{cx,cy,r,fill,stroke,strokeWidth:.025,...extra}});
@@ -28,7 +28,7 @@ function rawFurniture(room) {
     const cols=Math.min(8,Math.max(1,Math.floor((w-1)/1.8))),rh=Math.max(.8,h-1.6);
     // Large library symbols have cross aisles; these remain schematic, never capacity/egress data.
     const segments=room.preset==='library'&&rh>8?Math.min(8,2*Math.ceil(rh/12)):1,aisle=segments>1?1.2:0,shelfHeight=(rh-aisle*(segments-1))/segments;
-    for(let i=0;i<cols;i++)for(let part=0;part<segments;part++){const gx=x+.5+i*(w-1)/cols,gy=y+.6+part*(shelfHeight+aisle);const items=[rect(gx,gy,.65,shelfHeight,{fill:'#dce3cf'}),path(`M${gx+.325} ${gy}v${shelfHeight}`)];for(let j=0;j<Math.min(26,Math.floor(shelfHeight/.18));j++)items.push(path(`M${gx+.06} ${gy+.1+j*.18}h.53`,{stroke:'#b6bca9',strokeWidth:.04}));group(gx,gy,.65,shelfHeight,items);}
+    for(let i=0;i<cols;i++)for(let part=0;part<segments;part++){const gx=x+.5+i*(w-1)/cols,gy=y+.6+part*(shelfHeight+aisle);const items=[rect(gx,gy,.65,shelfHeight,{fill:'#dce3d5'}),path(`M${gx+.325} ${gy}v${shelfHeight}`)];for(let j=0;j<Math.min(26,Math.floor(shelfHeight/.18));j++)items.push(path(`M${gx+.06} ${gy+.1+j*.18}h.53`,{stroke:'#9cac98',strokeWidth:.04}));group(gx,gy,.65,shelfHeight,items);}
     if(room.preset==='shop')group(x+w-2.2,y+h-1.1,1.7,.55,[rect(x+w-2.2,y+h-1.1,1.7,.55,{fill:'#d5d8ca'})]);
   }else if(room.preset==='lab'){
     grid(2.5,1.8,1.8,1.25,(gx,gy)=>[rect(gx,gy,1.8,.75,{fill:'#dfe4d3'}),circle(gx+.3,gy+.35,.13,{fill:'#f8f5eb'}),circle(gx+1.5,gy+.35,.13,{fill:'#f8f5eb'}),path(`M${gx+.9} ${gy}v.75`),circle(gx+.35,gy+1.08,.15),circle(gx+1.45,gy+1.08,.15)]);
