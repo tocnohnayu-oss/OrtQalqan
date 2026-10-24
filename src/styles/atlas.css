@@ -101,6 +101,7 @@ button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visi
 .editor-room-index>button{color:#53695e;border-bottom:1px solid #e0e5db;font-size:11px}
 .editor-room-index>button.active{background:#f6e7dc;box-shadow:inset 2px 0 #b5452b;color:#983f28}
 .editor-room-index small{color:#627366}
+.editor-workspace.has-room-kits{grid-template-columns:210px minmax(0,1fr) 240px}
 .room-kits{background:#e8ece3;border-color:#bdc9be;padding-inline:10px}
 .room-kits-heading{border-bottom:1px solid #b6c5b5;padding-bottom:12px}
 .room-kits-heading>span{font:600 20px/1.2 var(--display);color:#253b42}
@@ -112,9 +113,9 @@ button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visi
 .room-kit:hover{background:#fffdf8;border-color:#a7b9a3;box-shadow:inset 2px 0 var(--accent)}
 .room-kit:active{background:#f6e7dc}
 .room-kit-preview{width:58px;height:46px;background:#fffdf8}
-.room-kit strong{font:500 16px/1.2 var(--display);color:#253b42}
+.room-kit strong{font:500 16px/1.2 var(--display);color:#253b42;display:block;overflow-wrap:anywhere}
 .room-kit small{font-size:9px;color:#60745f}
-.room-kit>svg:last-child{color:#5b755a}
+.room-kit>svg:last-child{display:none}
 .editor-canvas-caption{color:#526c5e}
 .editor-canvas-caption>span{background:#f8f7f1eb;border-left:2px solid #718771;padding:4px 8px}
 .editor-footer{border-top:1px solid #aebfaf;background:#fffdf8}
@@ -160,7 +161,7 @@ button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visi
 .library-object{border-color:#c6d1bd}
 .report-paper,.report-stamp{border-radius:0}
 @media(max-width:1150px) and (min-width:721px){
-  .simple-shell .simple-topbar{gap:35px}.studio-object-name h1{font-size:37px}.room-kit{padding-left:14px;gap:6px}.room-kit-preview{width:43px;height:40px}.room-kit strong{font-size:14px}
+  .simple-shell .simple-topbar{gap:35px}.studio-object-name h1{font-size:37px}.editor-workspace.has-room-kits{grid-template-columns:175px minmax(0,1fr) 215px}.room-kit{padding-left:14px;gap:6px}.room-kit-preview{width:43px;height:40px}.room-kit strong{font-size:14px}
 }
 @media(max-width:720px){
   .simple-shell .simple-topbar{min-height:65px;gap:18px}.simple-shell .brand{font-size:29px}.simple-shell .brand-symbol{width:27px;height:31px}
@@ -173,6 +174,7 @@ button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visi
   .studio-floor-heading h2{font-size:20px}.studio-plan-actions>.button{font-size:10px}.studio-floor-settings>summary{font-size:10px}
   .empty-floor-plan{padding-block:32px 40px;min-height:360px}.empty-plan-drawing{width:175px;height:125px}.empty-floor-plan h3{font-size:29px}.empty-floor-plan p{font-size:11px}.empty-floor-plan .button{font-size:11px}
   .modal,.inspection-modal,.objects-modal,.inspector-sheet,.plan-editor-modal{border-radius:0;box-shadow:0 -8px 30px #253b4220}
+  .inspection-modal{height:100dvh;max-height:100dvh;margin:0;inset:0}
   .modal-heading h2,.plan-editor-modal .modal-heading h2{font-size:25px;gap:10px}.modal-heading h2:before{width:9px;height:17px}
   .editor-tools>button{min-height:39px;font-size:10px}.room-kits{padding:9px 10px 4px}.room-kits-heading{padding-bottom:7px}.room-kits-heading>span{font-size:16px}.room-kits-heading>small{font-size:9px}
   .room-kit-list{gap:7px;padding-top:5px}.room-kit{width:139px;min-height:64px;padding:7px 7px 7px 16px;border:1px solid #c3cdb6;background:#fffdf8;gap:7px}.room-kit:before{left:3px;top:7px;font-size:8px}.room-kit-preview{width:44px;height:41px}.room-kit strong{font-size:14px}.room-kit small{font-size:8px}
