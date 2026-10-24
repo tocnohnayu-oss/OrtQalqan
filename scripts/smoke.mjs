@@ -128,7 +128,7 @@ try {
   assert.equal(await page.locator('.built-floor-plan .drawn-room').count(),5,'switching objects preserves the constructed floor');
   if(await page.locator('.toast').count())await page.locator('.toast button').click();
   await page.screenshot({path:'qa/desktop-ru.png',fullPage:true});await page.locator('.brand').screenshot({path:'qa/brand.png'});
-  await page.locator('.built-floor-plan .drawn-room').filter({hasText:'Учебные кабинеты'}).press('Enter');assert.equal(await page.getByLabel('Площадь зоны',{exact:true}).inputValue(),'610');
+  await page.locator('.built-floor-plan').getByRole('button',{name:/^Учебные кабинеты,/}).press('Enter');assert.equal(await page.getByLabel('Площадь зоны',{exact:true}).inputValue(),'610');
   await page.emulateMedia({colorScheme:'dark'});assert.equal(await page.evaluate(()=>getComputedStyle(document.documentElement).colorScheme),'light');
   const image=await page.locator('.built-floor-plan').screenshot();await page.locator('input[type=file][accept="image/png,image/jpeg,image/webp"]').setInputFiles({name:'plan.png',mimeType:'image/png',buffer:image});await page.locator('.plan-image-wrap img').waitFor();await page.getByRole('button',{name:'Добавить метку',exact:true}).click();await page.locator('.plan-image-wrap').click({position:{x:100,y:100}});assert.equal(await page.locator('.plan-marker').count(),1);
   await page.getByRole('button',{name:'Пересчитать объект',exact:true}).click();await page.locator('.result-modal .modal-heading button').click();await page.getByRole('button',{name:'PDF-отчёт',exact:true}).click();
