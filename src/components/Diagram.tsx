@@ -1,6 +1,8 @@
 import { useId } from 'react';
 import type { Floor, Snapshot, Language, Zone } from '../domain/types';
 import { translator } from '../locales';
+import { inspectionStatus, needsAttention } from '../domain/inspection.mjs';
+import { fieldWords } from '../locales/inspection';
 
 type RoomBox={zone:Zone;x:number;y:number;width:number;height:number;top:boolean;kind:string};
 function roomKind(z:Zone){
@@ -11,12 +13,19 @@ function roomKind(z:Zone){
   if(/лаборат|зертхан/.test(n))return 'lab';
   if(/актов|мәжіліс/.test(n))return 'assembly';
   if(/учеб|класс|оқу/.test(n))return 'classroom';
+  if(/хранен|склад|сақтау|қойма/.test(n))return 'storage';
+  if(/торгов|сауда/.test(n))return 'retail';
+  if(/рабоч|переговор|жұмыс|келіссөз/.test(n))return 'office';
+  if(/производ|өндіріс/.test(n))return 'industrial';
   return 'generic';
 }
 
 function Furniture({box}:{box:RoomBox}){
   const {x,y,width:w,height:h,kind}=box,color='#9b9e8d',light='#d7d8c9';
   if(kind==='generic')return <g className="plan-furniture"/>;
+  if(kind==='storage'||kind==='retail')return <g className="plan-furniture">{Array.from({length:Math.max(1,Math.floor((w-36)/66))},(_,i)=><g key={i} transform={`translate(${x+20+i*66} ${y+25})`}><rect width="34" height={h-50} fill={kind==='storage'?'#e8ddc8':'#e1e7da'} stroke={color}/>{Array.from({length:Math.max(1,Math.floor((h-55)/29))},(_,j)=><g key={j} transform={`translate(3 ${j*29+4})`}><rect width="12" height="20" fill="#f4ebd8" stroke="#b6a88e" strokeWidth=".7"/><rect x="15" width="12" height="20" fill="#e2d4b9" stroke="#b6a88e" strokeWidth=".7"/></g>)}</g>)}</g>;
+  if(kind==='office')return <g className="plan-furniture">{Array.from({length:Math.max(1,Math.floor((w-42)/95))},(_,i)=><g key={i} transform={`translate(${x+27+i*95} ${y+34})`}><rect width="58" height="29" rx="4" fill="#e9e5d8" stroke={color}/><path d="M12 1v27m34-27v27" stroke={light}/><rect x="23" y="5" width="15" height="10" rx="1" fill="#c5d2cc" stroke={color}/><path d="M25 18h12M10 36h13m16 0h13" stroke={color} strokeWidth="2"/><rect y="65" width="58" height="29" rx="4" fill="#e9e5d8" stroke={color}/><rect x="23" y="70" width="15" height="10" rx="1" fill="#c5d2cc" stroke={color}/><path d="M10 102h13m16 0h13" stroke={color} strokeWidth="2"/></g>)}</g>;
+  if(kind==='industrial')return <g className="plan-furniture">{Array.from({length:Math.max(1,Math.floor((w-46)/90))},(_,i)=><g key={i} transform={`translate(${x+27+i*90} ${y+33})`}><rect width="56" height={h-66} fill="#e0e4d8" stroke={color}/><rect x="8" y="9" width="40" height="36" rx="3" fill="#c3cec1" stroke={color}/><circle cx="28" cy="27" r="10" fill="none" stroke="#8c9c8a"/><path d="m23 27 5-7 5 7-5 7Z" stroke="#8c9c8a"/><path d={`M8 ${h-81}h40`} stroke="#b39362" strokeWidth="6"/></g>)}</g>;
   if(kind==='gym')return <g className="plan-furniture" fill="none" stroke="#c4b8a1" strokeWidth="1.2">
     <rect x={x+17} y={y+23} width={w-34} height={h-45} fill="#f1ecdf"/>
     <rect x={x+24} y={y+30} width={w-48} height={h-59}/><path d={`M${x+w/2} ${y+30}v${h-59}`}/><circle cx={x+w/2} cy={y+h/2} r={Math.min(25,(h-70)/2)}/>
@@ -39,7 +48,8 @@ function Door({x,y,up=false}:{x:number;y:number;up?:boolean}){
   return <g fill="none"><path d={`M${x} ${y}h31`} stroke="#fffdf8" strokeWidth="9"/><path d={`M${x} ${y}v${sign*31}M${x+31} ${y}a31 31 0 0 ${up?1:0} -31 ${sign*31}`} stroke="#798373" strokeWidth="1.2"/></g>;
 }
 
-export function Diagram({floor,snapshot,selected,onSelect,language,stale}:{floor:Floor;snapshot:Snapshot;selected:string;onSelect:(id:string)=>void;language:Language;stale:boolean}){
+export function Diagram({floor,snapshot,selected,onSelect,language,stale,inspectionDate}:{floor:Floor;snapshot:Snapshot;selected:string;onSelect:(id:string)=>void;language:Language;stale:boolean;inspectionDate:string}){
+  const fw=fieldWords(language);
   const t=translator(language),id=useId().replace(/:/g,''),topCount=Math.ceil(floor.zones.length/2);
   const width=Math.max(960,topCount*188+320),run=width-362,start=110,wing=start+run+24;
   const boxes:RoomBox[]=[];
@@ -67,18 +77,20 @@ export function Diagram({floor,snapshot,selected,onSelect,language,stale}:{floor
     </g>
     {boxes.map((box,i)=>{
       const {zone:z,x,y,width:w,height:h,top}=box,active=z.id===selected,row=snapshot.rows.find(r=>r.zoneId===z.id),issue=!row?.type||row.issues.length>0;
+      const visit=inspectionStatus(z,inspectionDate),attention=needsAttention(z,inspectionDate);
       const label=language==='ru'?z.name:z.nameKk,doorX=x+Math.max(12,Math.min(w-43,w*.73));
-      return <g key={z.id} role="button" tabIndex={0} aria-pressed={active} aria-label={`${label}, ${z.area} ${t('sqm')}`} onClick={()=>onSelect(z.id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(z.id);}}} className={`plan-room ${active?'selected':''}`}>
+      return <g key={z.id} role="button" tabIndex={0} aria-pressed={active} aria-label={`${label}, ${z.area} ${t('sqm')}, ${fw[visit]}${attention?', '+fw.attention:''}`} onClick={()=>onSelect(z.id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(z.id);}}} className={`plan-room ${active?'selected':''}`}>
         <rect className="room-fill" x={x} y={y} width={w} height={h} fill={active?'#f8e9dd':'#fffdf8'}/><Furniture box={box}/>
         {box.kind==='classroom'&&w>280&&<><path d={`M${x+w/2} ${y}v${h}`} stroke="#72816b" strokeWidth="2.5"/><Door x={x+w*.28} y={top?y+h:y} up={!top}/></>}
         <rect className="room-wall" x={x} y={y} width={w} height={h} fill="none" stroke={active?'#b44a30':'#5d6b55'} strokeWidth={active?3.3:2.6}/><Door x={doorX} y={top?y+h:y} up={!top}/>
         {[.2,.52,.79].filter(p=>w>140||p===.52).map((p,j)=><g key={j}><path d={`M${x+w*p-14} ${top?y:y+h}h28`} stroke="#e9efe9" strokeWidth="7"/><path d={`M${x+w*p-14} ${top?y:y+h}h28m-28 ${top?-3:3}h28`} stroke="#819d98" strokeWidth="1.5"/></g>)}
         <g className="room-caption" transform={`translate(${x+8} ${y+h/2-28})`}><rect width={w-16} height="66" rx="2" fill={active?'#fff6eb':'#fffdf8'} fillOpacity=".94"/><text x="10" y="17" className="room-number">{String(i+1).padStart(2,'0')}<tspan dx="10" className="room-hazard">{z.hazard==='special'?'?':z.hazard.replace('AE','A / E')}</tspan></text><foreignObject x="10" y="22" width={w-38} height="25"><div className="room-name">{label}</div></foreignObject><text x="10" y="58" className="room-area">{z.area.toLocaleString(language==='ru'?'ru-RU':'kk-KZ')} {t('sqm')}</text></g>
+        {(visit!=='pending'||attention)&&<g className="inspection-map-stamp" transform={`translate(${x+19} ${y+20})`}><title>{fw[visit]}{attention?' · '+fw.attention:''}</title><circle r="10" fill="#fffdf8" stroke={attention?'#84631f':'#52626b'} strokeWidth="1.5"/>{attention?<path d="M0-5v6m0 4v1" stroke="#84631f" strokeWidth="2"/>:visit==='visited'?<path d="m-5 0 3 3 7-7" stroke="#52626b" strokeWidth="2" fill="none"/>:<circle r="3" fill="#52626b"/>}</g>}
         {active&&<g transform={`translate(${x+w-23} ${y+23})`} aria-hidden="true"><circle r="9" fill="#b44a30"/><path d="m-4 0 3 3 5-6" stroke="#fffdf5" strokeWidth="1.8" fill="none"/></g>}
         <g className="equipment-map-tag" transform={`translate(${doorX-4} ${top?y+h-14:y+14})`}><rect x="-4" y="-13" width="68" height="27" rx="3" fill={active?'#b44a30':issue?'#e9d9ab':'#324d40'} stroke="#fffdf8" strokeWidth="2"/><path d="M3-5h7v15H3Zm1-5h5v5m0-5h6v9" fill="none" stroke={active||!issue?'#fffdf2':'#786128'} strokeWidth="1.3"/><text x="22" y="6" fill={active||!issue?'#fffdf2':'#786128'} className="equipment-tag-label">{stale?'—':row?.type?`${row.type==='OP'?'ОП':'ОУ'} ${row.count}`:'?'}</text></g>
       </g>;
     })}
     <g transform={`translate(${width-47} 95)`}><path d="M0 22V-3l-5 10 5-4 5 4Z" fill="#4b5e4e"/><text y="-12" textAnchor="middle" className="north-label">Y</text></g>
-    <g className="plan-caption"><path d={`M96 598H${width-81}`} stroke="#b8beaa"/><text x="96" y="622">{t('illustrativePlan')}</text><text x={width-82} y="622" textAnchor="end">OQ / {String(snapshot.building.floors.findIndex(f=>f.id===floor.id)+1).padStart(2,'0')}</text><text x="96" y="643" className="plan-disclaimer">{t('notSchoolPlan')}</text></g>
+    <g className="plan-caption"><path d={`M96 598H${width-81}`} stroke="#b8beaa"/><text x="96" y="622">{t('illustrativePlan')}</text><text x={width-82} y="622" textAnchor="end">OQ / {String(snapshot.building.floors.findIndex(f=>f.id===floor.id)+1).padStart(2,'0')}</text><text x="96" y="643" className="plan-disclaimer">{language==='ru'?'Схема условная. Для реальной планировки загрузите план объекта.':'Сызба шартты. Нақты орналасу үшін нысан жоспарын жүктеңіз.'}</text></g>
   </svg>;
 }

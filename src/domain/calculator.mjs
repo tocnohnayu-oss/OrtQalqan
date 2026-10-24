@@ -1,3 +1,4 @@
+import { validateFieldRecords } from './inspection.mjs';
 /** Preliminary, explicitly scoped public-building profile; see docs/NORMATIVE_RESEARCH.md. */
 export const RULES_VERSION = 'public-pilot-2026-10-23';
 export const SOURCE_URL = 'https://old.adilet.zan.kz/rus/docs/V2200026867';
@@ -11,6 +12,7 @@ export function calculate(building, now = new Date().toISOString()) {
       let type = null;
       let count = 0;
       let rate = 0;
+      if (building.usage && building.usage !== 'public') issues.push('unsupportedUse');
       if (!Number.isFinite(z.area) || z.area <= 0 || z.area > 1000000) issues.push('invalidArea');
       if (z.category !== 'public') issues.push('unsupportedCategory');
       if (!['A', 'AE', 'E'].includes(z.hazard)) issues.push('specialHazard');
@@ -46,7 +48,10 @@ export function calculate(building, now = new Date().toISOString()) {
 export function validateBuilding(value) {
   if (!value || typeof value !== 'object' || !Array.isArray(value.floors) || !value.floors.length || value.floors.length > 30) return false;
   if (typeof value.name !== 'string' || typeof value.nameKk !== 'string' || typeof value.address !== 'string' || typeof value.addressKk !== 'string' || typeof value.inspector !== 'string' || typeof value.demo !== 'boolean' || typeof value.id !== 'string' || !Number.isInteger(value.revision) || typeof value.date !== 'string') return false;
+  if (value.kind !== undefined && !['education','office','retail','warehouse','industrial','other'].includes(value.kind)) return false;
+  if (value.usage !== undefined && !['public','storage','production','unknown'].includes(value.usage)) return false;
   const ids = new Set();
+  const assetIds = new Set();
   return value.floors.every(f => {
     if (!f || typeof f.id !== 'string' || ids.has(f.id) || typeof f.name !== 'string' || typeof f.nameKk !== 'string' || !Array.isArray(f.zones) || f.zones.length > 100 || !Array.isArray(f.markers)) return false;
     ids.add(f.id);
@@ -55,6 +60,7 @@ export function validateBuilding(value) {
       if (!z || typeof z.id !== 'string' || ids.has(z.id)) return false;
       ids.add(z.id);
       if(z.notes!==undefined && (typeof z.notes!=='string'||z.notes.length>3000))return false;
+      if(!validateFieldRecords(z, assetIds))return false;
       return typeof z.name === 'string' && typeof z.nameKk === 'string' && Number.isFinite(z.area) && z.area >= 0 && z.area <= 1000000 && ['A','AE','E','B','C','D','special'].includes(z.hazard) && ['public','AB','V','GD'].includes(z.category) && typeof z.sensitive === 'boolean' && ['normal','cold','unknown'].includes(z.temperature) && ['yes','no','unknown'].includes(z.automatic) && Number.isInteger(z.existing) && z.existing >= 0;
     }) && f.markers.every(m => m && typeof m.id === 'string' && Number.isFinite(m.x) && Number.isFinite(m.y) && m.x >= 0 && m.x <= 1 && m.y >= 0 && m.y <= 1 && ['OP','OU'].includes(m.type) && f.zones.some(z => z.id === m.zoneId));
   });
