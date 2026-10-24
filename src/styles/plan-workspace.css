@@ -1,6 +1,7 @@
 /* The atlas opens into a working sheet. The same DOM retains its draft and camera. */
 .studio-layout{box-shadow:0 8px 24px #253b420d}
 .focus-plan-trigger{gap:7px}
+.studio-plan-actions>.focus-plan-trigger>svg{display:block;flex-shrink:0}
 .focus-plan-trigger:hover{background:#253b42;color:#fffdf8;border-color:#253b42}
 .plan-focus>.simple-topbar,.plan-focus .studio-object-header,.plan-focus .studio-cloud-state,.plan-focus .building-scope-note,.plan-focus .studio-footnote{display:none}
 .simple-shell.plan-focus{min-height:100dvh}
