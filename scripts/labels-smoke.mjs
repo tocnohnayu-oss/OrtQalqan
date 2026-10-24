@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { expect } from '@playwright/test';
 import { createShowcase } from '../src/data/showcase.mjs';
 import { rectPoints } from '../src/domain/layout.mjs';
+import { validateBuilding } from '../src/domain/calculator.mjs';
 
 export async function labelsSmoke(browser,errors){
   const building=createShowcase({id:'readable-plan'}),context=await browser.newContext({viewport:{width:1440,height:1000},hasTouch:true}),page=await context.newPage();
@@ -26,7 +27,7 @@ export async function labelsSmoke(browser,errors){
     await callout.locator('.plan-label-paper').tap();await expect(page.locator('.inspector-sheet')).toBeVisible();await expect(page.locator('.zone-title h3')).toHaveText(room.nameKk);await page.locator('.inspector-sheet .modal-heading button').click();await readable(svg);await page.screenshot({path:'qa/labels-selected-mobile-kk.png',fullPage:false});
     await page.getByRole('button',{name:'Жоспарды өңдеу',exact:true}).click();const editor=page.locator('.floor-editor-svg');await readable(editor);await page.getByRole('button',{name:'Блок қосу: Сынып',exact:true}).locator('strong').tap();await page.getByRole('button',{name:'Оңға 90° бұру',exact:true}).tap();await readable(editor);await page.screenshot({path:'qa/labels-editor-mobile-kk.png',fullPage:false});page.once('dialog',dialog=>dialog.accept());await page.keyboard.press('Escape');await page.getByRole('button',{name:'Нысанға',exact:true}).click();
     // Dense floors show a zoom hint rather than reducing type or piling labels up.
-    const dense=structuredClone(building),floor=dense.floors[0];floor.zones=Array.from({length:60},(_,index)=>({...floor.zones[0],id:`dense-zone-${index}`,name:`Кабинет ${index+1}`,nameKk:`Кабинет ${index+1}`,area:4}));floor.layout={version:1,rooms:floor.zones.map((zone,index)=>({id:`dense-room-${index}`,zoneId:zone.id,name:zone.name,nameKk:zone.nameKk,points:rectPoints(index%10*2,Math.floor(index/10)*2,2,2)})),openings:[]};
+    const dense=structuredClone(building),floor=dense.floors[0];floor.zones=Array.from({length:60},(_,index)=>({...floor.zones[0],id:`dense-zone-${index}`,name:`Кабинет ${index+1}`,nameKk:`Кабинет ${index+1}`,area:4,assets:[]}));floor.layout={version:1,rooms:floor.zones.map((zone,index)=>({id:`dense-room-${index}`,zoneId:zone.id,name:zone.name,nameKk:zone.nameKk,points:rectPoints(index%10*2,Math.floor(index/10)*2,2,2)})),openings:[]};assert.equal(validateBuilding(dense),true,'dense-floor QA data must pass the normal import validator');
     await page.evaluate(building=>localStorage.setItem('ortqalqan.building.v1',JSON.stringify({version:2,activeId:building.id,buildings:[building]})),dense);await page.reload();await page.getByRole('button',{name:'Жоспарды кеңейту',exact:true}).click();await expect(page.locator('.plan-label-note')).toBeVisible();await readable(svg);await page.screenshot({path:'qa/labels-dense-mobile-kk.png',fullPage:false});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);assert.deepEqual(errors,[]);
   }catch(error){await page.screenshot({path:'qa/labels-failure.png',fullPage:true}).catch(()=>{});throw error;}
   finally{await context.close();}

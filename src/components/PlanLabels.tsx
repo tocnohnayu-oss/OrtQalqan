@@ -32,7 +32,7 @@ export function PlanLabels({layout,zones,language,selected,view,viewport,showCou
   const result=placePlanLabels(items,view,viewport,textWidth);
   useEffect(()=>{onHiddenChange?.(result.hidden);},[result.hidden,onHiddenChange]);
   if(!viewport.width)return null;
-  return <g className="plan-label-layer" data-hidden-labels={result.hidden} transform={`translate(${view.x-result.offsetX/result.scale} ${view.y-result.offsetY/result.scale}) scale(${1/result.scale})`}>
+  return <g className="plan-label-layer" aria-hidden="true" data-hidden-labels={result.hidden} transform={`translate(${view.x-result.offsetX/result.scale} ${view.y-result.offsetY/result.scale}) scale(${1/result.scale})`}>
     {result.labels.map(label=>{const item=items[label.index],room=layout.rooms[label.index],active=item.priority===10,x=label.x+label.width/2;
       const end={x:Math.max(label.x,Math.min(label.x+label.width,label.anchor.x)),y:Math.max(label.y,Math.min(label.y+label.height,label.anchor.y))};
       return <g key={label.id} className={`plan-label ${active?'is-selected':''} ${label.callout?'is-callout':''}`} data-plan-room={room.id} data-room-id={room.id} onPointerDown={event=>onRoomDown?.(event,room)}>
