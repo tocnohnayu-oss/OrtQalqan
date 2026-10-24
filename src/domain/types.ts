@@ -9,8 +9,9 @@ export type Asset = {
   condition: 'unknown' | 'available' | 'service' | 'unusable'; nextService: string;
 };
 export type Point = { x:number; y:number };
-export type LayoutRoom = { id:string; zoneId?:string; name:string; nameKk:string; points:Point[] };
-export type LayoutOpening = { id:string; roomId:string; edge:number; position:number; width:number; type:'door'|'window'; hinge:'start'|'end'; swing:'in'|'out' };
+export type RoomPreset = 'classroom'|'library'|'lab'|'gym'|'office'|'meeting'|'server'|'shop'|'storage'|'workshop'|'loading'|'corridor'|'stairs'|'toilet'|'generic';
+export type LayoutRoom = { id:string; zoneId?:string; name:string; nameKk:string; points:Point[]; preset?:RoomPreset; autoOpenings?:boolean };
+export type LayoutOpening = { id:string; roomId:string; edge:number; position:number; width:number; type:'door'|'window'; hinge:'start'|'end'; swing:'in'|'out'; auto?:boolean };
 export type FloorLayout = { version:1; rooms:LayoutRoom[]; openings:LayoutOpening[]; example?:boolean };
 export type Zone = {
   id: string; name: string; nameKk: string; area: number; hazard: Hazard;

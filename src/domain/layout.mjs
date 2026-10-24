@@ -1,3 +1,5 @@
+import { ROOM_PRESETS } from './room-presets.mjs';
+import { furniturePrimitives } from './furniture.mjs';
 /** User-drawn orthogonal geometry in metres. It never feeds the fire calculation implicitly. */
 const EPS = 0.00001;
 export const emptyLayout = () => ({ version: 1, rooms: [], openings: [] });
@@ -71,9 +73,10 @@ export function interiorsOverlap(a, b) {
   return aa.some(x => bb.some(y => boxesOverlap(x, y)));
 }
 export function labelPoint(points) {
-  const largest = strips(points).sort((a, b) => b.width * b.height - a.width * a.height)[0];
+  const largest = labelBounds(points);
   return largest ? { x: largest.x + largest.width / 2, y: largest.y + largest.height / 2 } : points[0];
 }
+export function labelBounds(points) { return strips(points).sort((a, b) => b.width * b.height - a.width * a.height)[0] || roomBounds(points); }
 export function placementIssue(layout, room) {
   if (!validPolygon(room.points)) return 'invalidShape';
   if (layout.rooms.some(r => r.id !== room.id && interiorsOverlap(r.points, room.points))) return 'overlap';
@@ -142,6 +145,8 @@ export function validateLayout(layout, zoneIds) {
   for (const room of layout.rooms) {
     if (!room || typeof room.id !== 'string' || !room.id || ids.has(room.id) || typeof room.name !== 'string' || room.name.length > 160 || typeof room.nameKk !== 'string' || room.nameKk.length > 160 || !validPolygon(room.points)) return false;
     ids.add(room.id);
+    if (room.preset !== undefined && !Object.hasOwn(ROOM_PRESETS, room.preset)) return false;
+    if (room.autoOpenings !== undefined && typeof room.autoOpenings !== 'boolean') return false;
     if (room.zoneId !== undefined) {
       if (typeof room.zoneId !== 'string' || !room.zoneId || linked.has(room.zoneId) || zoneIds && !zoneIds.has(room.zoneId)) return false;
       linked.add(room.zoneId);
@@ -151,6 +156,7 @@ export function validateLayout(layout, zoneIds) {
   for (const opening of layout.openings) {
     if (!opening || typeof opening.id !== 'string' || !opening.id || ids.has(opening.id) || !Number.isInteger(opening.edge) || opening.edge < 0 || !['door', 'window'].includes(opening.type) || !['start', 'end'].includes(opening.hinge) || !['in', 'out'].includes(opening.swing)) return false;
     const room = layout.rooms.find(r => r.id === opening.roomId);
+    if (opening.auto !== undefined && typeof opening.auto !== 'boolean') return false;
     if (!room || !openingFits(room, opening) || openingCollision(layout, opening)) return false;
     ids.add(opening.id);
   }
@@ -184,6 +190,7 @@ export function layoutSVG(layout, language, zones = []) {
     const zone = zones.find(z => z.id === room.zoneId), name = language === 'kk' ? zone?.nameKk || room.nameKk : zone?.name || room.name;
     const center = labelPoint(room.points);
     parts.push(`<polygon points="${room.points.map(p => `${p.x},${p.y}`).join(' ')}" fill="${room.zoneId ? '#fffdf8' : '#f1eee6'}" stroke="#343934" stroke-width=".16"/>`);
+    for(const shape of furniturePrimitives(room))parts.push(`<${shape.tag} ${Object.entries(shape.attrs).map(([key,value])=>`${key.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())}="${escapeXML(value)}"`).join(' ')}/>`);
     parts.push(`<text x="${center.x}" y="${center.y}" text-anchor="middle" font-family="Arial,sans-serif" font-size=".42" fill="#343934">${escapeXML(name)}</text><text x="${center.x}" y="${center.y + .55}" text-anchor="middle" font-family="Arial,sans-serif" font-size=".32" fill="#74776d">${polygonArea(room.points)} м²</text>`);
   }
   for (const opening of layout.openings) {
