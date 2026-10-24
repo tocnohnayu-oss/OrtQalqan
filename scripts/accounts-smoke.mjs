@@ -48,6 +48,10 @@ export async function accountsSmoke(browser,errors){
     await expect(panel(first).locator('.team-member-list>div')).toHaveCount(2);
     await panel(first).getByRole('button',{name:/Объекты/}).click();
     await panel(first).getByLabel('Назначение и этап: Учебный корпус · ДЕМО',{exact:true}).click();
+    await panel(first).getByLabel('Этап работы',{exact:true}).selectOption('review');
+    await panel(first).locator('.team-assignment').getByRole('button',{name:'Отмена',exact:true}).click();
+    await panel(first).getByLabel('Назначение и этап: Учебный корпус · ДЕМО',{exact:true}).click();
+    await expect(panel(first).getByLabel('Этап работы',{exact:true})).toHaveValue('draft');
     await panel(first).getByLabel('Ответственный',{exact:true}).selectOption({label:'Данияр Омаров'});
     await panel(first).getByLabel('Этап работы',{exact:true}).selectOption('inspection');
     await panel(first).locator('.team-assignment').getByRole('button',{name:'Сохранить',exact:true}).click();
@@ -80,6 +84,14 @@ export async function accountsSmoke(browser,errors){
     await first.locator('.team-workspace').waitFor();await first.getByRole('button',{name:'Шығу',exact:true}).click();await first.getByRole('button',{name:'Аккаунт және топ',exact:true}).click();
     await first.screenshot({path:'qa/account-entry-mobile-kk.png',fullPage:false});
     assert.equal(await first.locator('.account-modal').evaluate(el=>el.scrollWidth>el.clientWidth),false,'Kazakh sign-in fits 320px');
+    const titleBox=await first.locator('.account-entry-story h3').boundingBox(),artBox=await first.locator('.account-entry-story .account-illustration').boundingBox();
+    assert.ok(titleBox.y+titleBox.height<=artBox.y,'the narrow Kazakh headline and illustration never overlap');
+    // A missing/expired session must preserve a downloadable draft and safely reset on a different login.
+    await editName(second,'Не отправлять другому аккаунту');await b.clearCookies();
+    await second.getByRole('button',{name:'Сохранить в базу',exact:true}).click();await expect(second.locator('.remote-save-error')).toContainText('Сессия завершилась');
+    await account(second).click();await panel(second).getByLabel('Почта',{exact:true}).fill('coordinator@example.test');await panel(second).getByLabel('Пароль',{exact:true}).fill(password);await panel(second).locator('form button[type=submit]').click();
+    await panel(second).locator('.team-heading').waitFor();assert.equal(await second.locator('.studio-cloud-state').count(),0,'switching identity clears the previous private object');
+    await expect(second.locator('.studio-object-name h1')).toHaveText('НИШ ЕМН · Петропавловск');
     assert.deepEqual(errors,[]);
   }catch(error){console.log('Account UI errors:',await first.locator('.account-error,.remote-save-error').allTextContents(),await second.locator('.account-error,.remote-save-error').allTextContents());await first.screenshot({path:'qa/account-failure-first.png',fullPage:false});await second.screenshot({path:'qa/account-failure-second.png',fullPage:false});throw error;}
   finally{await a.close();await b.close();}

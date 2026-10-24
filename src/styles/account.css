@@ -54,7 +54,7 @@
 .team-object{border-bottom:1px solid #cbd5bf;display:grid;grid-template-columns:minmax(0,1fr) 255px;gap:15px;align-items:center;min-height:127px}
 .team-object-open{display:flex;align-items:center;gap:17px;width:100%;padding:15px 0;min-width:0;text-align:left;align-self:stretch}
 .team-object-open:hover h4{color:#a4432a}
-.team-object-index{font:500 25px var(--display);min-width:24px;color:#6c815c}
+.team-object-index{font:500 25px var(--display);min-width:24px;color:#587149}
 .team-object-open>.object-illustration{width:95px;height:75px;flex-shrink:0}
 .team-object-open>div{min-width:0;flex:1}
 .team-object-open h4{font:500 23px/1.2 var(--display);color:#253b42;margin:0 0 7px;overflow-wrap:anywhere}
@@ -72,6 +72,7 @@
 .team-assignment>summary::-webkit-details-marker{display:none}
 .team-assignment>form{position:absolute;right:0;top:45px;width:290px;z-index:3;background:#fffdf8;border:1px solid #a9bd9b;border-top:3px solid #253b42;box-shadow:5px 6px 0 #253b4215;padding:20px}
 .team-assignment .field{margin-bottom:16px}.team-assignment p{font-size:10px;line-height:1.7;color:#60764f;margin:0 0 14px}
+.team-assignment-actions{display:flex;gap:9px}.team-assignment-actions>.button{flex:1;min-height:42px}
 .team-create{display:flex;gap:30px;justify-content:space-between;align-items:flex-start;padding-top:26px}
 .team-create>div:first-child{display:flex;gap:11px;align-items:flex-end;min-width:0;flex:1;max-width:410px}
 .team-create .field{flex:1;margin:0}.team-create .field>span{font:500 17px var(--display);color:#253b42}.team-create .button{min-height:42px;font-size:12px}
@@ -105,7 +106,7 @@
 .team-activity>ol{list-style:none;margin:0;padding:0}
 .team-activity li{display:flex;align-items:flex-start;gap:18px;padding:17px 0;border-bottom:1px solid #d0dac3}
 .activity-mark{width:7px;height:10px;background:#b5452b;margin-top:5px;flex-shrink:0}
-.team-activity li>div{min-width:0;flex:1}.team-activity li p{font-size:12px;color:#506b42;line-height:1.8;margin:0;overflow-wrap:anywhere}.team-activity li strong{font-weight:500;color:#253b42}
+.team-activity li>div{min-width:0;flex:1}.team-activity li p{font-size:12px;color:#506b42;line-height:1.8;margin:0;overflow-wrap:anywhere}.team-activity li strong{font-weight:500;color:#253b42}.team-activity li p>i{font-style:normal;margin:0 7px}
 .team-activity li>div>span{display:block;font:500 20px/1.25 var(--display);color:#253b42;margin-top:5px;overflow-wrap:anywhere}
 .team-activity time{font-size:10px;color:#607851;white-space:nowrap;padding-top:3px}
 .team-local-footer{display:flex;justify-content:space-between;align-items:center;gap:25px;border-top:1px solid #c7d3b9;background:#f1f4e9;padding:14px 30px}
@@ -129,10 +130,10 @@
 @media(max-width:720px){
   .account-trigger{width:34px;min-width:34px;height:35px}.simple-shell .top-actions{gap:8px}
   .account-modal{max-width:100%;width:100%;height:100dvh;max-height:100dvh;margin:0;inset:0}.account-modal>.modal-heading{padding:12px 16px}
-  .account-entry{display:block;min-height:0}.account-entry-story{padding:24px 22px 23px;border-right:0;border-bottom:1px solid #b3c3aa;min-height:180px}
-  .account-entry-story h3{font-size:41px;max-width:68%;line-height:1.02;margin:14px 0 10px}.account-entry-story>.eyebrow{font-size:8px}
-  .account-entry-story>.account-illustration{position:absolute;right:-15px;top:42px;width:165px;max-width:43%;margin:0;transform:rotate(-5deg)}
-  .account-entry-story>p{font-size:10px;max-width:69%;line-height:1.7;margin:0}.account-story-index{display:none}
+  .account-entry{display:block;min-height:0}.account-entry-story{display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:0 8px;padding:22px;border-right:0;border-bottom:1px solid #b3c3aa;min-height:0}
+  .account-entry-story h3{grid-column:1/-1;font-size:41px;max-width:none;line-height:1.02;margin:14px 0 10px;overflow-wrap:anywhere}.account-entry-story>.eyebrow{grid-column:1/-1;font-size:8px}
+  .account-entry-story>.account-illustration{position:static;grid-column:2;grid-row:3;width:110px;max-width:100%;height:67px;margin:0;transform:rotate(-3deg)}
+  .account-entry-story>p{grid-column:1;grid-row:3;font-size:10px;max-width:none;line-height:1.7;margin:0;align-self:center}.account-story-index{display:none}
   .account-entry-form{padding:21px 22px 25px}.account-auth-tabs{gap:25px;margin-bottom:23px}.account-auth-tabs>button{font-size:22px;min-height:42px;padding-bottom:10px}
   .account-entry-form .field{margin-bottom:19px}.account-local{margin-top:25px;padding-top:15px}
   .team-heading{display:flex;flex-direction:column;align-items:stretch;gap:17px;padding:21px 19px}.team-title h3{font-size:32px;margin-top:8px}.team-title>.eyebrow{font-size:8px;letter-spacing:.8px}.team-workspace-select select{font-size:29px}
@@ -153,6 +154,6 @@
 }
 @media(max-width:360px){
   .simple-shell .top-actions{gap:6px}.account-trigger{width:31px;min-width:31px}.language-switch button{min-width:29px}.simple-shell .brand{font-size:27px;gap:7px}.simple-shell .brand-symbol{width:24px}
-  .account-entry-story{padding:22px 18px;min-height:178px}.account-entry-story h3{font-size:36px;max-width:72%}.account-entry-story>.account-illustration{right:-18px;top:54px;width:139px}.account-entry-form{padding:20px 18px 24px}.account-auth-tabs{gap:22px}.account-auth-tabs>button{font-size:21px}
+  .account-entry-story{padding:20px 18px;grid-template-columns:minmax(0,1fr) 90px;min-height:0}.account-entry-story h3{font-size:33px;max-width:none}.account-entry-story>.account-illustration{width:90px;height:57px}.account-entry-form{padding:20px 18px 24px}.account-auth-tabs{gap:22px}.account-auth-tabs>button{font-size:21px}
   .team-tabs{gap:16px;padding-inline:15px}.team-tabs>button:not(.icon-button){font-size:17px;gap:5px}.team-tabs>.icon-button{min-width:23px;width:23px}.team-tabs small,.team-tabs>button>span{display:none}.team-object-open>.object-illustration{width:53px}.team-object-open h4{font-size:21px}.team-object-open{gap:8px}.team-object-index{min-width:16px;font-size:18px}.team-title h3{font-size:29px}.team-passport strong{font-size:18px}.team-member-list>div>span:last-child{font-size:10px;max-width:85px}
 }
