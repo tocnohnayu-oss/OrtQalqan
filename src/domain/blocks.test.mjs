@@ -9,7 +9,7 @@ test('building themes provide matching kits and furniture resizes without becomi
   assert.ok(BUILDING_KITS.education.includes('classroom'));assert.ok(!BUILDING_KITS.warehouse.includes('classroom'));assert.ok(BUILDING_KITS.warehouse.includes('loading'));
   const room=classroom(),large=furniturePrimitives(room),small=furniturePrimitives({...room,points:rectPoints(0,0,4,3)});
   assert.ok(large.filter(p=>p.tag==='rect').length>20);assert.ok(small.length<large.length);assert.ok(furniturePrimitives({...room,points:rectPoints(0,0,180,180)}).length<1500);
-  assert.notDeepEqual(furniturePrimitives({...room,preset:'library'}),large);
+  assert.notDeepEqual(furniturePrimitives({...room,preset:'library'}),large);assert.ok(furniturePrimitives({...room,preset:'gym',points:[{x:5,y:8},{x:14,y:8},{x:14,y:13},{x:10,y:13},{x:10,y:11},{x:5,y:11}]}).length>3,'a non-rectangular gym still has a court symbol inside its usable shape');
 });
 test('touching a corridor relocates the template door onto the shared wall',()=>{
   const room=classroom(),corridor={id:'hall',name:'Коридор',nameKk:'Дәліз',preset:'corridor',points:rectPoints(-2,0,2,6)};

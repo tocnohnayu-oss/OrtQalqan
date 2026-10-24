@@ -25,7 +25,7 @@ export function PlanDrawing({layout,zones,language,selected='',onSelect,editor=f
       {opening.type==='door'?<g fill="none" stroke={selected?'#b64c32':'#687065'} strokeWidth=".035"><path d={`M${g.hinge.x} ${g.hinge.y}L${g.leaf.x} ${g.leaf.y}`}/><path d={g.arc} strokeWidth=".025"/></g>:<g stroke={selected?'#b64c32':'#6d8d91'} strokeWidth=".045"><path d={`M${g.start.x+g.normal.x*.065} ${g.start.y+g.normal.y*.065}L${g.end.x+g.normal.x*.065} ${g.end.y+g.normal.y*.065}M${g.start.x-g.normal.x*.065} ${g.start.y-g.normal.y*.065}L${g.end.x-g.normal.x*.065} ${g.end.y-g.normal.y*.065}`}/></g>}
       {editor&&<path d={`M${g.start.x} ${g.start.y}L${g.end.x} ${g.end.y}`} stroke="transparent" strokeWidth=".65"/>}
     </g>;})}
-    {editor&&layout.rooms.filter(r=>r.id===selected).map(room=><g key={room.id} className="room-handles">{room.points.map((point,index)=><circle key={index} cx={point.x} cy={point.y} r=".16" fill="#fffdf8" stroke="#b64c32" strokeWidth=".045" onPointerDown={e=>onVertexDown?.(e,room,index)}><title>{index+1}</title></circle>)}</g>)}
+    {editor&&layout.rooms.filter(r=>r.id===selected).map(room=><g key={room.id} className="room-handles">{room.points.map((point,index)=><g key={index} onPointerDown={e=>onVertexDown?.(e,room,index)}><circle cx={point.x} cy={point.y} r=".16" fill="transparent" stroke="transparent" strokeWidth="28" vectorEffect="non-scaling-stroke" pointerEvents="all"/><circle cx={point.x} cy={point.y} r=".16" fill="#fffdf8" stroke="#b64c32" strokeWidth=".045" pointerEvents="none"/><title>{index+1}</title></g>)}</g>)}
   </g>;
 }
 

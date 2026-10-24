@@ -31,7 +31,11 @@ function rawFurniture(room) {
   }else if(room.preset==='lab'){
     grid(2.5,1.8,1.8,1.25,(gx,gy)=>[rect(gx,gy,1.8,.75,{fill:'#dfe4d3'}),circle(gx+.3,gy+.35,.13,{fill:'#f8f5eb'}),circle(gx+1.5,gy+.35,.13,{fill:'#f8f5eb'}),path(`M${gx+.9} ${gy}v.75`),circle(gx+.35,gy+1.08,.15),circle(gx+1.45,gy+1.08,.15)]);
   }else if(room.preset==='gym'){
-    const gx=x+.7,gy=y+.7,gw=w-1.4,gh=h-1.4;
+    const xs=[...new Set(points.map(p=>p.x))].sort((a,b)=>a-b),boxes=[];
+    for(let i=0;i<xs.length-1;i++){const mid=(xs[i]+xs[i+1])/2,ys=points.flatMap((a,j)=>{const b=points[(j+1)%points.length];return a.y===b.y&&mid>Math.min(a.x,b.x)&&mid<Math.max(a.x,b.x)?[a.y]:[];}).sort((a,b)=>a-b);for(let j=0;j<ys.length-1;j+=2)boxes.push({x:xs[i],y:ys[j],width:xs[i+1]-xs[i],height:ys[j+1]-ys[j]});}
+    const court=boxes.sort((a,b)=>b.width*b.height-a.width*a.height)[0]||{x,y,width:w,height:h};
+    const gx=court.x+.5,gy=court.y+.5,gw=court.width-1,gh=court.height-1;
+    if(gw<.5||gh<.5)return shapes;
     group(gx,gy,gw,gh,[rect(gx,gy,gw,gh,{fill:'#f1ecdf',stroke:'#c3b390',strokeWidth:.04}),path(`M${gx+gw/2} ${gy}v${gh}`,{stroke:'#c3b390'}),circle(gx+gw/2,gy+gh/2,Math.min(gh*.22,1.2),{fill:'none',stroke:'#c3b390'}),path(`M${gx} ${gy+gh*.28}h${gw*.2}v${gh*.44}h${-gw*.2}M${gx+gw} ${gy+gh*.28}h${-gw*.2}v${gh*.44}h${gw*.2}`,{stroke:'#c3b390'}),path(`M${gx+.1} ${gy+gh/2-.3}v.6m${gw-.2}-.6v.6`,{stroke:'#a89876',strokeWidth:.07})]);
   }else if(room.preset==='office'||room.preset==='generic'){
     grid(2.3,1.8,1.6,1.15,(gx,gy)=>[rect(gx,gy,1.6,.75,{fill:'#e9dfce'}),rect(gx+.55,gy+.1,.45,.3,{fill:'#bccdc5'}),path(`M${gx+.65} ${gy+.48}h.28`),rect(gx+.6,gy+.9,.4,.23,{fill:dark})]);
