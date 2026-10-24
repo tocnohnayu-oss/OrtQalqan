@@ -13,7 +13,7 @@ export function PlanDrawing({layout,zones,language,selected='',onSelect,editor=f
     {layout.rooms.map(room=>{const active=room.id===selected||room.zoneId===selected,zone=zones.find(z=>z.id===room.zoneId),label=language==='ru'?(zone?.name||room.name):(zone?.nameKk||room.nameKk),center=labelPoint(room.points),box=roomBounds(room.points),row=snapshot?.rows.find(r=>r.zoneId===room.zoneId);
       const labelBox=labelBounds(room.points),maxChars=Math.max(7,Math.floor((labelBox.width-.45)/.23)),short=label.length>maxChars?label.slice(0,maxChars-1)+'…':label;
       const countLabel=showCounts&&room.zoneId&&!stale?(row?.type?`${row.type==='OP'?'ОП':'ОУ'} ${row.count}`:p.countsManual):'';
-      const labelWidth=Math.min(labelBox.width-.3,Math.max(1.6,short.length*.23));
+      const labelWidth=Math.min(labelBox.width-.3,Math.max(1.6,short.length*.23,countLabel?`${polygonArea(room.points)} ${p.sqm} · ${countLabel}`.length*.18:0));
       return <g data-room-id={room.id} data-preset={room.preset} data-rotation={room.rotation||0} className={`drawn-room ${active?'selected':''} ${room.zoneId?'':'common-space'}`} key={room.id} role="button" tabIndex={0} aria-label={`${label}, ${polygonArea(room.points)} ${p.sqm}${countLabel?', '+countLabel:''}`} aria-pressed={active} onClick={()=>onSelect?.(editor?room.id:room.zoneId||room.id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect?.(editor?room.id:room.zoneId||room.id);}}} onPointerDown={event=>onRoomDown?.(event,room)}>
         <path className="drawn-room-fill" d={pathOf(room.points)} fill={active?'#f6e8dd':room.zoneId?'#fffdf8':'#f1eee6'} stroke="#343934" strokeWidth=".16" strokeLinejoin="miter"/>
         <RoomFurniture room={room}/>
