@@ -1,5 +1,6 @@
 import { ROOM_PRESETS } from './room-presets.mjs';
 import { furniturePrimitives } from './furniture.mjs';
+import { placePlanLabels } from './plan-labels.mjs';
 /** User-drawn orthogonal geometry in metres. It never feeds the fire calculation implicitly. */
 const EPS = 0.00001;
 export const emptyLayout = () => ({ version: 1, rooms: [], openings: [] });
@@ -193,11 +194,8 @@ export function layoutSVG(layout, language, zones = []) {
   if (!validateLayout(layout)) throw Error('Invalid floor layout');
   const box = layoutBounds(layout), parts = [];
   for (const room of layout.rooms) {
-    const zone = zones.find(z => z.id === room.zoneId), name = language === 'kk' ? zone?.nameKk || room.nameKk : zone?.name || room.name;
-    const center = labelPoint(room.points);
     parts.push(`<polygon points="${room.points.map(p => `${p.x},${p.y}`).join(' ')}" fill="${room.zoneId ? '#fffdf8' : '#f1eee6'}" stroke="#343934" stroke-width=".16"/>`);
     for(const shape of furniturePrimitives(room))parts.push(`<${shape.tag} ${Object.entries(shape.attrs).map(([key,value])=>`${key.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())}="${escapeXML(value)}"`).join(' ')}/>`);
-    parts.push(`<text x="${center.x}" y="${center.y}" text-anchor="middle" font-family="Arial,sans-serif" font-size=".42" fill="#343934">${escapeXML(name)}</text><text x="${center.x}" y="${center.y + .55}" text-anchor="middle" font-family="Arial,sans-serif" font-size=".32" fill="#74776d">${polygonArea(room.points)} м²</text>`);
   }
   for (const opening of layout.openings) {
     const room = layout.rooms.find(r => r.id === opening.roomId), g = openingGeometry(room, opening);
@@ -205,5 +203,9 @@ export function layoutSVG(layout, language, zones = []) {
     if (opening.type === 'door') parts.push(`<path d="M${g.hinge.x} ${g.hinge.y}L${g.leaf.x} ${g.leaf.y} ${g.arc}" fill="none" stroke="#687065" stroke-width=".035"/>`);
     else parts.push(`<path d="M${g.start.x} ${g.start.y}L${g.end.x} ${g.end.y}" stroke="#6d8d91" stroke-width=".08"/>`);
   }
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${box.x} ${box.y} ${box.width} ${box.height}" width="1400" height="${Math.round(1400 * box.height / box.width)}"><title>OrtQalqan · ${language === 'kk' ? 'Пайдаланушы жасаған жоспар' : 'План, построенный пользователем'}</title><rect x="${box.x}" y="${box.y}" width="${box.width}" height="${box.height}" fill="#fffdf8"/>${parts.join('')}</svg>`;
+  const height=Math.round(1400*box.height/box.width),items=layout.rooms.map(room=>{const zone=zones.find(zone=>zone.id===room.zoneId);return {id:room.id,name:language==='kk'?zone?.nameKk||room.nameKk:zone?.name||room.name,detail:`${polygonArea(room.points)} м²`,center:labelPoint(room.points),bounds:labelBounds(room.points),priority:room.zoneId?1:0};});
+  const labels=placePlanLabels(items,box,{width:1400,height});
+  const text=(lines,x,y,size,weight,color)=>`<text x="${x}" y="${y}" text-anchor="middle" font-family="Arial,sans-serif" font-size="${size}" font-weight="${weight}" fill="${color}">${lines.map((line,index)=>`<tspan x="${x}" dy="${index?size+3:0}">${escapeXML(line)}</tspan>`).join('')}</text>`;
+  const labelSVG=labels.labels.map(label=>{const x=label.x+label.width/2,end={x:Math.max(label.x,Math.min(label.x+label.width,label.anchor.x)),y:Math.max(label.y,Math.min(label.y+label.height,label.anchor.y))};return `<g><title>${escapeXML(items[label.index].name)}</title>${label.callout?`<path d="M${label.anchor.x} ${label.anchor.y}L${end.x} ${end.y}" fill="none" stroke="#738277"/><circle cx="${label.anchor.x}" cy="${label.anchor.y}" r="2.2" fill="#738277"/>`:''}<rect x="${label.x}" y="${label.y}" width="${label.width}" height="${label.height}" fill="#fffdf8" fill-opacity=".97"/>${text(label.nameLines,x,label.y+7+label.size,label.size,600,'#253b42')}${text(label.detailLines,x,label.y+7+label.nameLines.length*(label.size+3)+label.detailSize,label.detailSize,400,'#4e625b')}</g>`;}).join('');
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${box.x} ${box.y} ${box.width} ${box.height}" width="1400" height="${height}"><title>OrtQalqan · ${language === 'kk' ? 'Пайдаланушы жасаған жоспар' : 'План, построенный пользователем'}</title><rect x="${box.x}" y="${box.y}" width="${box.width}" height="${box.height}" fill="#fffdf8"/>${parts.join('')}<g transform="translate(${box.x-labels.offsetX/labels.scale} ${box.y-labels.offsetY/labels.scale}) scale(${1/labels.scale})">${labelSVG}</g></svg>`;
 }

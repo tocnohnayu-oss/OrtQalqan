@@ -1,0 +1,16 @@
+/* Labels are laid out in screen pixels; zooming never turns names into tiny type. */
+.plan-label-layer{font-family:Noto,Arial,sans-serif}
+.plan-label{cursor:pointer}
+.plan-label-paper{fill:#fffdf8;fill-opacity:.97;stroke:#c0c9bf;stroke-width:.8}
+.plan-room-name{fill:#253b42;font-weight:600;stroke:none}
+.plan-room-detail{fill:#4e625b;font-weight:400;stroke:none}
+.plan-label-leader path{fill:none;stroke:#738277;stroke-width:1}
+.plan-label-leader circle{fill:#738277;stroke:#fffdf8;stroke-width:1}
+.plan-label:not(.is-callout) .plan-label-paper{stroke:none}
+.plan-label.is-selected .plan-label-paper{fill:#fff4e9;stroke:#b5452b;stroke-width:1.4}
+.plan-label.is-selected .plan-room-name{fill:#8b3b26}
+.plan-label.is-selected .plan-label-leader path{stroke:#b5452b}
+.plan-label.is-selected .plan-label-leader circle{fill:#b5452b}
+.editor-canvas:not(.tool-select) .plan-label{pointer-events:none}
+.plan-view-caption .plan-label-note{display:block;font-size:11px;line-height:1.5;color:#405b50;margin-top:3px}
+@media(max-width:720px){.plan-view-caption .plan-label-note{font-size:11px}}

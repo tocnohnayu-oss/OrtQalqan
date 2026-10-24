@@ -4,6 +4,7 @@ import type { BuildingKind, Floor, FloorLayout, Language, LayoutOpening, LayoutR
 import { closeContour, emptyLayout, fitOpenings, layoutBounds, moveVertex, nearestWall, openingCollision, placementIssue, polygonArea, rectPoints, roomBounds, rotateRoom, round, snap, snapPoint, validateLayout } from '../domain/layout.mjs';
 import { planWords } from '../locales/plan';
 import { PlanDrawing, PlanGrid } from './PlanDrawing';
+import { usePlanViewport } from './PlanLabels';
 import { ObjectSketch } from './ObjectSketch';
 import { RoomKitPreview } from './RoomFurniture';
 import { BUILDING_KITS, ROOM_PRESETS, presetForZone } from '../domain/room-presets.mjs';
@@ -30,6 +31,7 @@ export function PlanEditor({floor,language,buildingKind='other',onSave,onCancel,
   const [contour,setContour]=useState<Point[]>([]),[cursor,setCursor]=useState<Point|null>(null),[ghost,setGhost]=useState<LayoutRoom|null>(null);
   const [error,setError]=useState(''),[useAreas,setUseAreas]=useState(false);
   const svg=useRef<SVGSVGElement>(null),drag=useRef<Drag|null>(null),moved=useRef(false);
+  const viewport=usePlanViewport(svg);
   const templateDrag=useRef<{preset:RoomPreset;start:Point}|null>(null);
   const [templatePreview,setTemplatePreview]=useState<LayoutRoom|null>(null);
   const selectedRoom=layout.rooms.find(r=>r.id===selected),opening=layout.openings.find(o=>o.id===openingId);
@@ -161,7 +163,7 @@ export function PlanEditor({floor,language,buildingKind='other',onSave,onCancel,
 
       <div className="editor-canvas-caption"><span>{layout.example?p.sampleLabel:language==='ru'?floor.name:floor.nameKk}</span><span>{p.snap}</span></div>
       <svg ref={svg} className="floor-editor-svg" role="application" aria-label={p.title} tabIndex={0} viewBox={`${view.x} ${view.y} ${view.width} ${view.height}`} onPointerDown={down} onPointerMove={moving} onPointerUp={up} onPointerCancel={()=>{drag.current=null;setGhost(null);}}>
-        <PlanGrid/><PlanDrawing layout={shown} zones={[]} language={language} editor selected={selected} onSelect={id=>{if(!moved.current&&tool==='select'){setSelected(id);setOpeningId('');}}} onRoomDown={roomDown} onVertexDown={vertexDown} openingId={openingId} onOpeningSelect={id=>{setOpeningId(id);setSelected(layout.openings.find(o=>o.id===id)?.roomId||'');}}/>
+        <PlanGrid/><PlanDrawing layout={shown} zones={[]} language={language} labelView={{view,viewport}} editor selected={selected} onSelect={id=>{if(!moved.current&&tool==='select'){setSelected(id);setOpeningId('');}}} onRoomDown={roomDown} onVertexDown={vertexDown} openingId={openingId} onOpeningSelect={id=>{setOpeningId(id);setSelected(layout.openings.find(o=>o.id===id)?.roomId||'');}}/>
         {ghost&&drag.current?.kind==='rectangle'&&<path className="room-preview" d={ghost.points.map((p,i)=>`${i?'L':'M'}${p.x} ${p.y}`).join(' ')+'Z'} fill="#e7c9b650" stroke="#b64c32" strokeWidth=".055" strokeDasharray=".2 .12" pointerEvents="none"/>}
         {templatePreview&&<g className="block-drag-preview" opacity=".65" pointerEvents="none"><PlanDrawing layout={{version:1,rooms:[templatePreview],openings:[]}} zones={[]} language={language}/></g>}
         {contour.length>0&&<><polyline points={[...contour,...cursor?[cursor]:[]].map(p=>`${p.x},${p.y}`).join(' ')} fill="none" stroke="#b64c32" strokeWidth=".1" pointerEvents="none"/>{contour.map((at,i)=><circle key={i} cx={at.x} cy={at.y} r=".1" fill="#b64c32" pointerEvents="none"/>)}</>}
