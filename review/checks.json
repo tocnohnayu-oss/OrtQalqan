@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "sourceSha": "ede6a4f4fdf733e23c621be628aa4aa63acc82cd",
+  "sourceSha": "ad70ebc631b68164b46759a4e4b28f8afb7931ed",
   "checks": [
     "simplified workspace and no automatic fake plan",
     "drag themed furnished room blocks",
@@ -44,6 +44,11 @@
     "anchored plan pan and zoom with keyboard and real touch pinch",
     "phone OP/OU annotations hide stale quantities",
     "cross-floor result correction focuses the current zone",
+    "single-process Vite API supports real accounts",
+    "bilingual room, floor and asset search stays inside the open object",
+    "equipment lookup opens a focused record without editing",
+    "resume unfinished inspections and respect search/filter when advancing",
+    "unplaced rooms, large search lists and 320px keyboard focus",
     "no runtime errors"
   ]
 }
