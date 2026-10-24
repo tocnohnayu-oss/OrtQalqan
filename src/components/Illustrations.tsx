@@ -1,6 +1,6 @@
 /** Original vector artwork for OrtQalqan. */
 export function BrandMark({className=''}:{className?:string}){
-  return <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M24 3 43 10v13c0 7-4 13-10 17l-9 5C12 39 5 33 5 23V10Z" fill="#b64c32"/><path d="M25 10c2 7-5 9-4 14 2-1 3-3 3-5 5 4 8 7 7 11-1 5-4 7-8 7-5 0-9-3-9-8 0-7 8-10 11-19Z" fill="#fffdf8"/><path d="M24 27c0 3-4 4-3 7 1 3 6 3 6-1 0-2-2-4-3-6Z" fill="#b64c32"/><path d="m29 34 13 11h-9l-9-8Z" fill="#272e29"/><path d="M9 12 24 6l15 6" stroke="#d8a28b" strokeWidth="1"/></svg>;
+  return <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M24 3 43 10v13c0 7-4 13-10 17l-9 5C12 39 5 33 5 23V10Z" fill="#b64c32"/><path d="M25 10c2 7-5 9-4 14 2-1 3-3 3-5 5 4 8 7 7 11-1 5-4 7-8 7-5 0-9-3-9-8 0-7 8-10 11-19Z" fill="#fffdf8"/><path d="M24 27c0 3-4 4-3 7 1 3 6 3 6-1 0-2-2-4-3-6Z" fill="#b64c32"/><path d="M9 12 24 6l15 6" stroke="#d8a28b" strokeWidth="1"/></svg>;
 }
 
 export function CampusIllustration(){

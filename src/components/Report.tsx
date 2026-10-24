@@ -5,6 +5,8 @@ import { SOURCE_URL } from '../domain/calculator.mjs';
 import { fieldWords } from '../locales/inspection';
 import { buildingWords } from '../locales/objects';
 import { kindNames } from '../data/templates';
+import { PlanPDF } from './PlanPDF';
+import { planWords } from '../locales/plan';
 import { CHECK_KEYS, inspectionStatus, inspectionSummary, serviceStatus } from '../domain/inspection.mjs';
 import type { Inspection } from '../domain/types';
 
@@ -29,7 +31,7 @@ const s = StyleSheet.create({
 });
 
 function Report({ snapshot, language }: {snapshot:Snapshot; language:Language}) {
-  const t=translator(language), b=snapshot.building, w=fieldWords(language), ow=buildingWords(language), summary=inspectionSummary(b), hasSupported=snapshot.rows.some(r=>r.type);
+  const t=translator(language), b=snapshot.building, w=fieldWords(language), ow=buildingWords(language), summary=inspectionSummary(b), hasSupported=snapshot.rows.some(r=>r.type), p=planWords(language);
   const name=(x:{name:string;nameKk:string})=>language==='ru'?x.name:x.nameKk;
   return <Document title={`OrtQalqan — ${name(b)}`} author="OrtQalqan" language={language}>
     <Page size="A4" style={s.page}>
@@ -43,8 +45,6 @@ function Report({ snapshot, language }: {snapshot:Snapshot; language:Language}) 
       <Text style={s.heading}>{t('total')}</Text>
       <View style={s.summary}><View style={s.cell}><Text style={s.large}>{hasSupported?snapshot.totalOP:'—'}</Text><Text>ОП · {t('op')} · 4 кг ABC(E)</Text></View><View style={s.cell}><Text style={s.large}>{hasSupported?snapshot.totalOU:'—'}</Text><Text>ОУ · {t('ou')}</Text></View></View>
       <Text style={s.note}>{t('sourcesNote')}</Text><Text style={s.note}>{t('placement')}. {t('placementNote')}</Text>
-      <Text style={s.heading}>{t('schematic')}</Text>
-      {b.floors.map(f=><View key={f.id} style={{marginBottom:12,padding:12,backgroundColor:'#f7f4ec',borderWidth:1,borderColor:'#dfdacf'}}><Text style={{fontWeight:700,marginBottom:8}}>{name(f)}</Text><View style={{flexDirection:'row',flexWrap:'wrap',gap:6}}>{f.zones.map(z=>{const r=snapshot.rows.find(x=>x.zoneId===z.id)!;return <View key={z.id} wrap={false} style={{width:'31%',padding:9,backgroundColor:'#fff',borderWidth:1,borderColor:r.issues.length?'#dbcca8':'#cad8c7'}}><Text style={{fontSize:8,marginBottom:5}}>{name(z)}</Text><Text style={{fontSize:7,color:'#75866d'}}>{z.area} {t('sqm')} · {r.type?`${r.type==='OP'?'ОП':'ОУ'} ${r.count}`:'?'}</Text></View>;})}</View><Text style={{fontSize:7,color:'#93a088',marginTop:8}}>{t('noScale')}</Text></View>)}
       <Text style={s.heading}>{t('data')} / {t('result')}</Text>
       <View style={s.row}><Text style={s.nameCell}>{t('name')}</Text><Text style={s.cell}>{t('sqm')}</Text><Text style={s.cell}>{t('type')}</Text><Text style={s.cell}>{t('need')}</Text></View>
       {b.floors.map(f=><View key={f.id}>
@@ -62,6 +62,7 @@ function Report({ snapshot, language }: {snapshot:Snapshot; language:Language}) 
       <Text style={s.note}>{t('snapshot')}: {snapshot.id}. {t('sourceDate')}.</Text>
       <View style={s.footer} fixed><Text>OrtQalqan · {t('docStatus')}</Text><Text render={({pageNumber,totalPages})=>`${pageNumber} / ${totalPages}`} /></View>
     </Page>
+    {b.floors.filter(f=>f.layout?.rooms.length).map(f=><Page size="A4" style={s.page} key={'layout-'+f.id}><Text style={s.brand}>ortqalqan.</Text><Text style={s.title}>{name(f)} · {p.view}</Text><Text style={s.note}>{f.layout?.example?p.sampleLabel:p.measurements}</Text><PlanPDF floor={f} language={language}/><Text style={{...s.note,marginTop:15}}>{p.areasSeparate} {t('placementNote')}</Text><View style={s.footer} fixed><Text>OrtQalqan · {p.drawing}</Text><Text render={({pageNumber,totalPages})=>`${pageNumber} / ${totalPages}`} /></View></Page>)}
     {b.floors.some(f=>f.zones.some(z=>z.inspection||z.assets?.length))&&<Page size="A4" style={s.page}>
       <Text style={s.brand}>ortqalqan.</Text><Text style={s.title}>{w.summary}</Text><Text style={s.line}>{name(b)} · {w.date}: {b.date}</Text>
       <View style={s.summary}><View style={s.cell}><Text style={s.large}>{summary.visited} / {summary.total}</Text><Text>{w.visited}</Text></View><View style={s.cell}><Text style={s.large}>{summary.assets}</Text><Text>{w.assets}</Text></View></View>

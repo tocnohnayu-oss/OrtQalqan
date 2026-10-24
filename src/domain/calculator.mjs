@@ -1,4 +1,5 @@
 import { validateFieldRecords } from './inspection.mjs';
+import { validateLayout } from './layout.mjs';
 /** Preliminary, explicitly scoped public-building profile; see docs/NORMATIVE_RESEARCH.md. */
 export const RULES_VERSION = 'public-pilot-2026-10-23';
 export const SOURCE_URL = 'https://old.adilet.zan.kz/rus/docs/V2200026867';
@@ -56,6 +57,7 @@ export function validateBuilding(value) {
     if (!f || typeof f.id !== 'string' || ids.has(f.id) || typeof f.name !== 'string' || typeof f.nameKk !== 'string' || !Array.isArray(f.zones) || f.zones.length > 100 || !Array.isArray(f.markers)) return false;
     ids.add(f.id);
     if (f.plan && (typeof f.plan !== 'string' || !/^data:image\/(png|jpeg|webp);base64,/.test(f.plan) || f.plan.length > 3000000)) return false;
+    if (f.layout !== undefined && !validateLayout(f.layout, new Set(f.zones.map(z => z?.id)))) return false;
     return f.zones.every(z => {
       if (!z || typeof z.id !== 'string' || ids.has(z.id)) return false;
       ids.add(z.id);
