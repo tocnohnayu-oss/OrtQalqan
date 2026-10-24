@@ -5,7 +5,7 @@ import { createShowcase } from '../src/data/showcase.mjs';
 export async function focusPlanSmoke(browser,errors){
   const building=createShowcase({id:'focus-demo',date:'2026-10-24'}),context=await browser.newContext({viewport:{width:1440,height:1000},hasTouch:true}),page=await context.newPage();
   page.on('pageerror',error=>errors.push(error.message));
-  await context.addInitScript(building=>{localStorage.setItem('ortqalqan.guide.v1','seen');localStorage.setItem('ortqalqan.building.v1',JSON.stringify({version:2,activeId:building.id,buildings:[building]}));},building);
+  await context.addInitScript(building=>{localStorage.setItem('ortqalqan.guide.v1','seen');if(!localStorage.getItem('ortqalqan.building.v1'))localStorage.setItem('ortqalqan.building.v1',JSON.stringify({version:2,activeId:building.id,buildings:[building]}));},building);
   const svg=page.locator('.built-floor-plan'),focus=()=>page.locator('.plan-focus'),editor=()=>page.locator('.plan-editor-modal');
   const closeEditor=async accept=>{page.once('dialog',dialog=>accept?dialog.accept():dialog.dismiss());await page.keyboard.press('Escape');};
   try{
