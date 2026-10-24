@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "sourceSha": "2dd5e4b20fc4f20366c67651a10cbfde19e016f4",
+  "sourceSha": "494a90fada3f0840c2b6bad55df2ef2a60852160",
   "checks": [
     "simplified workspace and no automatic fake plan",
     "drag themed furnished room blocks",
@@ -55,6 +55,10 @@
     "nested editor Escape preserves the expanded stage and unsaved guard",
     "phone stage supports real pinch, room search and accessible rotation",
     "expanded image annotations retain their percentage positions",
+    "screen-sized room labels, wrapping and non-overlapping callouts in viewer/editor",
+    "phone callout taps select their own room and preserve camera gestures",
+    "dense plans keep readable type and explain hidden labels",
+    "readable SVG and PDF plan labels share placement logic",
     "no runtime errors"
   ]
 }
