@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "sourceSha": "b708f904e3ae832243888ebd144c0694c6c781b4",
+  "sourceSha": "b878529ad4966a3b86bf2646a1291286e864c8e6",
   "checks": [
     "simplified workspace and no automatic fake plan",
     "drag themed furnished room blocks",
