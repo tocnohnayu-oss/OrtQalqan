@@ -1,0 +1,40 @@
+import assert from 'node:assert/strict';
+import { expect } from '@playwright/test';
+import { createShowcase } from '../src/data/showcase.mjs';
+
+export async function focusPlanSmoke(browser,errors){
+  const building=createShowcase({id:'focus-demo',date:'2026-10-24'}),context=await browser.newContext({viewport:{width:1440,height:1000},hasTouch:true}),page=await context.newPage();
+  page.on('pageerror',error=>errors.push(error.message));
+  await context.addInitScript(building=>{localStorage.setItem('ortqalqan.guide.v1','seen');localStorage.setItem('ortqalqan.building.v1',JSON.stringify({version:2,activeId:building.id,buildings:[building]}));},building);
+  const svg=page.locator('.built-floor-plan'),focus=()=>page.locator('.plan-focus'),editor=()=>page.locator('.plan-editor-modal');
+  const closeEditor=async accept=>{page.once('dialog',dialog=>accept?dialog.accept():dialog.dismiss());await page.keyboard.press('Escape');};
+  try{
+    await page.goto('http://127.0.0.1:4173');await page.evaluate(()=>document.fonts.ready);
+    const trigger=page.getByRole('button',{name:'Развернуть план',exact:true}),normal=await svg.boundingBox();await trigger.scrollIntoViewIfNeeded();const scroll=await page.evaluate(()=>({x:scrollX,y:scrollY}));
+    await trigger.click();await expect(focus()).toHaveCount(1);await expect(page.locator('#plan-focus-heading')).toBeFocused();assert.equal(await page.evaluate(()=>document.documentElement.style.overflow),'hidden');
+    const expanded=await svg.boundingBox();assert.ok(expanded.height>normal.height+20,'expanding the plan gives the drawing more vertical space');assert.ok(expanded.y>=0&&expanded.y+expanded.height<=1000,'the drawing fits inside the working viewport');
+    await page.screenshot({path:'qa/folio-focus-desktop.png',fullPage:false});
+    await svg.focus();await page.keyboard.press('+');const camera=await svg.getAttribute('viewBox');await page.keyboard.press('Escape');await expect(focus()).toHaveCount(0);await expect(trigger).toBeFocused();await expect(svg).toHaveAttribute('viewBox',camera);assert.equal(await page.evaluate(()=>document.documentElement.style.overflow),'');assert.ok(Math.abs((await page.evaluate(()=>scrollY))-scroll.y)<2,'leaving restores the previous page position');
+    await trigger.click();await page.getByRole('button',{name:'Редактировать план',exact:true}).click();await editor().getByRole('button',{name:'Добавить блок: Класс',exact:true}).locator('strong').click();
+    await editor().getByRole('button',{name:'Повернуть вправо на 90°',exact:true}).click();await expect(editor().getByLabel('Ширина, м',{exact:true})).toHaveValue('6');await expect(editor().locator('.editor-selection-tools')).toContainText('90°');
+    await page.screenshot({path:'qa/folio-editor-desktop.png',fullPage:false});
+    await closeEditor(false);await expect(editor()).toBeVisible();await expect(focus()).toHaveCount(1);await closeEditor(true);await expect(editor()).toHaveCount(0);await expect(focus()).toHaveCount(1);
+    assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('ortqalqan.building.v1')).buildings[0]),JSON.parse(JSON.stringify(building)),'focus and cancelling the editor never mutate the building');
+    await page.setViewportSize({width:320,height:844});
+    // Language is changed while the regular header is available, then the focus mode is reopened.
+    await page.getByRole('button',{name:'К объекту',exact:true}).click();await page.getByRole('button',{name:'ҚАЗ',exact:true}).click();await page.getByRole('button',{name:'Жоспарды кеңейту',exact:true}).click();
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);const mobile=await svg.boundingBox();assert.ok(mobile.height>350,'the drawing remains the main surface on a narrow phone');
+    await page.getByRole('button',{name:'Жоспардағы ОП / ОУ',exact:true}).click();await page.screenshot({path:'qa/folio-focus-mobile-kk.png',fullPage:false});
+    const client=await context.newCDPSession(page),cx=mobile.x+mobile.width/2,cy=mobile.y+mobile.height/2,touch=(type,points)=>client.send('Input.dispatchTouchEvent',{type,touchPoints:points.map((point,id)=>({...point,id,radiusX:3,radiusY:3,force:1}))});
+    const initial=await svg.getAttribute('viewBox');await touch('touchStart',[{x:cx-30,y:cy},{x:cx+30,y:cy}]);for(let i=1;i<=4;i++)await touch('touchMove',[{x:cx-30-i*8,y:cy},{x:cx+30+i*8,y:cy}]);await touch('touchEnd',[]);await expect(svg).not.toHaveAttribute('viewBox',initial);assert.equal(await page.locator('.inspector-sheet').count(),0,'pinching in focus mode does not open room parameters');
+    await page.getByRole('button',{name:'Жоспар бөлмелері',exact:true}).click();await expect(page.locator('#plan-room-index input')).toBeFocused();await page.locator('#plan-room-index input').fill('сервер');await page.getByRole('button',{name:'Бөлмені ашу: Сервер бөлмесі · Бірінші қабат',exact:true}).click();await expect(page.locator('.inspector-sheet')).toBeVisible();await page.keyboard.press('Escape');await expect(page.locator('.inspector-sheet')).toHaveCount(0);await expect(focus()).toHaveCount(1);await expect(svg).toBeFocused();assert.equal(await page.locator('#plan-room-index').isVisible(),false,'the room catalogue folds away after selection');
+    await page.getByRole('button',{name:'Жоспарды өңдеу',exact:true}).click();await editor().getByRole('button',{name:'Блок қосу: Сынып',exact:true}).locator('strong').tap();await editor().getByRole('button',{name:'Оңға 90° бұру',exact:true}).tap();await expect(editor().getByLabel('Ені, м',{exact:true})).toHaveValue('6');
+    const turns=await editor().locator('.editor-turn-buttons button').evaluateAll(buttons=>buttons.map(button=>{const box=button.getBoundingClientRect();return {x:box.x,y:box.y,right:box.right,bottom:box.bottom,width:box.width,height:box.height};}));assert.ok(turns.every(box=>box.x>=0&&box.right<=320&&box.y>=0&&box.bottom<=844&&box.width>=44&&box.height>=44),'rotation is reachable beside the drawing with 44px phone targets');assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);await page.screenshot({path:'qa/folio-editor-mobile-kk.png',fullPage:false});
+    await closeEditor(true);await expect(focus()).toHaveCount(1);await page.getByRole('button',{name:'Нысанға',exact:true}).click();await expect(focus()).toHaveCount(0);
+    // Image annotation keeps its source and percentage coordinates when the stage expands.
+    await page.locator('.studio-zone-list').getByRole('button',{name:'Кітапхана',exact:true}).click();await page.locator('.inspector-sheet .modal-heading button').click();const image=await svg.screenshot();await page.locator('input[type=file][accept="image/png,image/jpeg,image/webp"]').setInputFiles({name:'focus-plan.png',mimeType:'image/png',buffer:image});await page.locator('.plan-tools .button').first().click();await page.locator('.plan-image-wrap').click({position:{x:90,y:90}});const marker=page.locator('.plan-marker'),location=await marker.getAttribute('style');
+    await page.getByRole('button',{name:'Жоспарды кеңейту',exact:true}).click();await expect(page.locator('.plan-image-wrap img')).toBeVisible();await expect(marker).toHaveAttribute('style',location);const offset=await marker.evaluate(marker=>{const image=marker.parentElement.getBoundingClientRect(),point=marker.getBoundingClientRect();return {dx:Math.abs(point.x+point.width/2-image.x-image.width*parseFloat(marker.style.left)/100),dy:Math.abs(point.y+point.height/2-image.y-image.height*parseFloat(marker.style.top)/100)};});assert.ok(offset.dx<2&&offset.dy<2,'expanded image markers still align with their saved coordinates');await page.screenshot({path:'qa/folio-image-mobile-kk.png',fullPage:false});
+    await page.getByRole('button',{name:'Нысанға',exact:true}).click();assert.equal(await page.evaluate(()=>document.documentElement.style.overflow),'');assert.deepEqual(errors,[]);
+  }catch(error){await page.screenshot({path:'qa/folio-failure.png',fullPage:true}).catch(()=>{});throw error;}
+  finally{await context.close();}
+}

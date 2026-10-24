@@ -8,5 +8,6 @@ import './styles/atlas.css';
 import './styles/account.css';
 import './styles/guide.css';
 import './styles/proof.css';
+import './styles/plan-workspace.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);
