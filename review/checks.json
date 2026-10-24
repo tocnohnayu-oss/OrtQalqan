@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "sourceSha": "f767aad2b4a6df57a1c775aaa6496fa60e4da43c",
+  "sourceSha": "b708f904e3ae832243888ebd144c0694c6c781b4",
   "checks": [
     "simplified workspace and no automatic fake plan",
     "drag themed furnished room blocks",
@@ -64,6 +64,9 @@
     "inline recalculation keeps the room open and manual availability editable",
     "locate returns to the selected drawing or an existing image marker with focus",
     "long Kazakh unplaced-room context and 44px phone navigation",
+    "distinct room glyphs follow explicit presets without changing source data",
+    "ink floor index and light phone navigation preserve readable text contrast",
+    "branded desktop, search, room, empty plan and room-symbol visual review",
     "no runtime errors"
   ]
 }
