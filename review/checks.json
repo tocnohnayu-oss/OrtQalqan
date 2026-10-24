@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "sourceSha": "d6bbe491dc9091853dbe5a236ff91d6202e18837",
+  "sourceSha": "e587b9b51da4e0201a66f4a2a2e8fa4f76b690c5",
   "checks": [
     "simplified workspace and no automatic fake plan",
     "drag themed furnished room blocks",
@@ -41,6 +41,9 @@
     "opt-in prepared example preserves device and shared objects",
     "visible calculation derivation and real 400-to-401 area change",
     "demonstration PDF, source access and narrow calculation view",
+    "anchored plan pan and zoom with keyboard and real touch pinch",
+    "phone OP/OU annotations hide stale quantities",
+    "cross-floor result correction focuses the current zone",
     "no runtime errors"
   ]
 }
