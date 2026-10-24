@@ -1,0 +1,86 @@
+/* OrtQalqan: an ink index beside a bright drawing sheet. */
+:root{--atlas-desk:#ebede7}
+.simple-shell .simple-topbar{background:#fffefb;border-bottom-color:#b4bfb5}
+.simple-shell main{padding-top:24px}
+.plan-focus main{padding-top:0}
+.studio-object-header{padding:6px 0 24px;margin-bottom:0}
+.object-heading-block{grid-template-columns:104px minmax(0,1fr);column-gap:20px;row-gap:8px}
+.studio-object-header .object-sketch{width:104px;height:104px}
+.object-heading-block>.object-switch-button{font-size:12px;border-color:#9cae9e;background:#fffefb}
+.object-type-label{font-size:11px;letter-spacing:1.7px;color:#9a472e}
+.studio-object-name h1{font-size:clamp(36px,3.4vw,50px);line-height:1.07;letter-spacing:-1px}
+.studio-save{color:#53695b}
+.studio-actions>.button.primary{box-shadow:0 3px 0 #823a2540}
+.studio-layout{background:#fffefb;border-color:#566e60;box-shadow:0 9px 24px #253b420b}
+.studio-plan,.studio-plan-toolbar,.plan-view-footer{background:#fffefb}
+.studio-plan-toolbar{border-bottom-color:#a4b5a5}
+.floor-sheet-title h2{font-size:25px;letter-spacing:-.35px}
+.studio-plan-actions>button[data-guide=plan]{background:#f4e5d9;border-color:#c89879;color:#853d29}
+.studio-plan-actions>button[data-guide=plan]:hover{background:#ebd2c0;border-color:#ad6544}
+.built-plan-viewport,.editor-canvas{background:#f8faf6}
+.plan-grid-minor{stroke:#e7ece5}.plan-grid-major{stroke:#d9e1d7}
+.room-glyph{display:block;width:30px;height:30px;flex-shrink:0;color:#526d5a}
+.room-glyph-accent{stroke:#b5452b}
+.studio-zone-list>.room-index-room{gap:10px;min-height:52px}
+.studio-zone-list>.room-index-room>.room-index-name{display:block;width:auto;height:auto;min-width:0;flex:1;border:0;border-radius:0;background:none;font-size:13px;line-height:1.6;flex-shrink:1}
+.room-index-match{grid-template-columns:28px minmax(0,1fr) 14px}
+.room-index-marker>.room-glyph{width:26px;height:26px}
+.room-index-match strong{font-size:13px}
+@media(min-width:721px){
+  .studio-sidebar{background:#253b42;border-right-color:#253b42;color:#f1f4eb;padding-inline:14px}
+  .studio-sidebar-title{color:#e4ece2;font-size:14px}
+  .studio-sidebar-title .icon-button{color:#e4ece2}
+  .studio-sidebar-title .icon-button:hover{background:#3b5454;color:#fffdf8}
+  .studio-floor-list{border-top-color:#5c746b}
+  .studio-floor{color:#edf2e9;border-color:#536b61;background:transparent;min-height:66px}
+  .studio-floor>span{color:#abc0b4}.studio-floor strong{color:#edf2e9;font-size:12px}.studio-floor small{color:#c5d2c6}
+  .studio-floor:hover:not(.active){background:#314d50;color:#fffdf8}
+  .studio-floor.active{background:#fffdf8;border-color:#fffdf8;color:#253b42;box-shadow:inset 3px 0 #b5452b}
+  .studio-floor.active>span{color:#b5452b}.studio-floor.active strong{color:#253b42}.studio-floor.active small{color:#52695b}
+  .studio-sidebar .room-index-search{background:#fffdf8;border-color:#acbda9;border-bottom-color:#91a58d;color:#415d4b}
+  .studio-sidebar .room-index-search input{color:#253b42}.studio-sidebar .room-index-search button{color:#405d4d}
+  .studio-sidebar .room-index-search:focus-within{outline-color:#e0a17f}
+  .studio-sidebar .room-index-scope{color:#c5d2c6}
+  .studio-sidebar .studio-zone-caption{color:#c5d2c6;font-size:11px;margin-left:7px}
+  .studio-sidebar .studio-zone-list>.room-index-room{background:transparent;border:0;border-left:2px solid transparent;color:#edf2e9;padding:9px 7px}
+  .studio-sidebar .studio-zone-list>.room-index-room:hover{background:#314d50}
+  .studio-sidebar .studio-zone-list>.room-index-room>.room-glyph{color:#d4e1d5;padding:3px}
+  .studio-sidebar .room-glyph-accent{stroke:#e1a17a}
+  .studio-sidebar .studio-zone-list>.room-index-room.active{background:#314d50;color:#fffdf8;border-left-color:#e0a17f}
+  .studio-sidebar .studio-zone-list>.room-index-room.active>.room-glyph{background:#fffdf8;color:#344f43}
+  .studio-sidebar .studio-zone-list>.room-index-room.active .room-glyph-accent{stroke:#a3472d}
+  .studio-sidebar .studio-add-zone{color:#d6e2d5;border-top:1px solid #536e60;padding-top:13px;margin-top:12px;font-size:11px}
+  .studio-sidebar .studio-add-zone:hover{background:#314d50}
+  .studio-sidebar .room-index-found{color:#cbd8c9;border-color:#536e60}
+  .studio-sidebar .room-index-matches h3{color:#eef3e8}
+  .studio-sidebar .room-index-match{border-color:#536e60;color:#f1f5ed}
+  .studio-sidebar .room-index-match:hover{background:#314d50}
+  .studio-sidebar .room-index-match small{color:#c4d4c5}.studio-sidebar .room-index-match small b{color:#f2b594}
+  .studio-sidebar .room-index-marker{color:#e4ad8e}.studio-sidebar .room-index-marker>.room-glyph{color:#d4e1d5}
+  .studio-sidebar .room-index-more{color:#f0d5be;border-color:#536e60}
+  .studio-sidebar .room-index-empty{color:#d1ddcd}.studio-sidebar .room-index-empty>svg{color:#b8cbb8}.studio-sidebar .room-index-empty>strong{color:#f0f5eb}
+  .studio-sidebar .room-index-empty .text-button{color:#f0c3a6}
+}
+@media(min-width:721px) and (max-width:1150px){
+  .object-heading-block{grid-template-columns:78px minmax(0,1fr);column-gap:16px}.studio-object-header .object-sketch{width:78px;height:78px}
+  .studio-sidebar{padding-inline:10px}.studio-zone-list>.room-index-room>.room-index-name{font-size:12px}
+}
+@media(max-width:720px){
+  .simple-shell main{padding-top:18px}
+  .studio-object-header{padding:0 0 20px}
+  .object-heading-block{grid-template-columns:minmax(0,1fr) 56px;column-gap:12px;row-gap:12px}
+  .studio-object-header .object-sketch{width:56px;height:56px}
+  .studio-object-name h1{font-size:34px;line-height:1.08}
+  .object-type-label{font-size:10px;letter-spacing:1.5px}
+  .studio-actions{margin-top:17px}
+  .studio-sidebar{background:#f7f7f0;border-color:#bac9b6}
+  .studio-plan-toolbar{padding-block:12px}.floor-sheet-title h2{font-size:20px}
+  .studio-zone-list{gap:10px;padding-top:8px;padding-bottom:0}
+  .studio-zone-list>.room-index-room{min-height:48px;gap:7px;padding:8px 3px;border:0;border-bottom:2px solid transparent;background:transparent;color:#425c4e}
+  .studio-zone-list>.room-index-room>.room-index-name{font-size:12px;white-space:nowrap}
+  .studio-zone-list>.room-index-room>.room-glyph{width:24px;height:24px}
+  .studio-zone-list>.room-index-room.active{background:transparent;color:#923e29;border-left:0;border-bottom-color:#b5452b}
+  .studio-zone-list>.room-index-room.active>.room-glyph{color:#923e29}
+  .studio-zone-list>.studio-add-zone{border:0;background:transparent;min-height:48px}
+  .plan-focus main{padding-top:0}
+}

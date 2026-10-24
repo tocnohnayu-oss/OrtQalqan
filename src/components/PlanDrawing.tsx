@@ -35,7 +35,7 @@ export function PlanDrawing({layout,zones,language,selected='',onSelect,editor=f
 
 export function PlanGrid(){
   const id=useId().replaceAll(':','');
-  return <><defs><pattern id={`${id}-small`} width=".5" height=".5" patternUnits="userSpaceOnUse"><path d="M.5 0H0V.5" stroke="#e8e5db" strokeWidth=".015" fill="none"/></pattern><pattern id={`${id}-major`} width="2" height="2" patternUnits="userSpaceOnUse"><rect width="2" height="2" fill={`url(#${id}-small)`}/><path d="M2 0H0V2" stroke="#dad6cb" strokeWidth=".02" fill="none"/></pattern></defs><rect x="-300" y="-300" width="600" height="600" fill={`url(#${id}-major)`} pointerEvents="none"/></>;
+  return <><defs><pattern id={`${id}-small`} width=".5" height=".5" patternUnits="userSpaceOnUse"><path className="plan-grid-minor" d="M.5 0H0V.5" stroke="#e8e5db" strokeWidth=".015" fill="none"/></pattern><pattern id={`${id}-major`} width="2" height="2" patternUnits="userSpaceOnUse"><rect width="2" height="2" fill={`url(#${id}-small)`}/><path className="plan-grid-major" d="M2 0H0V2" stroke="#dad6cb" strokeWidth=".02" fill="none"/></pattern></defs><rect x="-300" y="-300" width="600" height="600" fill={`url(#${id}-major)`} pointerEvents="none"/></>;
 }
 
 type View = {x:number;y:number;width:number;height:number};
