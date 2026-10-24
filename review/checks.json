@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "sourceSha": "c7d14e201523aba111f4afd68404b79e1c677478",
+  "sourceSha": "d915e66c2f8149ea3fb458d90de5fd7f903659d6",
   "checks": [
     "simplified workspace and no automatic fake plan",
     "drag themed furnished room blocks",
@@ -35,6 +35,9 @@
     "logout restores device draft",
     "team archive and sign-in at 390/320px",
     "session expiry preserves the draft and switching identities clears private state",
+    "first-visit guide, skip preference and manual restart",
+    "five real-control tour steps in RU and KK at 320px",
+    "guide escape restores page scrolling",
     "no runtime errors"
   ]
 }
