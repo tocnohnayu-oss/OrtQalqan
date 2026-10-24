@@ -21,3 +21,15 @@
 .guide-example{display:flex;align-items:center;justify-content:center;gap:8px;min-height:42px;width:100%;color:#8f3c28;font-size:11px;border-top:1px solid #cbd4bf;margin:0 0 12px;padding:8px 0 0}.guide-example>svg{flex-shrink:0}
 @media(max-width:720px){.result-modal{max-width:100%;width:100%;height:100dvh;max-height:100dvh;margin:0;inset:0}.result-modal>.modal-body{padding:20px 19px 23px}.proof-object h3{font-size:27px;margin-bottom:19px}.proof-totals>section{padding:15px 12px;gap:9px}.proof-totals .equipment-illustration{width:38px;height:65px}.proof-totals strong{font-size:39px;gap:7px}.proof-totals strong>small{font-size:14px}.proof-totals>section>div>span{font-size:10px}.proof-scope{padding:13px 12px;gap:9px}.proof-scope strong{font-size:19px}.proof-scope p{font-size:10px}.proof-scope .text-button{font-size:10px;gap:6px}.proof-coverage{font-size:10px;gap:9px;padding:16px 0}.proof-floor>h3{font-size:24px}.proof-zone h4{font-size:22px}.proof-equation{gap:4px;padding:12px 8px;grid-template-columns:minmax(0,1fr) 16px minmax(0,1fr) 16px minmax(0,1fr)}.proof-equation strong{font-size:26px}.proof-equation small{font-size:8px}.proof-equation>b{font-size:19px}.proof-footer{bottom:-23px;margin:22px -19px -23px;padding:12px 19px 19px}.proof-footer>p{font-size:9px}.proof-footer .button{font-size:12px;min-height:46px;gap:8px;white-space:normal;line-height:1.6}.guide-example{font-size:10px}}
 @media(max-width:360px){.proof-totals .equipment-illustration{width:30px;height:56px}.proof-totals>section{padding:14px 9px;gap:7px}.proof-totals strong{font-size:35px}.proof-totals>section>div>span{font-size:9px}.proof-equation strong{font-size:23px}.proof-scope>svg{width:16px}.proof-scope strong{font-size:18px}}
+
+/* Keep the first derivation visible on a phone; export follows the reviewed zones. */
+@media(max-width:720px){
+  .result-modal>.modal-heading{padding-block:9px;min-height:54px}
+  .proof-object h3{font-size:25px;margin-bottom:12px}
+  .proof-totals{margin-bottom:15px}
+  .proof-scope{padding-block:10px}
+  .proof-floor>h3{margin-top:18px}
+  .proof-zone{padding-top:12px}
+  .proof-rounding{margin-top:9px}
+  .proof-footer{position:static}
+}

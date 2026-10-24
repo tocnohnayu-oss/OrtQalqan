@@ -26,7 +26,9 @@ function rawFurniture(room) {
     grid(1.7,1.4,1.15,.98,(gx,gy)=>[rect(gx,gy,1.15,.58,{fill:'#e8decc'}),path(`M${gx+.575} ${gy}v.58`),rect(gx+.08,gy+.74,.36,.18,{fill:dark}),rect(gx+.71,gy+.74,.36,.18,{fill:dark})]);
   }else if(room.preset==='library'||room.preset==='shop'){
     const cols=Math.min(8,Math.max(1,Math.floor((w-1)/1.8))),rh=Math.max(.8,h-1.6);
-    for(let i=0;i<cols;i++){const gx=x+.5+i*(w-1)/cols,gy=y+.6;const items=[rect(gx,gy,.65,rh,{fill:'#dce3cf'}),path(`M${gx+.325} ${gy}v${rh}`)];for(let j=0;j<Math.min(26,Math.floor(rh/.18));j++)items.push(path(`M${gx+.06} ${gy+.1+j*.18}h.53`,{stroke:'#b6bca9',strokeWidth:.04}));group(gx,gy,.65,rh,items);}
+    // Large library symbols have cross aisles; these remain schematic, never capacity/egress data.
+    const segments=room.preset==='library'&&rh>8?Math.min(8,2*Math.ceil(rh/12)):1,aisle=segments>1?1.2:0,shelfHeight=(rh-aisle*(segments-1))/segments;
+    for(let i=0;i<cols;i++)for(let part=0;part<segments;part++){const gx=x+.5+i*(w-1)/cols,gy=y+.6+part*(shelfHeight+aisle);const items=[rect(gx,gy,.65,shelfHeight,{fill:'#dce3cf'}),path(`M${gx+.325} ${gy}v${shelfHeight}`)];for(let j=0;j<Math.min(26,Math.floor(shelfHeight/.18));j++)items.push(path(`M${gx+.06} ${gy+.1+j*.18}h.53`,{stroke:'#b6bca9',strokeWidth:.04}));group(gx,gy,.65,shelfHeight,items);}
     if(room.preset==='shop')group(x+w-2.2,y+h-1.1,1.7,.55,[rect(x+w-2.2,y+h-1.1,1.7,.55,{fill:'#d5d8ca'})]);
   }else if(room.preset==='lab'){
     grid(2.5,1.8,1.8,1.25,(gx,gy)=>[rect(gx,gy,1.8,.75,{fill:'#dfe4d3'}),circle(gx+.3,gy+.35,.13,{fill:'#f8f5eb'}),circle(gx+1.5,gy+.35,.13,{fill:'#f8f5eb'}),path(`M${gx+.9} ${gy}v.75`),circle(gx+.35,gy+1.08,.15),circle(gx+1.45,gy+1.08,.15)]);
