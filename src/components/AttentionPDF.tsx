@@ -24,22 +24,22 @@ export function AttentionPDF({building,language,snapshotId}:{building:Building;l
     <Text style={s.brand}>ortqalqan.</Text><Text style={s.title}>{w.title}</Text>
     <Text style={s.line}>{name(building)}</Text><Text style={s.line}>{w.referenceDate}: {building.date} · {w.records}: {items.length}</Text>
     {building.demo&&<Text style={s.caption}>{w.demo}</Text>}
+    <Text style={s.caption}>{w.snapshot}: {snapshotId} · {w.revision}: {building.revision}</Text>
     <Text style={s.caption}>{w.boundary}</Text><Text style={s.caption}>{w.referenceHint}</Text>
     {ATTENTION_GROUPS.map(group=>{
       const rows=items.filter(item=>item.group===group);if(!rows.length)return null;
       return <View key={group}>
-        <Text style={s.group} minPresenceAhead={70}>{w[group as keyof typeof w]}</Text>
-        <Text style={s.caption} minPresenceAhead={50}>{w[`${group}Hint` as keyof typeof w]}</Text>
-        {rows.map(item=><View style={s.row} key={item.id}>
+        <Text style={s.group} minPresenceAhead={160}>{w[group as keyof typeof w]}</Text>
+        <Text style={s.caption} minPresenceAhead={140}>{w[`${group}Hint` as keyof typeof w]}</Text>
+        {rows.map(item=><View style={s.row} key={item.id} wrap={item.kind==='room'&&!!item.zone.notes?.trim()}>
           <Text style={s.caption} minPresenceAhead={45}>{name(item.floor)} / {name(item.zone)}</Text>
           <Text style={s.name} minPresenceAhead={30}>{item.asset?`${item.asset.type==='OP'?'ОП':'ОУ'} · ${item.asset.label}${item.asset.model?` / ${item.asset.model}`:''}`:w.observation}</Text>
+          <Text style={s.caption} minPresenceAhead={20}>{attentionSource(item,building.date,language)}</Text>
           {item.reasons.map(reason=><Text style={s.line} key={reason}>• {attentionReason(item,reason,language)}</Text>)}
           {item.kind==='room'&&item.zone.notes?.trim()&&<Text style={s.note}>{item.zone.notes}</Text>}
-          <Text style={s.caption}>{attentionSource(item,building.date,language)}</Text>
         </View>)}
       </View>;
     })}
-    <Text style={{...s.caption,marginTop:18}}>{w.snapshot}: {snapshotId} · {w.revision}: {building.revision}</Text>
     <View style={s.footer} fixed><Text>OrtQalqan · {w.title}</Text><Text render={({pageNumber,totalPages})=>`${pageNumber} / ${totalPages}`}/></View>
   </Page>;
 }

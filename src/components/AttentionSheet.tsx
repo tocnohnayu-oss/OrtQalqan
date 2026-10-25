@@ -1,7 +1,7 @@
 import { useId, useLayoutEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, CalendarDays, ChevronDown, ClipboardList, Download, MapPin, Search, Tag, X } from 'lucide-react';
 import type { Building, Language } from '../domain/types';
-import { ATTENTION_GROUPS, attentionCSV, attentionItems } from '../domain/attention.mjs';
+import { ATTENTION_GROUPS, attentionItems } from '../domain/attention.mjs';
 import { validDate } from '../domain/inspection.mjs';
 import { attentionReason, attentionSource, attentionWords } from '../locales/attention.mjs';
 import { RoomGlyph } from './RoomGlyph';
@@ -21,9 +21,9 @@ function SheetIllustration() {
 }
 
 const normalize = (value:string) => value.normalize('NFKC').toLowerCase().replaceAll('ё','е').replace(/[‐‑‒–—]/g,'-');
-type Props = {active:boolean;building:Building;language:Language;onOpen:(zoneId:string,assetId?:string)=>void;onLocate:(zoneId:string)=>void;onRooms:()=>void};
+type Props = {active:boolean;building:Building;language:Language;onOpen:(zoneId:string,assetId?:string)=>void;onLocate:(zoneId:string)=>void;onRooms:()=>void;onExport:()=>void};
 
-export function AttentionSheet({active,building,language,onOpen,onLocate,onRooms}:Props) {
+export function AttentionSheet({active,building,language,onOpen,onLocate,onRooms,onExport}:Props) {
   const w=attentionWords(language),name=(item:{name:string;nameKk:string})=>language==='ru'?item.name:item.nameKk;
   const [query,setQuery]=useState(''),[group,setGroup]=useState('all'),[limit,setLimit]=useState(40);
   const descriptionId=useId(),items=attentionItems(building);
@@ -40,10 +40,6 @@ export function AttentionSheet({active,building,language,onOpen,onLocate,onRooms
   ].join(' ')).includes(token)));
   const shown=matches.slice(0,limit);
   const clear=()=>{setQuery('');setGroup('all');setLimit(40);};
-  const download=()=>{
-    const url=URL.createObjectURL(new Blob([attentionCSV(building,language)],{type:'text/csv;charset=utf-8'}));
-    const link=document.createElement('a');link.href=url;link.download=`OrtQalqan-attention-${building.date}-${language}.csv`;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-  };
   return <section className="attention-sheet" ref={root} aria-label={w.title}>
     <button className="attention-return" onClick={onRooms}><ArrowLeft size={15}/>{w.rooms}</button>
     <header className="attention-cover"><div><span className="eyebrow">{w.eyebrow}</span><h3 tabIndex={-1}>{w.heading}</h3><p>{w.intro}</p></div><SheetIllustration/></header>
@@ -73,7 +69,7 @@ export function AttentionSheet({active,building,language,onOpen,onLocate,onRooms
       })}</div>
       {!matches.length&&<div className="attention-empty attention-no-match"><Search size={28} aria-hidden="true"/><h4>{w.noMatch}</h4><p>{w.noMatchHint}</p><button className="text-button" onClick={clear}>{w.clear}</button></div>}
       {shown.length<matches.length&&<button className="button subtle attention-more" onClick={()=>setLimit(value=>value+40)}>{w.limit}<ChevronDown size={15}/></button>}
-      <footer className="attention-export"><div><button className="button subtle" aria-describedby={descriptionId} onClick={download}><Download size={16}/>{w.export}</button><small id={descriptionId}>{w.exportHint}</small></div><p>{w.boundary}</p></footer>
+      <footer className="attention-export"><div><button className="button subtle" aria-describedby={descriptionId} onClick={onExport}><Download size={16}/>{w.export}</button><small id={descriptionId}>{w.exportHint}</small></div><p>{w.boundary}</p></footer>
     </>}
   </section>;
 }

@@ -6,7 +6,7 @@ import { findRooms } from '../domain/room-search.mjs';
 import { fieldWords } from '../locales/inspection';
 import { SceneIllustration, sceneForZone } from './Scenes';
 import { AttentionSheet } from './AttentionSheet';
-import { attentionItems } from '../domain/attention.mjs';
+import { attentionCSV, attentionItems } from '../domain/attention.mjs';
 import { attentionWords } from '../locales/attention.mjs';
 
 type Props = { building:Building; initialZoneId:string; initialAssetId?:string; language:Language; onUpdate:(id:string,patch:Partial<Zone>)=>void; onLocate:(id:string)=>void; onExport:()=>void; onDirtyChange:(dirty:boolean)=>void;onReport:()=>void };
@@ -24,6 +24,10 @@ export function InspectionWorkspace({building,initialZoneId,initialAssetId,langu
   const [assetDirty,setAssetDirty]=useState(false);
   const [view,setView]=useState<'rooms'|'attention'>('rooms');
   const aw=attentionWords(language),attention=attentionItems(building);
+  const exportAttention=()=>{
+    const url=URL.createObjectURL(new Blob([attentionCSV(building,language)],{type:'text/csv;charset=utf-8'})),link=document.createElement('a');
+    link.href=url;link.download=`OrtQalqan-attention-${building.date}-${language}.csv`;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  };
   const changeView=()=>{if(assetDirty&&!window.confirm(w.discardDraft))return;setView(value=>value==='rooms'?'attention':'rooms');};
   const editState=useCallback((dirty:boolean)=>{setAssetDirty(dirty);onDirtyChange(dirty);},[onDirtyChange]);
   const select=(id:string)=>{if(id===selected)return;if(assetDirty&&!window.confirm(w.discardDraft))return;setSelected(id);setLocatedAsset('');if(window.matchMedia('(max-width:720px)').matches)setListOpen(false);};
@@ -34,8 +38,8 @@ export function InspectionWorkspace({building,initialZoneId,initialAssetId,langu
   const currentIndex=entries.findIndex(x=>x.zone.id===current?.zone.id);
   const next=nextInspection(entries,current?.zone.id,building.date,filter,visible);
   return <div className="inspection-workspace">
-    <div className="walk-simple-top"><div><strong>{name(building)}</strong><span>{w.visited}: {summary.visited} / {summary.total}<i>·</i><button className="walk-attention-link" aria-label={aw.title} aria-pressed={view==='attention'} onClick={changeView}>{aw.title}<b aria-hidden="true">{attention.length}</b><ArrowRight size={12} aria-hidden="true"/></button></span></div><div><button className="icon-button" aria-label={w.export} title={w.export} disabled={!summary.assets||assetDirty} onClick={onExport}><Download size={17}/></button><button className="button subtle small" disabled={assetDirty} onClick={onReport}><FileDown size={15}/>{w.report}</button></div></div>
-    <div hidden={view!=='attention'}><AttentionSheet active={view==='attention'} building={building} language={language} onOpen={(id,assetId)=>{setSelected(id);setLocatedAsset(assetId||'');setView('rooms');}} onLocate={onLocate} onRooms={()=>setView('rooms')}/></div>
+    <div className="walk-simple-top"><div><strong>{name(building)}</strong><span>{w.visited}: {summary.visited} / {summary.total}<i>·</i><button className="walk-attention-link" aria-label={aw.title} aria-pressed={view==='attention'} onClick={changeView}>{aw.title}<b aria-hidden="true">{attention.length}</b><ArrowRight size={12} aria-hidden="true"/></button></span></div><div><button className="icon-button" aria-label={view==='attention'?aw.export:w.export} title={view==='attention'?aw.export:w.export} disabled={!(view==='attention'?attention.length:summary.assets)||assetDirty} onClick={view==='attention'?exportAttention:onExport}><Download size={17}/></button><button className="button subtle small" disabled={assetDirty} onClick={onReport}><FileDown size={15}/>{w.report}</button></div></div>
+    <div hidden={view!=='attention'}><AttentionSheet active={view==='attention'} building={building} language={language} onOpen={(id,assetId)=>{setSelected(id);setLocatedAsset(assetId||'');setView('rooms');}} onLocate={onLocate} onRooms={()=>setView('rooms')} onExport={exportAttention}/></div>
     {view==='rooms'&&<div className="walk-body">
       <details className="walk-sidebar-toggle" open={listOpen} onToggle={e=>setListOpen(e.currentTarget.open)}><summary><span>{w.roomList}</span><strong>{current?name(current.zone):'—'}</strong><ChevronDown size={15}/></summary><aside className="walk-sidebar"><label className="walk-search"><Search size={16}/><input type="search" aria-label={w.search} placeholder={w.search} value={search} onChange={e=>setSearch(e.target.value)}/>{search&&<button aria-label={w.cancel} onClick={()=>setSearch('')}><X size={14}/></button>}</label>
         <div className="walk-filters" aria-label={w.review}>{(['all','pending','attention'] as const).map(f=><button key={f} aria-pressed={filter===f} className={filter===f?'active':''} onClick={()=>setFilter(f)}>{f==='attention'?<CircleAlert size={12}/>:null}{f==='pending'?w.remaining:w[f]}<span>{f==='all'?summary.total:f==='pending'?summary.total-summary.visited:summary.attention}</span></button>)}</div>

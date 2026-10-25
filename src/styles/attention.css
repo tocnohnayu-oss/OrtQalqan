@@ -2,6 +2,7 @@
 .walk-attention-link{display:inline-flex;vertical-align:baseline;align-items:center;gap:7px;min-height:36px;margin:-10px 0;padding:8px 0;border:0;background:none;color:#8b3f2b;font:inherit;text-decoration:underline;text-underline-offset:4px}
 .walk-attention-link>b{font-weight:600;min-width:18px;padding:1px 4px;text-align:center;background:#f4e3d3;text-decoration:none}
 .walk-attention-link[aria-pressed=true]{color:#253b42}
+.inspection-workspace .walk-simple-top>div:last-child>.icon-button,.inspection-workspace .walk-simple-top>div:last-child>.button{min-height:44px}
 .attention-return{display:flex;align-items:center;gap:7px;min-height:44px;margin:-12px 0 12px;padding:8px 0;border:0;background:none;color:#4d6555;font:inherit;font-size:11px}
 .attention-sheet{padding:30px 38px 24px;color:#253b42;background:#fffdf8;min-height:440px}
 .attention-cover{display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:32px;align-items:center;padding-bottom:22px;border-bottom:2px solid #253b42}
@@ -62,10 +63,11 @@
 .attention-sheet button:focus-visible,.walk-attention-link:focus-visible,.attention-scope>select:focus-visible{outline:2px solid #b5452b;outline-offset:3px}
 @media(max-width:720px){
   .walk-attention-link{min-height:44px;margin-block:-13px;gap:5px}.walk-attention-link>svg{display:none}
+  .inspection-workspace .walk-simple-top>div:last-child>.icon-button,.inspection-workspace .walk-simple-top>div:last-child>.button{width:44px;min-width:44px;height:44px}
   .attention-sheet{padding:22px 17px 28px}
   .attention-cover{grid-template-columns:minmax(0,1fr) 64px;gap:12px;padding-bottom:20px;align-items:start}
-  .attention-cover h3{font-size:32px;line-height:1.07;margin-top:8px}
-  .attention-cover p{font-size:11px;line-height:1.8;grid-column:1/-1}
+  .attention-cover h3{font-size:28px;line-height:1.1;margin-top:8px;margin-bottom:0}
+  .attention-cover p{display:none}
   .attention-cover .eyebrow{font-size:9px;letter-spacing:1.1px}
   .attention-illustration{width:74px;max-width:100%;margin-top:5px}
   .attention-reference{flex-direction:column;gap:5px;padding:15px 0 18px}
@@ -78,9 +80,9 @@
   .attention-group-index{font-size:23px}.attention-group h4{font-size:24px;line-height:1.12}
   .attention-group>header p{font-size:10px;line-height:1.8}
   .attention-row{padding-block:17px 10px}.attention-row-symbol .room-glyph{width:25px;height:25px}.attention-row-symbol>svg{max-width:22px}
-  .attention-row h5{font-size:24px}.attention-reasons>li{font-size:11px}.attention-location{font-size:10px;gap:6px}
+  .attention-row h5{font-size:24px}.attention-reasons>li{font-size:12px}.attention-location{font-size:11px;gap:6px}
   .attention-row-actions{gap:16px}.attention-row-actions>button{font-size:11px}
-  .attention-note{font-size:11px;padding-left:9px}.attention-source{font-size:10px}
+  .attention-note{font-size:12px;padding-left:9px}.attention-source{font-size:11px}
   .attention-export>div{flex-direction:column;align-items:flex-start;gap:10px}.attention-export .button{font-size:11px;white-space:normal;text-align:left}
   .attention-empty{padding-inline:0}.attention-empty h4{font-size:26px}
 }
