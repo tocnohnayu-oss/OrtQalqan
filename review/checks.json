@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "sourceSha": "1611080c6c1003476ea649035b7a70b656ea7741",
+  "sourceSha": "721c0fef67d543bd290c839c19e60e8622c88759",
   "checks": [
     "simplified workspace and no automatic fake plan",
     "drag themed furnished room blocks",
@@ -67,6 +67,10 @@
     "distinct room glyphs follow explicit presets without changing source data",
     "ink floor index and light phone navigation preserve readable text contrast",
     "branded desktop, search, room, empty plan and room-symbol visual review",
+    "whole-object attention sheet preserves exact reasons, source dates and unknown-data boundaries",
+    "attention source links preserve filters, duplicate asset identities, focus and dirty-record guards",
+    "live source corrections, bilingual CSV and snapshot PDF retain the same worklist",
+    "attention sheet supports 320px, keyboard, empty objects and persistence",
     "no runtime errors"
   ]
 }
