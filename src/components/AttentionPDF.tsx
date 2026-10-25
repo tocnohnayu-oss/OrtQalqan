@@ -20,6 +20,14 @@ const s=StyleSheet.create({
 export function AttentionPDF({building,language,snapshotId}:{building:Building;language:Language;snapshotId:string}) {
   const items=attentionItems(building);if(!items.length)return null;
   const w=attentionWords(language),name=(item:{name:string;nameKk:string})=>language==='ru'?item.name:item.nameKk;
+  type Item = typeof items[number];
+  const entryHeader=(item:Item)=><>
+    <Text style={s.caption}>{name(item.floor)} / {name(item.zone)}</Text>
+    <Text style={s.name}>{item.asset?`${item.asset.type==='OP'?'ОП':'ОУ'} · ${item.asset.label}${item.asset.model?` / ${item.asset.model}`:''}`:w.observation}</Text>
+    <Text style={s.caption}>{attentionSource(item,building.date,language)}</Text>
+    {item.reasons.map(reason=><Text style={s.line} key={reason}>• {attentionReason(item,reason,language)}</Text>)}
+  </>;
+  const hasNote=(item:Item)=>item.kind==='room'&&!!item.zone.notes?.trim();
   return <Page size="A4" style={s.page}>
     <Text style={s.brand}>ortqalqan.</Text><Text style={s.title}>{w.title}</Text>
     <Text style={s.line}>{name(building)}</Text><Text style={s.line}>{w.referenceDate}: {building.date} · {w.records}: {items.length}</Text>
@@ -28,15 +36,18 @@ export function AttentionPDF({building,language,snapshotId}:{building:Building;l
     <Text style={s.caption}>{w.boundary}</Text><Text style={s.caption}>{w.referenceHint}</Text>
     {ATTENTION_GROUPS.map(group=>{
       const rows=items.filter(item=>item.group===group);if(!rows.length)return null;
+      const first=rows[0];
       return <View key={group}>
-        <Text style={s.group} minPresenceAhead={160}>{w[group as keyof typeof w]}</Text>
-        <Text style={s.caption} minPresenceAhead={140}>{w[`${group}Hint` as keyof typeof w]}</Text>
-        {rows.map(item=><View style={s.row} key={item.id} wrap={item.kind==='room'&&!!item.zone.notes?.trim()}>
-          <Text style={s.caption} minPresenceAhead={45}>{name(item.floor)} / {name(item.zone)}</Text>
-          <Text style={s.name} minPresenceAhead={30}>{item.asset?`${item.asset.type==='OP'?'ОП':'ОУ'} · ${item.asset.label}${item.asset.model?` / ${item.asset.model}`:''}`:w.observation}</Text>
-          <Text style={s.caption} minPresenceAhead={20}>{attentionSource(item,building.date,language)}</Text>
-          {item.reasons.map(reason=><Text style={s.line} key={reason}>• {attentionReason(item,reason,language)}</Text>)}
-          {item.kind==='room'&&item.zone.notes?.trim()&&<Text style={s.note}>{item.zone.notes}</Text>}
+        {/* Keep the section title with a real record; only free-text notes may flow across pages. */}
+        <View wrap={false}>
+          <Text style={s.group}>{w[group as keyof typeof w]}</Text>
+          <Text style={s.caption}>{w[`${group}Hint` as keyof typeof w]}</Text>
+          <View style={hasNote(first)?{...s.row,borderBottomWidth:0,paddingBottom:0}:s.row}>{entryHeader(first)}</View>
+        </View>
+        {hasNote(first)&&<View style={{...s.row,paddingTop:0}}><Text style={s.note}>{first.zone.notes}</Text></View>}
+        {rows.slice(1).map(item=><View style={s.row} key={item.id} wrap={hasNote(item)}>
+          <View wrap={false}>{entryHeader(item)}</View>
+          {hasNote(item)&&<Text style={s.note}>{item.zone.notes}</Text>}
         </View>)}
       </View>;
     })}
