@@ -5,6 +5,9 @@ import { CHECK_KEYS, EMPTY_INSPECTION, inspectionReady, inspectionStatus, inspec
 import { findRooms } from '../domain/room-search.mjs';
 import { fieldWords } from '../locales/inspection';
 import { SceneIllustration, sceneForZone } from './Scenes';
+import { AttentionSheet } from './AttentionSheet';
+import { attentionItems } from '../domain/attention.mjs';
+import { attentionWords } from '../locales/attention.mjs';
 
 type Props = { building:Building; initialZoneId:string; initialAssetId?:string; language:Language; onUpdate:(id:string,patch:Partial<Zone>)=>void; onLocate:(id:string)=>void; onExport:()=>void; onDirtyChange:(dirty:boolean)=>void;onReport:()=>void };
 type Filter = 'all'|'pending'|'attention';
@@ -19,6 +22,9 @@ export function InspectionWorkspace({building,initialZoneId,initialAssetId,langu
   useEffect(()=>{const query=window.matchMedia('(min-width:721px)'),update=()=>setListOpen(query.matches);query.addEventListener('change',update);return()=>query.removeEventListener('change',update);},[]);
   const [locatedAsset,setLocatedAsset]=useState(initialAssetId||'');
   const [assetDirty,setAssetDirty]=useState(false);
+  const [view,setView]=useState<'rooms'|'attention'>('rooms');
+  const aw=attentionWords(language),attention=attentionItems(building);
+  const changeView=()=>{if(assetDirty&&!window.confirm(w.discardDraft))return;setView(value=>value==='rooms'?'attention':'rooms');};
   const editState=useCallback((dirty:boolean)=>{setAssetDirty(dirty);onDirtyChange(dirty);},[onDirtyChange]);
   const select=(id:string)=>{if(id===selected)return;if(assetDirty&&!window.confirm(w.discardDraft))return;setSelected(id);setLocatedAsset('');if(window.matchMedia('(max-width:720px)').matches)setListOpen(false);};
   const [filter,setFilter]=useState<Filter>('all'), [search,setSearch]=useState('');
@@ -28,14 +34,15 @@ export function InspectionWorkspace({building,initialZoneId,initialAssetId,langu
   const currentIndex=entries.findIndex(x=>x.zone.id===current?.zone.id);
   const next=nextInspection(entries,current?.zone.id,building.date,filter,visible);
   return <div className="inspection-workspace">
-    <div className="walk-simple-top"><div><strong>{name(building)}</strong><span>{w.visited}: {summary.visited} / {summary.total}<i>·</i>{w.attention}: {summary.attention}</span></div><div><button className="icon-button" aria-label={w.export} title={w.export} disabled={!summary.assets||assetDirty} onClick={onExport}><Download size={17}/></button><button className="button subtle small" disabled={assetDirty} onClick={onReport}><FileDown size={15}/>{w.report}</button></div></div>
-    <div className="walk-body">
+    <div className="walk-simple-top"><div><strong>{name(building)}</strong><span>{w.visited}: {summary.visited} / {summary.total}<i>·</i><button className="walk-attention-link" aria-label={aw.title} aria-pressed={view==='attention'} onClick={changeView}>{aw.title}<b aria-hidden="true">{attention.length}</b><ArrowRight size={12} aria-hidden="true"/></button></span></div><div><button className="icon-button" aria-label={w.export} title={w.export} disabled={!summary.assets||assetDirty} onClick={onExport}><Download size={17}/></button><button className="button subtle small" disabled={assetDirty} onClick={onReport}><FileDown size={15}/>{w.report}</button></div></div>
+    <div hidden={view!=='attention'}><AttentionSheet active={view==='attention'} building={building} language={language} onOpen={(id,assetId)=>{setSelected(id);setLocatedAsset(assetId||'');setView('rooms');}} onLocate={onLocate} onRooms={()=>setView('rooms')}/></div>
+    {view==='rooms'&&<div className="walk-body">
       <details className="walk-sidebar-toggle" open={listOpen} onToggle={e=>setListOpen(e.currentTarget.open)}><summary><span>{w.roomList}</span><strong>{current?name(current.zone):'—'}</strong><ChevronDown size={15}/></summary><aside className="walk-sidebar"><label className="walk-search"><Search size={16}/><input type="search" aria-label={w.search} placeholder={w.search} value={search} onChange={e=>setSearch(e.target.value)}/>{search&&<button aria-label={w.cancel} onClick={()=>setSearch('')}><X size={14}/></button>}</label>
         <div className="walk-filters" aria-label={w.review}>{(['all','pending','attention'] as const).map(f=><button key={f} aria-pressed={filter===f} className={filter===f?'active':''} onClick={()=>setFilter(f)}>{f==='attention'?<CircleAlert size={12}/>:null}{f==='pending'?w.remaining:w[f]}<span>{f==='all'?summary.total:f==='pending'?summary.total-summary.visited:summary.attention}</span></button>)}</div>
         <div className="walk-room-list">{building.floors.map(f=>{const items=visible.filter(x=>x.floor.id===f.id);return items.length?<section key={f.id}><h3>{name(f)}</h3>{items.map(({zone:z,matchedAssets})=>{const status=inspectionStatus(z,building.date),attention=needsAttention(z,building.date);return <button key={z.id} onClick={()=>select(z.id)} className={`walk-room ${current?.zone.id===z.id?'active':''}`} aria-pressed={current?.zone.id===z.id}><span className={`walk-room-state ${attention?'attention':status}`}>{attention?<CircleAlert size={15}/>:status==='visited'?<Check size={15}/>:<span/>}</span><span><strong>{name(z)}</strong><small>{w[status]}{z.assets?.length?` · ${z.assets.length} ${w.assetCount}`:''}</small>{matchedAssets.length>0&&<small className="walk-search-match"><Tag size={11}/>{matchedAssets.map(asset=>asset.label).slice(0,2).join(', ')}</small>}</span><ChevronRight size={13}/></button>;})}</section>:null;})}{!visible.length&&<div className="walk-no-match"><Search size={24}/><p>{w.empty}</p><small>{w.emptyHint}</small></div>}</div>
       </aside></details>
       {current?<RoomRecord key={current.zone.id} zone={current.zone} initialAssetId={locatedAsset} floorName={name(current.floor)} index={currentIndex+1} total={summary.total} date={building.date} language={language} onUpdate={patch=>onUpdate(current.zone.id,patch)} onLocate={()=>{if(!assetDirty||window.confirm(w.discardDraft))onLocate(current.zone.id);}} onNext={next?()=>select(next.zone.id):undefined} onDirtyChange={editState}/>:<div className="walk-no-match"><ListChecks size={34}/><p>{w.empty}</p><small>{w.emptyHint}</small></div>}
-    </div>
+    </div>}
   </div>;
 }
 

@@ -7,3 +7,4 @@ import '../src/domain/showcase.test.mjs';
 import '../src/domain/view-navigation.test.mjs';
 import '../src/domain/room-search.test.mjs';
 import '../src/domain/plan-labels.test.mjs';
+import '../src/domain/attention.test.mjs';

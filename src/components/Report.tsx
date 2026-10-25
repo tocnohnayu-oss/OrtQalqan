@@ -6,6 +6,7 @@ import { fieldWords } from '../locales/inspection';
 import { buildingWords } from '../locales/objects';
 import { kindNames } from '../data/templates';
 import { PlanPDF } from './PlanPDF';
+import { AttentionPDF } from './AttentionPDF';
 import { planWords } from '../locales/plan';
 import { CHECK_KEYS, inspectionStatus, inspectionSummary, serviceStatus } from '../domain/inspection.mjs';
 import type { Inspection } from '../domain/types';
@@ -63,6 +64,7 @@ function Report({ snapshot, language }: {snapshot:Snapshot; language:Language}) 
       <View style={s.footer} fixed><Text>OrtQalqan · {t('docStatus')}</Text><Text render={({pageNumber,totalPages})=>`${pageNumber} / ${totalPages}`} /></View>
     </Page>
     {b.floors.filter(f=>f.layout?.rooms.length).map(f=><Page size="A4" style={s.page} key={'layout-'+f.id}><Text style={s.brand}>ortqalqan.</Text><Text style={s.title}>{name(f)} · {p.view}</Text><Text style={s.note}>{f.layout?.example?p.sampleLabel:p.measurements}</Text><PlanPDF floor={f} language={language}/><Text style={{...s.note,marginTop:15}}>{p.areasSeparate} {t('placementNote')}</Text><View style={s.footer} fixed><Text>OrtQalqan · {p.drawing}</Text><Text render={({pageNumber,totalPages})=>`${pageNumber} / ${totalPages}`} /></View></Page>)}
+    <AttentionPDF building={b} language={language} snapshotId={snapshot.id}/>
     {b.floors.some(f=>f.zones.some(z=>z.inspection||z.assets?.length))&&<Page size="A4" style={s.page}>
       <Text style={s.brand}>ortqalqan.</Text><Text style={s.title}>{w.summary}</Text><Text style={s.line}>{name(b)} · {w.date}: {b.date}</Text>
       <View style={s.summary}><View style={s.cell}><Text style={s.large}>{summary.visited} / {summary.total}</Text><Text>{w.visited}</Text></View><View style={s.cell}><Text style={s.large}>{summary.assets}</Text><Text>{w.assets}</Text></View></View>
