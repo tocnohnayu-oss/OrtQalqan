@@ -24,6 +24,7 @@ export async function attentionSmoke(browser,errors) {
   const close=()=>page.locator('dialog[open]>.modal-heading button').click();
   try {
     await page.goto('http://127.0.0.1:4173');await page.getByRole('button',{name:'Обход',exact:true}).click();await link().click();await expect(sheet().locator('h3')).toBeFocused();await page.evaluate(()=>document.fonts.ready);
+    await expect(sheet().locator('.attention-cover .eyebrow')).toHaveText('Учебные данные');
     await expect(sheet().locator('.attention-row')).toHaveCount(6);await expect(sheet().locator('.attention-overdue')).toContainText('2026-10-22');await expect(sheet().locator('.attention-soon')).toContainText('2026-11-05');
     await expect(sheet().locator('[data-attention-id="room:attention-review-library"] .attention-source')).toHaveText('Отметка осмотра на другую дату · 2026-10-24');
     await expect(sheet().locator('[data-attention-id="asset:attention-service"] .attention-reasons')).toContainText('На обслуживании');await expect(sheet().locator('[data-attention-id="asset:attention-service"] .attention-reasons')).toContainText('Дата обслуживания прошла');
@@ -45,6 +46,7 @@ export async function attentionSmoke(browser,errors) {
     await sheet().getByRole('button',{name:'На плане: Библиотека · Первый этаж',exact:true}).click();await expect(page.locator('dialog[open]')).toHaveCount(0);await expect(page.locator('.built-floor-plan')).toBeFocused();await expect(page.locator('.built-floor-plan .drawn-room.selected')).toHaveAttribute('data-plan-room',lower.layout.rooms[0].id);
     await page.getByRole('button',{name:'ҚАЗ',exact:true}).click();await page.setViewportSize({width:320,height:844});await page.getByRole('button',{name:'Аралау',exact:true}).click();await link().click();await sheet().getByRole('combobox').selectOption('verify');
     await expect(sheet().locator('.attention-row')).toHaveCount(1);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);assert.ok(await sheet().evaluate(node=>node.scrollWidth<=node.clientWidth+1),'the sheet has no internal horizontal overflow at 320px');
+    await expect(sheet().locator('.attention-cover .eyebrow')).toHaveText('Оқу деректері');
     assert.ok((await sheet().locator('h3').boundingBox()).height<=65,'the phone title leaves room for actual records');
     const tapBoxes=await walk().locator('.walk-simple-top>div:last-child>button').evaluateAll(nodes=>nodes.map(node=>{const box=node.getBoundingClientRect();return {width:box.width,height:box.height};}));assert.ok(tapBoxes.every(box=>box.width>=44&&box.height>=44),'both phone exports have 44px targets');
     await page.emulateMedia({colorScheme:'dark'});assert.equal(await page.evaluate(()=>getComputedStyle(document.documentElement).colorScheme),'light');
