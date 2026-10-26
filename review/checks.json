@@ -1,6 +1,10 @@
 {
   "passed": true,
-  "sourceSha": "8f6e46e5857b9a70500989127d3834c196d2ee8e",
+  "browser": {
+    "channel": "chrome",
+    "version": "155.0.8059.39"
+  },
+  "sourceSha": "a59fd0180b9c3884ccb02d65a7b95aba1d0904c0",
   "checks": [
     "simplified workspace and no automatic fake plan",
     "drag themed furnished room blocks",
@@ -71,6 +75,10 @@
     "attention source links preserve filters, duplicate asset identities, focus and dirty-record guards",
     "live source corrections, bilingual CSV and snapshot PDF retain the same worklist",
     "attention sheet supports 320px, keyboard, empty objects and persistence",
+    "default building atlas shows only entered drawing/image geometry and all floors",
+    "inspection and snapshot layers preserve date and stale-data boundaries",
+    "global keyboard search opens exact cross-floor room and equipment sources",
+    "atlas preserves floor camera and supports 320px KK and thirty-floor objects",
     "no runtime errors"
   ]
 }
