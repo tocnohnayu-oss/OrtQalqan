@@ -13,13 +13,14 @@ export function roomFieldState(zone, date) {
 export function buildingAtlas(building, snapshot) {
   const stale=snapshot.building.id!==building.id||snapshot.revision!==building.revision;
   const attention=attentionItems(building),rows=new Map(snapshot.rows.map(row=>[row.zoneId,row]));
+  const attentionByZone=new Map();for(const item of attention)attentionByZone.set(item.zone.id,(attentionByZone.get(item.zone.id)||0)+1);
   const floors=building.floors.map(floor=>{
     const mapped=new Set((floor.layout?.rooms||[]).map(room=>room.zoneId).filter(Boolean));
     if(floor.plan)for(const marker of floor.markers)mapped.add(marker.zoneId);
     const rooms=floor.zones.map(zone=>{
       const row=rows.get(zone.id);
       return {zone,field:roomFieldState(zone,building.date),visited:inspectionStatus(zone,building.date)==='visited',
-        mapped:mapped.has(zone.id),attention:attention.filter(item=>item.zone.id===zone.id).length,
+        mapped:mapped.has(zone.id),attention:attentionByZone.get(zone.id)||0,
         calculation:stale?'stale':row?.type||'manual',count:!stale&&row?.type?row.count:null};
     });
     return {floor,rooms,source:floor.layout?.rooms.length?'drawing':floor.plan?'image':'empty',

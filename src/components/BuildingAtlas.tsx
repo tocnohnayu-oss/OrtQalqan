@@ -1,4 +1,4 @@
-import { useId, useLayoutEffect, useRef, useState } from 'react';
+import { useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { ArrowRight, ChevronLeft, ChevronRight, ClipboardCheck, Layers3, LayoutGrid, MapPin, Plus, ScanLine } from 'lucide-react';
 import type { Building, Floor, Language, Snapshot } from '../domain/types';
 import { buildingAtlas } from '../domain/building-atlas.mjs';
@@ -36,7 +36,7 @@ export function AtlasLegend({language,layer,stale=false}:{language:Language;laye
 
 type Props={building:Building;snapshot:Snapshot;language:Language;floorId:string;compact:boolean;layer:AtlasLayer;onLayer:(layer:AtlasLayer)=>void;onSelect:(id:string)=>void;onOpen:(id:string,build?:boolean)=>void;onAdd:()=>void;onWalk:(id?:string,attention?:boolean)=>void;onExample:()=>void};
 export function BuildingAtlas({building,snapshot,language,floorId,compact,layer,onLayer,onSelect,onOpen,onAdd,onWalk,onExample}:Props) {
-  const w=atlasWords(language),model=buildingAtlas(building,snapshot),name=(item:{name:string;nameKk:string})=>language==='ru'?item.name:item.nameKk;
+  const w=atlasWords(language),model=useMemo(()=>buildingAtlas(building,snapshot),[building,snapshot]),name=(item:{name:string;nameKk:string})=>language==='ru'?item.name:item.nameKk;
   const [view,setView]=useState<'spread'|'flat'>('spread');
   const index=Math.max(0,model.floors.findIndex(item=>item.floor.id===floorId)),current=model.floors[index],floor=current.floor;
   const start=Math.min(Math.max(0,index-2),Math.max(0,model.floors.length-5)),visible=model.floors.slice(start,start+5);

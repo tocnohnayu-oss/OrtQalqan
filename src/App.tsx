@@ -97,7 +97,7 @@ export default function App(){
   const hasSupported=snapshot.rows.some(r=>r.type);
 
   useEffect(()=>{try{localStorage.setItem('ortqalqan.workspace.view',workspace);}catch{}},[workspace]);
-  useEffect(()=>{const key=(event:KeyboardEvent)=>{if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'&&!document.querySelector('dialog[open]')&&!guideMode){event.preventDefault();setInspectorOpen(false);setModal('search');}};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);},[guideMode]);
+  useEffect(()=>{const key=(event:KeyboardEvent)=>{if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'){event.preventDefault();if(document.querySelector('dialog[open]')||guideMode)return;setInspectorOpen(false);setModal('search');}};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);},[guideMode]);
   useEffect(()=>{if(workspace!=='atlas'||modal||!pendingAtlasFocus.current)return;const frame=requestAnimationFrame(()=>{document.querySelector<HTMLElement>('[data-atlas-heading]')?.focus({preventScroll:true});window.scrollTo(0,0);pendingAtlasFocus.current=false;});return()=>cancelAnimationFrame(frame);},[workspace,modal]);
   useEffect(()=>{if(remoteObject)return;const timer=setTimeout(()=>{try{localStorage.setItem(STORE,JSON.stringify({version:2,activeId:building.id,buildings:[building,...library.filter(b=>b.id!==building.id)]}));setSaveError(false);}catch{setSaveError(true);}},350);return()=>clearTimeout(timer);},[building,library,remoteObject?.id]);
   useEffect(()=>{let alive=true;void api<Session>('/session').then(data=>{if(alive)setSession(data);}).catch(()=>{});return()=>{alive=false;};},[]);
