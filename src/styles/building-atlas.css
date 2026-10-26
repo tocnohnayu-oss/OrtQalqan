@@ -90,3 +90,5 @@
 }
 /* Each drawing is clipped to its own paper, including flat multi-floor layouts. */
 .atlas-paper{overflow:hidden}.atlas-paper-drawing{position:relative;overflow:hidden}.atlas-paper-drawing>.atlas-floor-preview{position:absolute;inset:0;box-sizing:border-box;padding:9px;width:100%;height:100%;overflow:hidden}.atlas-paper-drawing>.atlas-image-frame{position:absolute;inset:0}.atlas-selected-floor{position:relative;z-index:1}
+/* Reserve the projected footprint of every sheet, up to the five-sheet rendering window. */
+.atlas-spread .atlas-stack{height:calc(360px + var(--sheet-count)*55px);overflow:hidden}.atlas-spread .atlas-paper{top:calc(40px + var(--sheet-position)*55px)}

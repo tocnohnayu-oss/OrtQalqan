@@ -3,8 +3,16 @@ import assert from 'node:assert/strict';
 import { buildingAtlas, roomFieldState } from './building-atlas.mjs';
 import { calculate } from './calculator.mjs';
 import { createShowcase } from '../data/showcase.mjs';
+import { createAtlasShowcase } from '../data/atlas-showcase.mjs';
+import { validateBuilding } from './calculator.mjs';
+import { polygonArea } from './layout.mjs';
 
 const fixture=()=>{const b=createShowcase({id:'atlas',date:'2026-10-26'});for(const z of b.floors[0].zones){delete z.notes;z.assets=[];}return b;};
+test('the opt-in atlas example has three distinct valid furnished floors and no fabricated completed inspections',()=>{
+  const b=createAtlasShowcase({id:'atlas-training',date:'2026-10-26'});assert.equal(validateBuilding(b),true);assert.equal(b.demo,true);assert.equal(b.floors.length,3);assert.equal(b.address,'');
+  assert.equal(b.floors[1].zones.length,8);assert.ok(b.floors[2].layout.rooms.some(room=>room.preset==='gym'));
+  for(const floor of b.floors){assert.equal(floor.layout.example,true);for(const zone of floor.zones){const room=floor.layout.rooms.find(room=>room.zoneId===zone.id);assert.equal(polygonArea(room.points),zone.area);assert.equal(zone.inspection,undefined);}}
+});
 test('atlas joins actual floors and zones without inventing missing geometry or changing the source',()=>{
   const b=fixture(),f=b.floors[0];f.zones.push({...f.zones[1],id:'unplaced',area:0});const original=structuredClone(b),model=buildingAtlas(b,calculate(b));
   assert.equal(model.floors[0].source,'drawing');assert.equal(model.floors[0].mapped,4);assert.equal(model.floors[0].rooms.length,5);assert.equal(model.floors[0].rooms[4].mapped,false);assert.deepEqual(b,original);
