@@ -27,7 +27,7 @@ try {
   for(let n=0;n<60;n++){try{if((await fetch('http://127.0.0.1:4173')).ok){ready=true;break;}}catch{}await new Promise(r=>setTimeout(r,300));}
   assert.ok(ready,'preview responds');
   for(let n=0;n<60;n++){try{if((await fetch('http://127.0.0.1:4173/api/health')).ok)break;}catch{}if(n===59)throw Error('API is not ready');await new Promise(r=>setTimeout(r,300));}
-  browser=await chromium.launch({headless:true,...(process.env.ORTQALQAN_BROWSER_CHANNEL?{channel:process.env.ORTQALQAN_BROWSER_CHANNEL}:{})});
+  browser=await chromium.launch({headless:true,args:process.env.CI?['--enable-unsafe-swiftshader']:[],...(process.env.ORTQALQAN_BROWSER_CHANNEL?{channel:process.env.ORTQALQAN_BROWSER_CHANNEL}:{})});
   await buildingAtlasSmoke(browser,errors);
   page=await browser.newPage({viewport:{width:1440,height:1050},acceptDownloads:true});
   page.on('pageerror',error=>errors.push(error.message));
