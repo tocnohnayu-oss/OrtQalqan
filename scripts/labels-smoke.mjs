@@ -7,7 +7,7 @@ import { validateBuilding } from '../src/domain/calculator.mjs';
 export async function labelsSmoke(browser,errors){
   const building=createShowcase({id:'readable-plan'}),context=await browser.newContext({viewport:{width:1440,height:1000},hasTouch:true}),page=await context.newPage();
   page.on('pageerror',error=>errors.push(error.message));
-  await context.addInitScript(building=>{localStorage.setItem('ortqalqan.guide.v1','seen');if(!localStorage.getItem('ortqalqan.building.v1'))localStorage.setItem('ortqalqan.building.v1',JSON.stringify({version:2,activeId:building.id,buildings:[building]}));},building);
+  await context.addInitScript(building=>{localStorage.setItem('ortqalqan.guide.v1','seen');localStorage.setItem('ortqalqan.workspace.view','floor');if(!localStorage.getItem('ortqalqan.building.v1'))localStorage.setItem('ortqalqan.building.v1',JSON.stringify({version:2,activeId:building.id,buildings:[building]}));},building);
   const svg=page.locator('.built-floor-plan');
   const readable=async target=>{
     await expect(target.locator('.plan-label')).not.toHaveCount(0);

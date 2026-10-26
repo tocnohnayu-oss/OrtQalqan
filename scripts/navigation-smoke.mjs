@@ -7,7 +7,7 @@ export async function navigationSmoke(browser,errors){
   upper.name='Второй этаж';upper.nameKk='Екінші қабат';building.floors.push(upper);
   const context=await browser.newContext({viewport:{width:1440,height:1050},hasTouch:true}),page=await context.newPage();
   page.on('pageerror',error=>errors.push(error.message));
-  await context.addInitScript(building=>{localStorage.setItem('ortqalqan.guide.v1','seen');localStorage.setItem('ortqalqan.building.v1',JSON.stringify({version:2,activeId:building.id,buildings:[building]}));},building);
+  await context.addInitScript(building=>{localStorage.setItem('ortqalqan.guide.v1','seen');localStorage.setItem('ortqalqan.workspace.view','floor');localStorage.setItem('ortqalqan.building.v1',JSON.stringify({version:2,activeId:building.id,buildings:[building]}));},building);
   const svg=page.locator('.built-floor-plan'),footer=page.locator('.plan-view-footer');
   const camera=()=>svg.getAttribute('viewBox');
   const world=point=>svg.evaluate((svg,point)=>{const p=new DOMPoint(point.x,point.y).matrixTransform(svg.getScreenCTM().inverse());return {x:p.x,y:p.y};},point);

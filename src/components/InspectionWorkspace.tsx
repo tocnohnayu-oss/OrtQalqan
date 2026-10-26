@@ -9,12 +9,12 @@ import { AttentionSheet } from './AttentionSheet';
 import { attentionCSV, attentionItems } from '../domain/attention.mjs';
 import { attentionWords } from '../locales/attention.mjs';
 
-type Props = { building:Building; initialZoneId:string; initialAssetId?:string; language:Language; onUpdate:(id:string,patch:Partial<Zone>)=>void; onLocate:(id:string)=>void; onExport:()=>void; onDirtyChange:(dirty:boolean)=>void;onReport:()=>void };
+type Props = { building:Building; initialZoneId:string; initialAssetId?:string; initialView?:'rooms'|'attention'; language:Language; onUpdate:(id:string,patch:Partial<Zone>)=>void; onLocate:(id:string)=>void; onExport:()=>void; onDirtyChange:(dirty:boolean)=>void;onReport:()=>void };
 type Filter = 'all'|'pending'|'attention';
 const checkKeys = CHECK_KEYS as (keyof Pick<Inspection,'access'|'marking'|'passport'>)[];
 const newAsset = ():Asset => ({id:crypto.randomUUID(),label:'',model:'',type:'OP',condition:'unknown',nextService:''});
 
-export function InspectionWorkspace({building,initialZoneId,initialAssetId,language,onUpdate,onLocate,onExport,onDirtyChange,onReport}:Props) {
+export function InspectionWorkspace({building,initialZoneId,initialAssetId,initialView='rooms',language,onUpdate,onLocate,onExport,onDirtyChange,onReport}:Props) {
   const w=fieldWords(language), name=(x:{name:string;nameKk:string})=>language==='ru'?x.name:x.nameKk;
   const entries=findRooms(building);
   const [selected,setSelected]=useState(()=>resumeInspection(entries,building.date,initialZoneId)?.zone.id||'');
@@ -22,7 +22,7 @@ export function InspectionWorkspace({building,initialZoneId,initialAssetId,langu
   useEffect(()=>{const query=window.matchMedia('(min-width:721px)'),update=()=>setListOpen(query.matches);query.addEventListener('change',update);return()=>query.removeEventListener('change',update);},[]);
   const [locatedAsset,setLocatedAsset]=useState(initialAssetId||'');
   const [assetDirty,setAssetDirty]=useState(false);
-  const [view,setView]=useState<'rooms'|'attention'>('rooms');
+  const [view,setView]=useState<'rooms'|'attention'>(initialView);
   const aw=attentionWords(language),attention=attentionItems(building);
   const exportAttention=()=>{
     const url=URL.createObjectURL(new Blob([attentionCSV(building,language)],{type:'text/csv;charset=utf-8'})),link=document.createElement('a');

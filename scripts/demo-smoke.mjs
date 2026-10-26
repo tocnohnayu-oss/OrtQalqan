@@ -4,6 +4,7 @@ import { expect } from '@playwright/test';
 
 export async function demoSmoke(browser,errors){
   const context=await browser.newContext({viewport:{width:1440,height:1050},acceptDownloads:true}),page=await context.newPage();
+  await context.addInitScript(()=>localStorage.setItem('ortqalqan.workspace.view','floor'));
   page.on('pageerror',e=>errors.push(e.message));
   const close=()=>page.locator('dialog .modal-heading button').click();
   try{

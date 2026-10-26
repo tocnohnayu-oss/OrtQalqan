@@ -5,7 +5,7 @@ import { expect } from '@playwright/test';
 export async function accountsSmoke(browser,errors){
   const a=await browser.newContext({viewport:{width:1440,height:1050},acceptDownloads:true});
   const b=await browser.newContext({viewport:{width:1440,height:1050},acceptDownloads:true});
-  await Promise.all([a.addInitScript(()=>localStorage.setItem('ortqalqan.guide.v1','seen')),b.addInitScript(()=>localStorage.setItem('ortqalqan.guide.v1','seen'))]);
+  await Promise.all([a.addInitScript(()=>{localStorage.setItem('ortqalqan.guide.v1','seen');localStorage.setItem('ortqalqan.workspace.view','floor');}),b.addInitScript(()=>{localStorage.setItem('ortqalqan.guide.v1','seen');localStorage.setItem('ortqalqan.workspace.view','floor');})]);
   const first=await a.newPage(),second=await b.newPage();
   for(const page of [first,second])page.on('pageerror',error=>errors.push(error.message));
   const password='Atlas inspection demo passphrase';
