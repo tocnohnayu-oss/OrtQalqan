@@ -1,6 +1,6 @@
 # OrtQalqan
 
-Рабочее место инспектора ЧС: собственные аккаунты, рабочие группы и общая база объектов, конструктор этажей из готовых блоков, разные объекты, последовательный обход, лист внимания по всему объекту, реестр оборудования, предварительный расчёт ОП/ОУ и PDF-отчёт на русском и казахском языках.
+Рабочее место инспектора ЧС: вращаемая 3D-модель здания, рабочие слои осмотра/расчёта, быстрый поиск, собственные аккаунты, рабочие группы и общая база объектов, конструктор этажей из готовых блоков, разные объекты, последовательный обход, лист внимания по всему объекту, реестр оборудования, предварительный расчёт ОП/ОУ и PDF-отчёт на русском и казахском языках.
 
 В **«Обход → Лист внимания»** собраны конкретные наблюдения и оборудование со сроками. Поиск и фильтр приводят к точному помещению/номеру; CSV выгружает весь лист, обычный PDF включает приложение из снимка. Неизвестное состояние и отсутствующая дата отделены как уточнение данных.
 
@@ -8,12 +8,17 @@
 
 Конкурс Smart Inspector. Защита — 6 ноября 2026 года, демонстрация — 3–5 минут.
 
+Новый маршрут: **«Здание → План → Обход»**. Обзор показывает цельную 3D-модель по введённым контурам: вращение мышью/пальцами, масштаб и разрез выбранного этажа. Слои связывают план с сохранёнными осмотрами и актуальным расчётом; **Ctrl/⌘ K** находит помещение или конкретную запись оборудования. Размеры, площади и журнал не меняются при навигации.
+
+Обзор: [3D-модель здания](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/building-atlas-desktop.png), [слой осмотра](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/building-atlas-field-desktop.png), [телефон · KK](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/building-atlas-mobile-kk.png), [быстрый поиск](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/global-search-desktop.png).
+
 ## Для команды
 
 Начните с [AGENTS.md](AGENTS.md) и [текущего состояния](docs/HANDOFF.md). Решения и ограничения записаны в репозитории, поэтому перечитывать чат не требуется.
 
 | Документ | Содержание |
 | --- | --- |
+| [Атлас здания и поиск](docs/BUILDING_ATLAS.md) | 3D, разрез, источники геометрии, камера, Ctrl/⌘ K и проверки |
 | [Продукт](docs/PRODUCT.md) | Пользователь, сценарий, поля ввода, функции |
 | [Дизайн и экраны](docs/EXPERIENCE.md) | Визуальная система, графика, мобильный интерфейс |
 | [Бренд и визуальное ревью](docs/BRAND.md) | Светлая тема, айдентика полевого атласа, иллюстрации и сравнение с другими продуктами |
@@ -71,7 +76,7 @@ npm run dev
 
 Рабочий лист и обновлённый каталог: [развёрнутый план](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/folio-focus-desktop.png), [конструктор](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/folio-editor-desktop.png), [план на телефоне · KK](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/folio-focus-mobile-kk.png), [поворот на телефоне · KK](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/folio-editor-mobile-kk.png). Все данные снимков синтетические.
 
-Актуальный интерфейс: [план объекта](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/identity-plan-desktop.png), [первое помещение](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/desktop-empty.png), [параметры на телефоне](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/identity-params-mobile-kk.png), [графика шести видов зданий](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/identity-types.png). Демонстрационные отчёты: [RU](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/report-ru.pdf), [KK](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/report-kk.pdf). Последняя функциональная проверка: [run 40178182937](https://github.com/tocnohnayu-oss/OrtQalqan/actions/runs/40178182937) — 63 проверки ядра, серверные/HTTP тесты, сборка и полный браузерный сценарий, включая лист внимания/источники/полный CSV/PDF, одинаковые номера разных этажей, сохранение фильтра/фокуса и защищённого ввода, 45 записей и пустой объект, а также каталог/символы, контраст подписей и клавиатурного фокуса, мобильные инструменты 44 px, лист помещения и визуальное ревью на 320/1024 px.
+Актуальный интерфейс: [план объекта](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/identity-plan-desktop.png), [первое помещение](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/desktop-empty.png), [параметры на телефоне](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/identity-params-mobile-kk.png), [графика шести видов зданий](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/identity-types.png). Демонстрационные отчёты: [RU](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/report-ru.pdf), [KK](https://github.com/tocnohnayu-oss/OrtQalqan/blob/design-review/review/report-kk.pdf). Последняя функциональная проверка: [run 40376126915](https://github.com/tocnohnayu-oss/OrtQalqan/actions/runs/40376126915) — 75 проверок ядра, серверные/HTTP тесты, сборка и полный браузерный сценарий. Проверены настоящий WebGL 2, вращение мышью/клавиатурой и масштаб двумя пальцами, разрез/высота без изменения исходных данных, 320 px KK, быстрый поиск/фокус, редактор/сохранение, аккаунты и CSV/RU-KK PDF. В `review/checks.json` 74 пройденных пункта; исходный SHA совпадает с этим запуском. Снимки 3D просмотрены на компьютере и телефоне.
 
 Сервис предназначен для учебных заведений, офисов, магазинов, складов, производственных и других объектов. Для складского и производственного назначения пока доступны план, обход и реестр; автоматический расчёт требует отдельного проверенного профиля. Шаблоны не выдумывают площади и классы пожара.
 
