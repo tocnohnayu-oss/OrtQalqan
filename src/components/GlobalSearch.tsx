@@ -5,8 +5,8 @@ import { findRooms } from '../domain/room-search.mjs';
 import { atlasWords } from '../locales/atlas';
 import { RoomGlyph } from './RoomGlyph';
 
-type Props={building:Building;language:Language;onSelect:(zoneId:string,floorId:string,assetId?:string)=>void;onAction:(action:'atlas'|'walk'|'calculate'|'pdf')=>void};
-export function GlobalSearch({building,language,onSelect,onAction}:Props) {
+type Props={building:Building;language:Language;onSelect:(zoneId:string,floorId:string,assetId?:string)=>void;onAction:(action:'atlas'|'walk'|'calculate'|'pdf')=>void;onClose:()=>void};
+export function GlobalSearch({building,language,onSelect,onAction,onClose}:Props) {
   const w=atlasWords(language),name=(item:{name:string;nameKk:string})=>language==='ru'?item.name:item.nameKk;
   const [query,setQuery]=useState(''),[active,setActive]=useState(0),input=useRef<HTMLInputElement>(null),list=useRef<HTMLDivElement>(null),id=useId();
   type Match={floor:Floor;zone:Zone;matchedAssets:Asset[];asset?:Asset};
@@ -16,7 +16,7 @@ export function GlobalSearch({building,language,onSelect,onAction}:Props) {
   const open=(index:number)=>{if(index<actions.length){onAction(actions[index].key);return;}const entry=rows[index-actions.length];if(entry)onSelect(entry.zone.id,entry.floor.id,entry.asset?.id);};
   useEffect(()=>{input.current?.focus();},[]);
   useEffect(()=>{document.getElementById(`${id}-${active}`)?.scrollIntoView({block:'nearest'});},[active,id,query]);
-  return <div className="global-search" onKeyDown={event=>{if(event.key==='ArrowDown'||event.key==='ArrowUp'){event.preventDefault();setActive(value=>count?(value+(event.key==='ArrowDown'?1:-1)+count)%count:0);input.current?.focus({preventScroll:true});}else if(event.key==='Enter'&&event.target===input.current){event.preventDefault();open(active);}}}>
+  return <div className="global-search" onKeyDown={event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();onClose();}else if(event.key==='ArrowDown'||event.key==='ArrowUp'){event.preventDefault();setActive(value=>count?(value+(event.key==='ArrowDown'?1:-1)+count)%count:0);input.current?.focus({preventScroll:true});}else if(event.key==='Enter'&&event.target===input.current){event.preventDefault();open(active);}}}>
     <label className="global-search-input"><Search size={22}/><input ref={input} type="search" role="combobox" aria-label={w.searchLabel} aria-controls={`${id}-list`} aria-expanded="true" aria-autocomplete="list" aria-activedescendant={count?`${id}-${active}`:undefined} value={query} onChange={event=>{setQuery(event.target.value);setActive(0);}} placeholder={w.searchHint}/><kbd>Esc</kbd></label>
     <p className="global-search-context">{w.context}<span>{name(building)}</span></p>
     <div className="global-search-results" role="listbox" aria-label={w.results} id={`${id}-list`} ref={list}>
