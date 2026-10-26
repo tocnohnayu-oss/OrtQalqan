@@ -86,3 +86,5 @@
   .attention-export>div{flex-direction:column;align-items:flex-start;gap:10px}.attention-export .button{font-size:11px;white-space:normal;text-align:left}
   .attention-empty{padding-inline:0}.attention-empty h4{font-size:26px}
 }
+.attention-room-scope{display:flex;align-items:center;gap:12px;margin:15px 0;padding:12px 14px;border:1px solid #b7c3ac;border-left:3px solid #b5452b;background:#f7f2e5;color:#253b42}.attention-room-scope>svg{flex-shrink:0;color:#9a472d}.attention-room-scope>div{flex:1;min-width:0}.attention-room-scope small{display:block;font-size:10px;line-height:1.5;color:#5b7057}.attention-room-scope strong{display:block;font:600 22px/1.2 var(--display);overflow-wrap:anywhere;margin:3px 0}.attention-room-scope span{font-size:11px;color:#5b7057;line-height:1.5}.attention-room-scope>button{display:grid;place-items:center;flex-shrink:0;width:44px;height:44px;border:1px solid #b9c5b0;background:#fffdf8;color:#3f594b}.attention-room-scope>button:focus-visible{outline:2px solid #b5452b;outline-offset:2px}
+@media(max-width:720px){.attention-room-scope{gap:9px;padding:10px;margin:11px 0}.attention-room-scope strong{font-size:21px}}

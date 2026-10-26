@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { buildingModel } from '../domain/building-model.mjs';
 import { furniturePrimitives } from '../domain/furniture.mjs';
 import { labelPoint } from '../domain/layout.mjs';
+import { validModelCamera } from '../domain/model-session.mjs';
 
 const colors={pending:'#f4f1e6',started:'#dce7d9',visited:'#a9cabc',attention:'#dfab87',verify:'#d8d4bd',OP:'#dfad8d',OU:'#a9cad5',manual:'#d8d4bd',stale:'#cfd6ca'};
 
@@ -18,7 +19,7 @@ export function createBuildingScene(canvas,initial,{onReady,onPick,onError,onPro
   const controls=new OrbitControls(camera,canvas);controls.enableDamping=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;controls.dampingFactor=.09;
   controls.maxPolarAngle=Math.PI*.49;controls.minPolarAngle=.08;controls.minDistance=3;controls.maxDistance=800;controls.screenSpacePanning=true;
   const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();let config=initial,world=null,ground=null,frame=null,disposed=false,signature='',viewSignature='',first=true,frames=0;
-  let center={x:0,y:0},fitBox=new THREE.Box3(),activeFitBox=null,targets=[],anchors=[],selection=null,selectionKey='';
+  let center={x:0,y:0},fitBox=new THREE.Box3(),activeFitBox=null,activeFitZone='',targets=[],anchors=[],selection=null,selectionKey='';
 
   function disposeGroup(group){if(!group)return;const geometries=new Set(),materials=new Set();group.traverse(object=>{if(object.geometry)geometries.add(object.geometry);for(const material of Array.isArray(object.material)?object.material:object.material?[object.material]:[])materials.add(material);});for(const geometry of geometries)geometry.dispose();for(const material of materials){material.map?.dispose();material.dispose();}scene.remove(group);}
   function render(){
@@ -107,12 +108,20 @@ export function createBuildingScene(canvas,initial,{onReady,onPick,onError,onPro
     for(let step=0;step<22;step++){const distance=(lo+hi)/2;camera.position.copy(target).addScaledVector(direction,distance);camera.lookAt(target);camera.updateMatrixWorld();const extent=Math.max(...corners.map(point=>{const projected=point.clone().project(camera);return Math.max(Math.abs(projected.x),Math.abs(projected.y));}));if(extent>.84)lo=distance;else hi=distance;}
     camera.position.copy(target).addScaledVector(direction,hi);controls.minDistance=max*.12;controls.maxDistance=max*20;controls.update();requestRender();
   }
-  function reset(top=false,preserveAngle=false){activeFitBox=null;fit(fitBox,top,preserveAngle);}
-  function focusRoom(zoneId){
-    const floor=config.building.floors.find(item=>item.id===config.selected),room=floor?.layout?.rooms.find(item=>item.zoneId===zoneId);if(!room||!config.cut)return;
+  function reset(top=false,preserveAngle=false){activeFitBox=null;activeFitZone='';fit(fitBox,top,preserveAngle);}
+  function roomBox(zoneId){
+    const floor=config.building.floors.find(item=>item.id===config.selected),room=floor?.layout?.rooms.find(item=>item.zoneId===zoneId);if(!room||!config.cut)return null;
     const base=config.building.floors.indexOf(floor)*config.height,box=new THREE.Box3();
     for(const point of room.points){box.expandByPoint(new THREE.Vector3(point.x-center.x,base,point.y-center.y));box.expandByPoint(new THREE.Vector3(point.x-center.x,base+1.5,point.y-center.y));}
-    activeFitBox=box;fit(box,false,true);
+    return box;
+  }
+  function focusRoom(zoneId){const box=roomBox(zoneId);if(!box)return;activeFitBox=box;activeFitZone=zoneId;fit(box,false,true);}
+  function captureView(){return {position:camera.position.toArray(),target:controls.target.toArray(),aspect:camera.aspect,near:camera.near,far:camera.far,minDistance:controls.minDistance,maxDistance:controls.maxDistance,focusZone:activeFitZone};}
+  function restoreView(saved){
+    if(!validModelCamera(saved))return;
+    camera.position.fromArray(saved.position);controls.target.fromArray(saved.target);camera.near=saved.near;camera.far=saved.far;camera.updateProjectionMatrix();controls.minDistance=saved.minDistance;controls.maxDistance=saved.maxDistance;
+    activeFitBox=saved.focusZone?roomBox(saved.focusZone):null;activeFitZone=activeFitBox?saved.focusZone:'';controls.update();
+    if(Math.abs(saved.aspect-camera.aspect)>.1)fit(activeFitBox||fitBox,false,true);requestRender();
   }
   function highlight(){
     const key=JSON.stringify([config.selected,config.selectedZone,config.cut,config.height]);if(key===selectionKey)return;selectionKey=key;disposeGroup(selection);selection=null;canvas.dataset.selectedZone=config.selectedZone||'';
@@ -134,5 +143,5 @@ export function createBuildingScene(canvas,initial,{onReady,onPick,onError,onPro
   const lost=event=>{event.preventDefault();onError?.();};
   canvas.addEventListener('pointerdown',down);canvas.addEventListener('pointermove',move);canvas.addEventListener('pointerup',up);canvas.addEventListener('pointercancel',cancel);canvas.addEventListener('webglcontextlost',lost);
   resize();update(initial);resize();render();canvas.dataset.renderer='webgl2';onReady?.();
-  return {update,reset:()=>reset(false),top:()=>reset(true),rotate,zoom,focusRoom,dispose(){disposed=true;if(frame!==null)cancelAnimationFrame(frame);observer.disconnect();controls.dispose();canvas.removeEventListener('pointerdown',down);canvas.removeEventListener('pointermove',move);canvas.removeEventListener('pointerup',up);canvas.removeEventListener('pointercancel',cancel);canvas.removeEventListener('webglcontextlost',lost);disposeGroup(selection);disposeGroup(world);disposeGroup(ground);sun.shadow.map?.dispose();renderer.dispose();renderer.forceContextLoss();}};
+  return {update,reset:()=>reset(false),top:()=>reset(true),rotate,zoom,focusRoom,captureView,restoreView,dispose(){disposed=true;if(frame!==null)cancelAnimationFrame(frame);observer.disconnect();controls.dispose();canvas.removeEventListener('pointerdown',down);canvas.removeEventListener('pointermove',move);canvas.removeEventListener('pointerup',up);canvas.removeEventListener('pointercancel',cancel);canvas.removeEventListener('webglcontextlost',lost);disposeGroup(selection);disposeGroup(world);disposeGroup(ground);sun.shadow.map?.dispose();renderer.dispose();renderer.forceContextLoss();}};
 }

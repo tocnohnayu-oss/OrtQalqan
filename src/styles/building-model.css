@@ -87,3 +87,7 @@
 }
 .model-reference-date{display:flex;align-items:center;justify-content:flex-end;gap:7px;white-space:nowrap;color:#52694f;font-size:10px;line-height:1.5}.model-reference-date>time{font-size:12px;font-weight:600;color:#253b42}
 @media(max-width:720px){.model-expanded .model-bottom-bar{flex-wrap:wrap;gap:6px}.model-reference-date{width:100%}}
+/* Source links lead to the existing attention sheet; no duplicate issue store. */
+.model-room-evidence{display:inline-flex;align-items:center;gap:7px;min-height:44px;max-width:100%;padding:7px 0;border:0;background:transparent;color:#93432c;font-size:12px;text-align:left;line-height:1.5}.model-room-evidence>svg{flex-shrink:0}.model-room-evidence>b{font-size:11px;padding:2px 6px;background:#f2e1cd;font-weight:600}.model-room-evidence:focus-visible{outline:2px solid #b5452b;outline-offset:2px}
+.model-attention-open>b{font-size:11px;font-weight:600}.model-view-tools>.model-attention-open{color:#8c3d27;background:#fcf3e6;border-color:#caae92}
+@media(max-width:720px){.model-view-tools>.model-attention-open{padding:6px;gap:3px}.model-room-evidence{font-size:11px}}

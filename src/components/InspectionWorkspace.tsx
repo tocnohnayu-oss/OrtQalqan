@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, Check, CheckCheck, ChevronRight, CircleAlert, ClipboardCheck, Clock3, Download, Fingerprint, ListChecks, MapPin, Plus, Search, Tag, Trash2, Wrench, X, ChevronDown, FileDown } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, CheckCheck, ChevronRight, CircleAlert, ClipboardCheck, Clock3, Download, Fingerprint, ListChecks, MapPin, Plus, Search, Tag, Trash2, Wrench, X, ChevronDown, FileDown, Box } from 'lucide-react';
 import type { Asset, Building, CheckAnswer, Inspection, Language, Zone } from '../domain/types';
 import { CHECK_KEYS, EMPTY_INSPECTION, inspectionReady, inspectionStatus, inspectionSummary, resumeInspection, nextInspection, needsAttention, serviceStatus, validDate } from '../domain/inspection.mjs';
 import { findRooms } from '../domain/room-search.mjs';
@@ -8,13 +8,14 @@ import { SceneIllustration, sceneForZone } from './Scenes';
 import { AttentionSheet } from './AttentionSheet';
 import { attentionCSV, attentionItems } from '../domain/attention.mjs';
 import { attentionWords } from '../locales/attention.mjs';
+import { modelLocation } from '../domain/model-session.mjs';
 
-type Props = { building:Building; initialZoneId:string; initialAssetId?:string; initialView?:'rooms'|'attention'; language:Language; onUpdate:(id:string,patch:Partial<Zone>)=>void; onLocate:(id:string)=>void; onExport:()=>void; onDirtyChange:(dirty:boolean)=>void;onReport:()=>void };
+type Props = { building:Building; initialZoneId:string; initialAssetId?:string; initialView?:'rooms'|'attention'; attentionZoneId?:string; preferModel?:boolean; language:Language; onUpdate:(id:string,patch:Partial<Zone>)=>void; onLocate:(id:string)=>void; onExport:()=>void; onDirtyChange:(dirty:boolean)=>void;onReport:()=>void };
 type Filter = 'all'|'pending'|'attention';
 const checkKeys = CHECK_KEYS as (keyof Pick<Inspection,'access'|'marking'|'passport'>)[];
 const newAsset = ():Asset => ({id:crypto.randomUUID(),label:'',model:'',type:'OP',condition:'unknown',nextService:''});
 
-export function InspectionWorkspace({building,initialZoneId,initialAssetId,initialView='rooms',language,onUpdate,onLocate,onExport,onDirtyChange,onReport}:Props) {
+export function InspectionWorkspace({building,initialZoneId,initialAssetId,initialView='rooms',attentionZoneId='',preferModel=false,language,onUpdate,onLocate,onExport,onDirtyChange,onReport}:Props) {
   const w=fieldWords(language), name=(x:{name:string;nameKk:string})=>language==='ru'?x.name:x.nameKk;
   const entries=findRooms(building);
   const [selected,setSelected]=useState(()=>resumeInspection(entries,building.date,initialZoneId)?.zone.id||'');
@@ -39,18 +40,18 @@ export function InspectionWorkspace({building,initialZoneId,initialAssetId,initi
   const next=nextInspection(entries,current?.zone.id,building.date,filter,visible);
   return <div className="inspection-workspace">
     <div className="walk-simple-top"><div><strong>{name(building)}</strong><span>{w.visited}: {summary.visited} / {summary.total}<i>·</i><button className="walk-attention-link" aria-label={aw.title} aria-pressed={view==='attention'} onClick={changeView}>{aw.title}<b aria-hidden="true">{attention.length}</b><ArrowRight size={12} aria-hidden="true"/></button></span></div><div><button className="icon-button" aria-label={view==='attention'?aw.export:w.export} title={view==='attention'?aw.export:w.export} disabled={!(view==='attention'?attention.length:summary.assets)||assetDirty} onClick={view==='attention'?exportAttention:onExport}><Download size={17}/></button><button className="button subtle small" disabled={assetDirty} onClick={onReport}><FileDown size={15}/>{w.report}</button></div></div>
-    <div hidden={view!=='attention'}><AttentionSheet active={view==='attention'} building={building} language={language} onOpen={(id,assetId)=>{setSelected(id);setLocatedAsset(assetId||'');setView('rooms');}} onLocate={onLocate} onRooms={()=>setView('rooms')} onExport={exportAttention}/></div>
+    <div hidden={view!=='attention'}><AttentionSheet active={view==='attention'} initialZoneId={attentionZoneId} preferModel={preferModel} building={building} language={language} onOpen={(id,assetId)=>{setSelected(id);setLocatedAsset(assetId||'');setView('rooms');}} onLocate={onLocate} onRooms={()=>setView('rooms')} onExport={exportAttention}/></div>
     {view==='rooms'&&<div className="walk-body">
       <details className="walk-sidebar-toggle" open={listOpen} onToggle={e=>setListOpen(e.currentTarget.open)}><summary><span>{w.roomList}</span><strong>{current?name(current.zone):'—'}</strong><ChevronDown size={15}/></summary><aside className="walk-sidebar"><label className="walk-search"><Search size={16}/><input type="search" aria-label={w.search} placeholder={w.search} value={search} onChange={e=>setSearch(e.target.value)}/>{search&&<button aria-label={w.cancel} onClick={()=>setSearch('')}><X size={14}/></button>}</label>
         <div className="walk-filters" aria-label={w.review}>{(['all','pending','attention'] as const).map(f=><button key={f} aria-pressed={filter===f} className={filter===f?'active':''} onClick={()=>setFilter(f)}>{f==='attention'?<CircleAlert size={12}/>:null}{f==='pending'?w.remaining:w[f]}<span>{f==='all'?summary.total:f==='pending'?summary.total-summary.visited:summary.attention}</span></button>)}</div>
         <div className="walk-room-list">{building.floors.map(f=>{const items=visible.filter(x=>x.floor.id===f.id);return items.length?<section key={f.id}><h3>{name(f)}</h3>{items.map(({zone:z,matchedAssets})=>{const status=inspectionStatus(z,building.date),attention=needsAttention(z,building.date);return <button key={z.id} onClick={()=>select(z.id)} className={`walk-room ${current?.zone.id===z.id?'active':''}`} aria-pressed={current?.zone.id===z.id}><span className={`walk-room-state ${attention?'attention':status}`}>{attention?<CircleAlert size={15}/>:status==='visited'?<Check size={15}/>:<span/>}</span><span><strong>{name(z)}</strong><small>{w[status]}{z.assets?.length?` · ${z.assets.length} ${w.assetCount}`:''}</small>{matchedAssets.length>0&&<small className="walk-search-match"><Tag size={11}/>{matchedAssets.map(asset=>asset.label).slice(0,2).join(', ')}</small>}</span><ChevronRight size={13}/></button>;})}</section>:null;})}{!visible.length&&<div className="walk-no-match"><Search size={24}/><p>{w.empty}</p><small>{w.emptyHint}</small></div>}</div>
       </aside></details>
-      {current?<RoomRecord key={current.zone.id} zone={current.zone} initialAssetId={locatedAsset} floorName={name(current.floor)} index={currentIndex+1} total={summary.total} date={building.date} language={language} onUpdate={patch=>onUpdate(current.zone.id,patch)} onLocate={()=>{if(!assetDirty||window.confirm(w.discardDraft))onLocate(current.zone.id);}} onNext={next?()=>select(next.zone.id):undefined} onDirtyChange={editState}/>:<div className="walk-no-match"><ListChecks size={34}/><p>{w.empty}</p><small>{w.emptyHint}</small></div>}
+      {current?<RoomRecord key={current.zone.id} zone={current.zone} locateInModel={preferModel&&!!modelLocation(building,current.zone.id)} initialAssetId={locatedAsset} floorName={name(current.floor)} index={currentIndex+1} total={summary.total} date={building.date} language={language} onUpdate={patch=>onUpdate(current.zone.id,patch)} onLocate={()=>{if(!assetDirty||window.confirm(w.discardDraft))onLocate(current.zone.id);}} onNext={next?()=>select(next.zone.id):undefined} onDirtyChange={editState}/>:<div className="walk-no-match"><ListChecks size={34}/><p>{w.empty}</p><small>{w.emptyHint}</small></div>}
     </div>}
   </div>;
 }
 
-function RoomRecord({zone,initialAssetId,date,language,floorName,index,total,onUpdate,onLocate,onNext,onDirtyChange}:{zone:Zone;initialAssetId:string;date:string;language:Language;floorName:string;index:number;total:number;onUpdate:(patch:Partial<Zone>)=>void;onLocate:()=>void;onNext?:(()=>void);onDirtyChange:(dirty:boolean)=>void}) {
+function RoomRecord({zone,locateInModel,initialAssetId,date,language,floorName,index,total,onUpdate,onLocate,onNext,onDirtyChange}:{zone:Zone;locateInModel:boolean;initialAssetId:string;date:string;language:Language;floorName:string;index:number;total:number;onUpdate:(patch:Partial<Zone>)=>void;onLocate:()=>void;onNext?:(()=>void);onDirtyChange:(dirty:boolean)=>void}) {
   const w=fieldWords(language), name=language==='ru'?zone.name:zone.nameKk;
   const inspection=zone.inspection||EMPTY_INSPECTION as Inspection;
   const visited=inspectionStatus(zone,date)==='visited';
@@ -73,7 +74,7 @@ function RoomRecord({zone,initialAssetId,date,language,floorName,index,total,onU
   };
   const conditionLabel=(a:Asset)=>w[a.condition];
   return <section className="walk-record" aria-label={name}>
-    <div className="walk-room-heading"><div><span className="eyebrow">{floorName} · {w.roomStep} {index} / {total}</span><h3 tabIndex={-1} ref={heading}>{name}</h3><button className="text-button" onClick={onLocate}><MapPin size={13}/>{w.backToMap}<ArrowRight size={13}/></button></div><SceneIllustration scene={sceneForZone(zone)}/></div>
+    <div className="walk-room-heading"><div><span className="eyebrow">{floorName} · {w.roomStep} {index} / {total}</span><h3 tabIndex={-1} ref={heading}>{name}</h3><button className="text-button" onClick={onLocate}>{locateInModel?<Box size={13}/>:<MapPin size={13}/>} {locateInModel?attentionWords(language).locateModel:w.backToMap}<ArrowRight size={13}/></button></div><SceneIllustration scene={sceneForZone(zone)}/></div>
     <div className="walk-checks quick-walk-checks"><div className="walk-section-title"><h4>{w.checks}</h4><span>{unanswered?`${w.checksLeft}: ${unanswered}`:w.answersReady}</span></div>
       {checkKeys.map((key,index)=><fieldset aria-label={w[key]} className={`quick-check ${inspection[key]==='attention'?'has-issue':''}`} key={key}><legend><span>{index+1}</span>{w[key]}</legend><p>{w[`${key}Hint`]}</p><div className="quick-check-options">{(['ok','attention','na'] as const).map(answer=><label className={`quick-answer ${answer}`} key={answer}><input type="radio" name={`${formId}-${key}`} value={answer} checked={inspection[key]===answer} onChange={()=>changeCheck(key,answer)}/><span>{answer==='ok'?<Check size={14}/>:answer==='attention'?<CircleAlert size={14}/>:null}{answer==='ok'?w.quickOk:answer==='attention'?w.issue:w.quickNa}</span></label>)}</div>{inspection[key]!=='unknown'&&<button className="walk-answer-reset" aria-label={`${w.resetCheck}: ${w[key]}`} onClick={()=>changeCheck(key,'unknown')}>{w.reset}</button>}</fieldset>)}
     </div>
