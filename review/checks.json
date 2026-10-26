@@ -4,7 +4,7 @@
     "channel": "chrome",
     "version": "155.0.8059.39"
   },
-  "sourceSha": "a59fd0180b9c3884ccb02d65a7b95aba1d0904c0",
+  "sourceSha": "f825e180a180f05012a04dbf9ad219ead6aea0fe",
   "checks": [
     "simplified workspace and no automatic fake plan",
     "drag themed furnished room blocks",
@@ -75,10 +75,10 @@
     "attention source links preserve filters, duplicate asset identities, focus and dirty-record guards",
     "live source corrections, bilingual CSV and snapshot PDF retain the same worklist",
     "attention sheet supports 320px, keyboard, empty objects and persistence",
-    "default building atlas shows only entered drawing/image geometry and all floors",
+    "whole WebGL building rotates with mouse/keyboard and supports a selected-floor cutaway",
     "inspection and snapshot layers preserve date and stale-data boundaries",
     "global keyboard search opens exact cross-floor room and equipment sources",
-    "atlas preserves floor camera and supports 320px KK and thirty-floor objects",
+    "3D phone pinch, visual height and image-only floor boundaries preserve source data",
     "no runtime errors"
   ]
 }
