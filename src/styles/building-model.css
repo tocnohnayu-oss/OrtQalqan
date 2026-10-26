@@ -85,3 +85,5 @@
  .model-expanded .model-context-bar{grid-column:1/-1;grid-row:3;grid-template-columns:minmax(120px,220px) minmax(140px,460px)}
  .model-expanded .building-model-stage{grid-column:1/-1;grid-row:4}.model-expanded .model-room-sheet{grid-column:1/-1;grid-row:5}.model-expanded .model-bottom-bar{grid-column:1/-1;grid-row:6}
 }
+.model-reference-date{display:flex;align-items:center;justify-content:flex-end;gap:7px;white-space:nowrap;color:#52694f;font-size:10px;line-height:1.5}.model-reference-date>time{font-size:12px;font-weight:600;color:#253b42}
+@media(max-width:720px){.model-expanded .model-bottom-bar{flex-wrap:wrap;gap:6px}.model-reference-date{width:100%}}
