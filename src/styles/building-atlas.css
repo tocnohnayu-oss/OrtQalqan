@@ -92,3 +92,5 @@
 .atlas-paper{overflow:hidden}.atlas-paper-drawing{position:relative;overflow:hidden}.atlas-paper-drawing>.atlas-floor-preview{position:absolute;inset:0;box-sizing:border-box;padding:9px;width:100%;height:100%;overflow:hidden}.atlas-paper-drawing>.atlas-image-frame{position:absolute;inset:0}.atlas-selected-floor{position:relative;z-index:1}
 /* Reserve the projected footprint of every sheet, up to the five-sheet rendering window. */
 .atlas-spread .atlas-stack{height:calc(360px + var(--sheet-count)*55px);overflow:hidden}.atlas-spread .atlas-paper{top:calc(40px + var(--sheet-position)*55px)}
+.atlas-desk-heading>.atlas-reference{font-size:10px;gap:5px;color:#4c6553;flex-shrink:0}.atlas-reference time{color:#253b42;font-weight:600;font-variant-numeric:tabular-nums}
+@media(max-width:720px){.atlas-desk-heading>.atlas-reference{font-size:9px;gap:4px}}
