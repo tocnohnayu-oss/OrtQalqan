@@ -4,8 +4,12 @@
     "channel": "chrome",
     "version": "155.0.8059.39"
   },
-  "sourceSha": "f825e180a180f05012a04dbf9ad219ead6aea0fe",
+  "sourceSha": "a2a405b46d5e71cc3d8aaba2b6ca44f24c65c5cb",
   "checks": [
+    "projected 3D room names, clipping and collision priority",
+    "same-canvas expanded 3D, focus trap and nested dialogs",
+    "source room selection, conditional contours and stale readout",
+    "320px KK model workspace and real pinch preserve source data",
     "simplified workspace and no automatic fake plan",
     "drag themed furnished room blocks",
     "orthogonal concave contour",
