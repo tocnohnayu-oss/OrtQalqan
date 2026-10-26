@@ -31,7 +31,7 @@ export function BuildingModel3D({building,model,language,selected,layer,onLayer,
   const formatter=useMemo(()=>new Intl.NumberFormat(language==='ru'?'ru-RU':'kk-KZ',{maximumFractionDigits:2}),[language]);
   const caption=(room:ModelRoom)=>layer==='walk'?aw[room.field as keyof typeof aw]:layer==='calculation'?(room.count===null?aw[room.calculation as keyof typeof aw]:aw[room.calculation as 'OP'|'OU']+' × '+room.count):room.zone.area>0?formatter.format(room.zone.area)+' м²':w.areaUnknown;
   const rooms=new Map(current.rooms.map(room=>[room.zone.id,room]));
-  const annotations=placeModelLabels(projection.points.filter(point=>rooms.has(point.id)).map(point=>({...point,name:name(rooms.get(point.id)!.zone),priority:rooms.get(point.id)!.field==='attention'?1:0})),projection,selectedZone);
+  const annotations=placeModelLabels(projection.points.filter(point=>rooms.has(point.id)).map(point=>({...point,name:name(rooms.get(point.id)!.zone),detail:caption(rooms.get(point.id)!),priority:rooms.get(point.id)!.field==='attention'?1:0})),projection,selectedZone);
 
   useEffect(()=>{
     if(!hasGeometry||!canvas.current)return;
@@ -94,7 +94,7 @@ export function BuildingModel3D({building,model,language,selected,layer,onLayer,
       }}/>
       {status==='ready'&&cut&&labelsOn&&<div className="model-labels" aria-label={w.labels}>
         <svg aria-hidden="true" width="100%" height="100%">{annotations.labels.map(label=><line key={label.id} x1={label.anchor.x} y1={label.anchor.y} x2={label.x+label.width/2} y2={label.y+label.height/2}/>)}</svg>
-        {annotations.labels.map(label=>{const room=rooms.get(label.id)!;return <button key={label.id} className={'model-room-label'+(label.id===selectedZone?' is-selected':'')} data-model-room={label.id} data-room-state={layer==='walk'?room.field:layer==='calculation'?room.calculation:'rooms'} aria-label={w.selectRoom+': '+name(room.zone)} aria-pressed={label.id===selectedZone} title={name(room.zone)+' · '+caption(room)} style={{left:label.x,top:label.y,width:label.width,height:label.height}} onClick={()=>chooseRoom(label.id)}><strong>{name(room.zone)}</strong><span><i/>{caption(room)}</span></button>;})}
+        {annotations.labels.map(label=>{const room=rooms.get(label.id)!;return <button key={label.id} className={'model-room-label'+(label.id===selectedZone?' is-selected':'')} data-model-room={label.id} data-room-state={layer==='walk'?room.field:layer==='calculation'?room.calculation:'rooms'} aria-label={w.selectRoom+': '+name(room.zone)} aria-pressed={label.id===selectedZone} title={name(room.zone)+' · '+caption(room)} style={{left:label.x,top:label.y,width:label.width,height:label.height}} onClick={()=>chooseRoom(label.id)}><strong>{name(room.zone)}</strong><span><i/><span>{caption(room)}</span></span></button>;})}
       </div>}
       {status==='loading'&&<div className="model-status" role="status"><Box size={27}/>{w.loading}</div>}
       {status==='error'&&<div className="model-status model-failed" role="alert"><Box size={27}/><strong>{w.unavailable}</strong><p>{w.fallback}</p><button className="button subtle" onClick={()=>setEpoch(value=>value+1)}>{w.retry}</button></div>}

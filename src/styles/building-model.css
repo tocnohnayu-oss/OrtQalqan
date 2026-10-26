@@ -47,7 +47,7 @@
 .model-labels{position:absolute;inset:0;pointer-events:none;z-index:1}.model-labels>svg{position:absolute;inset:0;overflow:hidden;pointer-events:none}.model-labels line{stroke:#56664e;stroke-opacity:.65;stroke-width:1}
 .model-room-label{position:absolute;display:flex;flex-direction:column;justify-content:center;gap:3px;pointer-events:auto;border:1px solid #a9b69d;border-left:3px solid var(--model-state,#8a9b7b);border-radius:0;padding:6px 9px;background:#fffdf8f7;box-shadow:0 2px 8px #253b4214;color:#253b42;text-align:left;cursor:pointer;line-height:1.3;--model-state:#8a9b7b}
 .model-room-label>strong{display:block;max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font:600 14px/1.35 Noto,sans-serif}
-.model-room-label>span{display:flex;align-items:center;gap:5px;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:10px;line-height:1.5;color:#5b6b52}
+.model-room-label>span{display:flex;align-items:center;gap:5px;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:12px;line-height:1.35;color:#5b6b52}
 .model-room-label i{width:5px;height:5px;flex-shrink:0;background:var(--model-state);display:inline-block}
 .model-room-label[data-room-state=attention],.model-room-label[data-room-state=OP]{--model-state:#a8492d}
 .model-room-label[data-room-state=OU]{--model-state:#3e7483}.model-room-label[data-room-state=visited]{--model-state:#3d735b}
@@ -74,3 +74,5 @@
  .model-expanded{inset:0;max-height:100dvh;box-shadow:none}.model-focus-bar{gap:8px;padding:9px 10px}.model-focus-bar>svg{display:none}.model-focus-bar h2{font-size:22px}.model-focus-bar .button{padding:8px;font-size:10px;gap:5px}.model-focus-bar span{font-size:9px}.model-focus-layers{padding:0 10px}.model-focus-layers>button{flex:1;padding:9px 7px;font-size:11px}
  .model-expanded .model-camera-controls{display:grid;grid-template-columns:repeat(6,minmax(44px,1fr));gap:4px;width:100%}.model-expanded .model-bottom-bar{padding:9px 10px}.model-expanded .model-bottom-bar>p{display:none}.model-expanded .model-room-context>h3{font-size:22px}.model-expanded .model-room-sheet{padding:9px 10px}
 }
+
+.model-room-label>span>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.model-room-context>p{font-size:12px}
