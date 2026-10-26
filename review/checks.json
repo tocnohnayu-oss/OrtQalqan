@@ -4,7 +4,7 @@
     "channel": "chrome",
     "version": "155.0.8059.39"
   },
-  "sourceSha": "a2a405b46d5e71cc3d8aaba2b6ca44f24c65c5cb",
+  "sourceSha": "7d7377ee77623b75c12f8b66b6536096e66db6e6",
   "checks": [
     "projected 3D room names, clipping and collision priority",
     "same-canvas expanded 3D, focus trap and nested dialogs",
