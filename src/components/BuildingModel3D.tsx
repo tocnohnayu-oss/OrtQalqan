@@ -1,5 +1,5 @@
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, Box, ChevronDown, ClipboardCheck, Focus, Maximize2, Minus, Plus, RotateCcw, RotateCw, ScanLine, Tags, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Box, ChevronDown, ClipboardCheck, Focus, Maximize2, Minus, Plus, RotateCcw, RotateCw, ScanLine, Search, Tags, X } from 'lucide-react';
 import type { Building, Language } from '../domain/types';
 import { atlasWords, type AtlasLayer } from '../locales/atlas';
 import { modelWords } from '../locales/model';
@@ -11,9 +11,9 @@ import { RoomGlyph } from './RoomGlyph';
 type Scene=ReturnType<typeof import('../scene/building-scene.mjs').createBuildingScene>;
 type Projection={width:number;height:number;points:{id:string;x:number;y:number;depth:number}[]};
 type ModelRoom=ReturnType<typeof buildingAtlas>['floors'][number]['rooms'][number];
-type Props={building:Building;model:ReturnType<typeof buildingAtlas>;language:Language;selected:string;layer:AtlasLayer;onLayer:(layer:AtlasLayer)=>void;onSelect:(id:string)=>void;onRoom?:(zoneId:string,floorId:string)=>void;onInspect?:(zoneId:string)=>void};
+type Props={building:Building;model:ReturnType<typeof buildingAtlas>;language:Language;selected:string;layer:AtlasLayer;onLayer:(layer:AtlasLayer)=>void;onSelect:(id:string)=>void;onSearch:()=>void;onRoom?:(zoneId:string,floorId:string)=>void;onInspect?:(zoneId:string)=>void};
 
-export function BuildingModel3D({building,model,language,selected,layer,onLayer,onSelect,onRoom,onInspect}:Props) {
+export function BuildingModel3D({building,model,language,selected,layer,onLayer,onSelect,onSearch,onRoom,onInspect}:Props) {
   const w=modelWords(language),aw=atlasWords(language),name=(item:{name:string;nameKk:string})=>language==='ru'?item.name:item.nameKk;
   const root=useRef<HTMLDivElement>(null),canvas=useRef<HTMLCanvasElement>(null),expandButton=useRef<HTMLButtonElement>(null),engine=useRef<Scene|null>(null);
   const callbacks=useRef({onSelect});callbacks.current={onSelect};
@@ -81,7 +81,7 @@ export function BuildingModel3D({building,model,language,selected,layer,onLayer,
   const chooseRoom=(id:string,focus=false)=>{setPicked(id?{floorId:selected,zoneId:id}:null);if(id){setCut(true);if(focus)pendingFocus.current=id;}};
   if(!hasGeometry)return <div className="building-model-empty"><AtlasSheet kind={building.kind||'other'}/><div><h3>{w.empty}</h3><p>{w.emptyBody}</p></div></div>;
   return <div ref={root} id={viewerId} className={'building-model'+(expanded?' model-expanded':'')} data-model-status={status} role={expanded?'dialog':'region'} aria-modal={expanded||undefined} aria-label={!expanded?w.title:undefined} aria-labelledby={expanded?headingId:undefined}>
-    {expanded&&<header className="model-focus-bar"><Box size={23}/><div><h2 id={headingId} tabIndex={-1}>{name(building)}</h2><span>{building.demo?aw.demo:w.title}</span></div><button className="button subtle" onClick={()=>setExpanded(false)}><ArrowLeft size={16}/>{w.exit}</button></header>}
+    {expanded&&<header className="model-focus-bar"><Box size={23}/><div><h2 id={headingId} tabIndex={-1}>{name(building)}</h2><span>{building.demo?aw.demo:w.title}</span></div><button className="model-focus-search" aria-label={aw.searchTitle} title={aw.searchTitle} onClick={onSearch}><Search size={19}/></button><button className="button subtle" onClick={()=>setExpanded(false)}><ArrowLeft size={16}/>{w.exit}</button></header>}
     {expanded&&<div className="model-focus-layers" role="group" aria-label={aw.layer}>{(['rooms','walk','calculation'] as const).map(value=><button key={value} aria-pressed={layer===value} onClick={()=>onLayer(value)}>{aw[value]}</button>)}</div>}
     <div className="model-mode-bar"><div role="group" aria-label={w.title}><button aria-pressed={!cut} onClick={()=>setCut(false)}><Box size={16}/>{w.whole}</button><button aria-pressed={cut} onClick={()=>setCut(true)}><ScanLine size={16}/>{w.cut}</button></div><div className="model-view-tools">
       {cut&&<button className="model-label-toggle" aria-label={w.labels} title={w.labels} aria-pressed={labelsOn} onClick={()=>setLabelsOn(value=>!value)}><Tags size={17}/><span>{w.labelsShort}</span></button>}
