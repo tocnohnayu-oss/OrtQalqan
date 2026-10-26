@@ -94,3 +94,9 @@
 .atlas-spread .atlas-stack{height:calc(360px + var(--sheet-count)*55px);overflow:hidden}.atlas-spread .atlas-paper{top:calc(40px + var(--sheet-position)*55px)}
 .atlas-desk-heading>.atlas-reference{font-size:10px;gap:5px;color:#4c6553;flex-shrink:0}.atlas-reference time{color:#253b42;font-weight:600;font-variant-numeric:tabular-nums}
 @media(max-width:720px){.atlas-desk-heading>.atlas-reference{font-size:9px;gap:4px}}
+@media(max-width:720px){
+ .floor-plan-view .plan-field-toggle{width:44px;min-width:44px;height:44px;min-height:44px}
+ .floor-plan-view .plan-view-controls{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px;align-items:stretch}
+ .floor-plan-view .plan-count-toggle{justify-self:end;min-width:64px;min-height:44px}
+ .floor-plan-view .plan-view-controls>.plan-zoom{grid-column:1/-1;justify-self:end}
+}
