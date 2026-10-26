@@ -16,7 +16,7 @@ export function createBuildingScene(canvas,initial,{onReady,onPick,onError}) {
   const fill=new THREE.DirectionalLight('#d9e8f0',1.2);fill.position.set(30,25,-35);scene.add(fill);
   const controls=new OrbitControls(camera,canvas);controls.enableDamping=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;controls.dampingFactor=.09;
   controls.maxPolarAngle=Math.PI*.49;controls.minPolarAngle=.08;controls.minDistance=3;controls.maxDistance=800;controls.screenSpacePanning=true;
-  const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();let config=initial,world=null,ground=null,frame=null,disposed=false,signature='',first=true,frames=0;
+  const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();let config=initial,world=null,ground=null,frame=null,disposed=false,signature='',viewSignature='',first=true,frames=0;
   let center={x:0,y:0},fitBox=new THREE.Box3(),targets=[];
 
   function disposeGroup(group){if(!group)return;const geometries=new Set(),materials=new Set();group.traverse(object=>{if(object.geometry)geometries.add(object.geometry);for(const material of Array.isArray(object.material)?object.material:object.material?[object.material]:[])materials.add(material);});for(const geometry of geometries)geometry.dispose();for(const material of materials){material.map?.dispose();material.dispose();}scene.remove(group);}
@@ -24,7 +24,7 @@ export function createBuildingScene(canvas,initial,{onReady,onPick,onError}) {
   function requestRender(){if(!disposed&&frame===null)frame=requestAnimationFrame(render);}
   controls.addEventListener('change',requestRender);
   function shapeOf(points){const shape=new THREE.Shape();points.forEach((point,index)=>shape[index?'lineTo':'moveTo'](point.x-center.x,-(point.y-center.y)));shape.closePath();return shape;}
-  function build(){
+  function build(refit=false){
     disposeGroup(world);world=new THREE.Group();targets=[];const model=buildingModel(config.building,config.height);if(!model.bounds){scene.add(world);return;}
     const b=model.bounds;center={x:(b.minX+b.maxX)/2,y:(b.minY+b.maxY)/2};const selectedIndex=config.building.floors.findIndex(floor=>floor.id===config.selected);
     const cube=new THREE.BoxGeometry(1,1,1),matrix=new THREE.Matrix4(),rotation=new THREE.Quaternion(),position=new THREE.Vector3(),scale=new THREE.Vector3();
@@ -87,13 +87,21 @@ export function createBuildingScene(canvas,initial,{onReady,onPick,onError}) {
     const grid=new THREE.GridHelper(groundSize,Math.min(70,Math.round(groundSize/2)),'#bac6b2','#d8e0d0');grid.position.y=-.2;grid.material.transparent=true;grid.material.opacity=.32;ground.add(grid);scene.add(ground);
     sun.shadow.camera.left=-size;sun.shadow.camera.right=size;sun.shadow.camera.top=size;sun.shadow.camera.bottom=-size;sun.shadow.camera.far=size*8;sun.shadow.camera.updateProjectionMatrix();sun.position.set(-size*1.1,size*2,size*1.1);sun.target.position.set(0,model.totalHeight/2,0);sun.target.updateMatrixWorld();
     canvas.dataset.floorCount=String(model.floors.length);canvas.dataset.meshes=String(targets.length);canvas.dataset.mode=config.cut?'cut':'whole';canvas.dataset.height=String(config.height);canvas.dataset.layer=config.layer;
-    if(first){reset();first=false;}requestRender();
+    if(first){reset();first=false;}else if(refit)reset(false,true);requestRender();
   }
-  function reset(top=false){if(fitBox.isEmpty())return;const size=fitBox.getSize(new THREE.Vector3()),target=fitBox.getCenter(new THREE.Vector3()),max=Math.max(size.x,size.y,size.z,8),distance=max/(2*Math.tan(camera.fov*Math.PI/360))*1.32;controls.target.copy(target);camera.position.copy(target).add(new THREE.Vector3(top?.01:.95,top?1.8:.72,top?.01:1.05).normalize().multiplyScalar(distance));camera.near=Math.max(.05,max/1000);camera.far=max*30;camera.updateProjectionMatrix();controls.minDistance=max*.18;controls.maxDistance=max*15;controls.update();requestRender();}
+  function reset(top=false,preserveAngle=false){
+    if(fitBox.isEmpty())return;
+    const size=fitBox.getSize(new THREE.Vector3()),target=fitBox.getCenter(new THREE.Vector3()),max=Math.max(size.x,size.y,size.z,8);
+    const direction=preserveAngle?camera.position.clone().sub(controls.target).normalize():new THREE.Vector3(top?.06:.95,top?1:.78,top?.06:1.05).normalize();
+    const corners=[];for(const x of [fitBox.min.x,fitBox.max.x])for(const y of [fitBox.min.y,fitBox.max.y])for(const z of [fitBox.min.z,fitBox.max.z])corners.push(new THREE.Vector3(x,y,z));
+    controls.target.copy(target);camera.near=Math.max(.05,max/1000);camera.far=max*30;camera.updateProjectionMatrix();let lo=max*.6,hi=max*12;
+    for(let step=0;step<22;step++){const distance=(lo+hi)/2;camera.position.copy(target).addScaledVector(direction,distance);camera.lookAt(target);camera.updateMatrixWorld();const extent=Math.max(...corners.map(point=>{const projected=point.clone().project(camera);return Math.max(Math.abs(projected.x),Math.abs(projected.y));}));if(extent>.84)lo=distance;else hi=distance;}
+    camera.position.copy(target).addScaledVector(direction,hi);controls.minDistance=max*.12;controls.maxDistance=max*20;controls.update();requestRender();
+  }
   function rotate(yaw,pitch=0){const offset=camera.position.clone().sub(controls.target),spherical=new THREE.Spherical().setFromVector3(offset);spherical.theta+=yaw;spherical.phi=THREE.MathUtils.clamp(spherical.phi+pitch,.08,Math.PI*.49);camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(spherical));controls.update();requestRender();}
   function zoom(factor){camera.position.sub(controls.target).multiplyScalar(factor).add(controls.target);controls.update();requestRender();}
-  function update(next){config=next;const nextSignature=JSON.stringify([next.building.revision,next.building.id,next.selected,next.cut,next.height,next.layer,next.states]);if(signature!==nextSignature){signature=nextSignature;build();}}
-  const resize=()=>{const width=canvas.clientWidth,height=canvas.clientHeight;if(!width||!height)return;renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();requestRender();};
+  function update(next){config=next;const nextSignature=JSON.stringify([next.building.revision,next.building.id,next.selected,next.cut,next.height,next.layer,next.states]);if(signature!==nextSignature){signature=nextSignature;const nextView=JSON.stringify([next.selected,next.cut,next.height,next.building.floors.map(floor=>floor.layout)]),refit=nextView!==viewSignature;viewSignature=nextView;build(refit);}}
+  const resize=()=>{const width=canvas.clientWidth,height=canvas.clientHeight;if(!width||!height)return;const previous=camera.aspect;renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();if(Math.abs(previous-camera.aspect)>.1)reset(false,true);requestRender();};
   const observer=new ResizeObserver(resize);observer.observe(canvas);
   const held=new Set();let start=null,moved=false;
   const down=event=>{held.add(event.pointerId);if(held.size>1)moved=true;else{start={x:event.clientX,y:event.clientY};moved=false;}};
@@ -102,6 +110,6 @@ export function createBuildingScene(canvas,initial,{onReady,onPick,onError}) {
   const cancel=event=>{held.delete(event.pointerId);moved=true;start=null;};
   const lost=event=>{event.preventDefault();onError?.();};
   canvas.addEventListener('pointerdown',down);canvas.addEventListener('pointermove',move);canvas.addEventListener('pointerup',up);canvas.addEventListener('pointercancel',cancel);canvas.addEventListener('webglcontextlost',lost);
-  update(initial);resize();render();canvas.dataset.renderer='webgl2';onReady?.();
+  resize();update(initial);resize();render();canvas.dataset.renderer='webgl2';onReady?.();
   return {update,reset:()=>reset(false),top:()=>reset(true),rotate,zoom,dispose(){disposed=true;if(frame!==null)cancelAnimationFrame(frame);observer.disconnect();controls.dispose();canvas.removeEventListener('pointerdown',down);canvas.removeEventListener('pointermove',move);canvas.removeEventListener('pointerup',up);canvas.removeEventListener('pointercancel',cancel);canvas.removeEventListener('webglcontextlost',lost);disposeGroup(world);disposeGroup(ground);sun.shadow.map?.dispose();renderer.dispose();renderer.forceContextLoss();}};
 }
