@@ -9,11 +9,10 @@ export function findRooms(building,query='') {
   if(!tokens.length)return building.floors.flatMap(floor=>floor.zones.map(zone=>({floor,zone,matchedAssets:[]})));
   return building.floors.flatMap(floor=>floor.zones.flatMap(zone=>{
     const roomText=normalize(`${floor.name} ${floor.nameKk} ${zone.name} ${zone.nameKk}`);
-    const assets=zone.assets||[],assetText=assets.map(asset=>normalize(`${asset.label} ${asset.model}`));
-    const text=[roomText,...assetText].join(' ');
-    if(!tokens.every(token=>text.includes(token)))return [];
     const roomMatch=tokens.every(token=>roomText.includes(token));
-    const matchedAssets=tokens.length&&!roomMatch?assets.filter((_,index)=>tokens.some(token=>assetText[index].includes(token))):[];
-    return [{floor,zone,matchedAssets}];
+    if(roomMatch)return [{floor,zone,matchedAssets:[]}];
+    // A query may use floor/room context, but equipment terms must match one record.
+    const matchedAssets=(zone.assets||[]).filter(asset=>{const text=normalize(`${asset.label} ${asset.model}`);return tokens.every(token=>roomText.includes(token)||text.includes(token));});
+    return matchedAssets.length?[{floor,zone,matchedAssets}]:[];
   }));
 }

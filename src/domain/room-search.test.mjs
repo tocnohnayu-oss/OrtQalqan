@@ -26,6 +26,20 @@ test('search normalizes fullwidth digits and Russian ё without dropping Kazakh 
   assert.equal(findRooms(building,'трехмерный １０１')[0].zone.id,'search-library');
   assert.equal(findRooms(building,'Әдістемелік').length,1);assert.equal(findRooms(building,'Адістемелік').length,0);
 });
+test('equipment query terms cannot be assembled from different assets in the same room',()=>{
+  const building=fixture(),zone=building.floors[0].zones[0],base=zone.assets[0];
+  zone.assets=[{...base,id:'precise-op',label:'EQ-01',model:'ОП-4'},{...base,id:'precise-ou',label:'EQ-02',model:'ОУ-5',type:'OU'}];
+  assert.deepEqual(findRooms(building,'EQ-01 ОУ-5'),[]);
+  assert.deepEqual(findRooms(building,'EQ-02 ОП-4'),[]);
+  assert.deepEqual(findRooms(building,'первый библиотека EQ-01 ОП-4').flatMap(entry=>entry.matchedAssets.map(asset=>asset.id)),['precise-op']);
+});
+test('identical equipment labels retain only the model that satisfies every query term',()=>{
+  const building=fixture(),zone=building.floors[0].zones[0],base=zone.assets[0];
+  zone.assets=[{...base,id:'same-four',label:'EQ-01',model:'ОП-4'},{...base,id:'same-five',label:'EQ-01',model:'ОП-5'}];
+  assert.deepEqual(findRooms(building,'кітапхана EQ-01 ОП-5').flatMap(entry=>entry.matchedAssets.map(asset=>asset.id)),['same-five']);
+  assert.deepEqual(findRooms(building,'EQ-01').flatMap(entry=>entry.matchedAssets.map(asset=>asset.id)),['same-four','same-five']);
+  assert.equal(findRooms(building,'Библиотека')[0].matchedAssets.length,0);
+});
 test('an empty building or unmatched search has no fabricated room or equipment',()=>{
   const building=fixture();assert.equal(findRooms(building,'unknown-serial').length,0);
   building.floors[0].zones=[];building.floors[1].zones=[];
