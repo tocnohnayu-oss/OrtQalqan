@@ -2,9 +2,9 @@
   "passed": true,
   "browser": {
     "channel": "chrome",
-    "version": "155.0.8059.39"
+    "version": "156.0.8078.47"
   },
-  "sourceSha": "41d9e1bb91a9acf6d3a124fddd4d2fe47ada1c92",
+  "sourceSha": "73af3cdf7d6d9df19b1975a4439ba9e236505202",
   "checks": [
     "restore 3D selection and exact camera after parameter edits while releasing GPU",
     "room-scoped attention keeps complete CSV and exact equipment identities",
