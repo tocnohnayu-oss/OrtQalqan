@@ -356,6 +356,7 @@
 .walk-selection-notice{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:12px 0;padding:8px 12px;background:#edf2e5;border-left:2px solid #879c78;color:#4d654f}
 .walk-selection-notice>span{display:flex;align-items:center;gap:9px;font-size:11px;line-height:1.6}
 .walk-selection-notice>span>svg{flex-shrink:0}
+.walk-selection-notice strong{font:inherit;font-weight:600;color:#253b42}
 .walk-selection-notice>button{display:flex;align-items:center;gap:8px;min-height:44px;flex-shrink:0;padding:8px 0;border:0;background:none;color:#3e5b44;font-size:11px;text-align:left}
 .walk-selection-notice>button:focus-visible{outline:2px solid #b5452b;outline-offset:3px}
 .walk-record-footer>.walk-selection-notice{margin:0}
