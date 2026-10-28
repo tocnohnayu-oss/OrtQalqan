@@ -23,6 +23,7 @@ const ru={
   openRoom:'Открыть помещение',openAsset:'Открыть оборудование',actions:'Действия',results:'Совпадения',
   keyboard:'↑ ↓ перейти · Enter открыть · Tab действия · Esc закрыть',limit:'Уточните поиск или покажите следующие записи.',searchMore:'Показать ещё',
   sourceChoice:'Исходная запись',locationChoice:'Расположение',locateModel:'Показать в 3D',locatePlan:'Показать на плане',locateModelShort:'В 3D',locatePlanShort:'План',
+  clearSearch:'Очистить поиск',
   assetLocationHint:'На модели или плане показывается помещение. Место установки оборудования не задано.',
   context:'Поиск только в открытом объекте',update:'Обновить расчёт',returnAtlas:'К атласу здания',
 };
@@ -50,6 +51,7 @@ const kk:typeof ru={
   openRoom:'Бөлмені ашу',openAsset:'Жабдықты ашу',actions:'Әрекеттер',results:'Сәйкестіктер',
   keyboard:'↑ ↓ өту · Enter ашу · Tab әрекеттер · Esc жабу',limit:'Іздеуді нақтылаңыз немесе келесі жазбаларды көрсетіңіз.',searchMore:'Тағы көрсету',
   sourceChoice:'Бастапқы жазба',locationChoice:'Орналасуы',locateModel:'3D модельде көрсету',locatePlan:'Жоспарда көрсету',locateModelShort:'3D',locatePlanShort:'Жоспар',
+  clearSearch:'Іздеуді тазалау',
   assetLocationHint:'Модельде немесе жоспарда бөлме көрсетіледі. Жабдықтың орнатылған орны белгіленбеген.',
   context:'Іздеу тек ашық нысанда',update:'Есепті жаңарту',returnAtlas:'Ғимарат атласына',
 };

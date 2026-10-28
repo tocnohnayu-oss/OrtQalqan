@@ -97,7 +97,7 @@ export function BuildingModel3D({building,model,language,selected,layer,viewSess
     </div></div>
     <div className="model-context-bar"><label><span>{w.floor}</span><select aria-label={w.chooseFloor} value={selected} onChange={event=>onSelect(event.target.value)}>{model.floors.map(item=><option value={item.floor.id} key={item.floor.id}>{name(item.floor)}</option>)}</select></label><label><span>{w.room}</span><select aria-label={w.chooseRoom} value={selectedZone} onChange={event=>chooseRoom(event.target.value,true)}><option value="">{w.roomPlaceholder}</option>{current.rooms.map(room=><option key={room.zone.id} value={room.zone.id}>{name(room.zone)}{floor.layout?.rooms.some(shape=>shape.zoneId===room.zone.id)?'':' · '+w.noContour}</option>)}</select></label></div>
     <div className="building-model-stage">
-      <canvas ref={canvas} className="building-model-canvas" aria-label={w.title} aria-describedby={hint} role="img" tabIndex={0} onKeyDown={event=>{
+      <canvas ref={canvas} className="building-model-canvas" aria-label={w.title+(pickedData?' · '+name(floor)+' · '+name(pickedData.zone):'')} aria-describedby={hint} role="img" tabIndex={0} onKeyDown={event=>{
         const key=event.key;if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','=','-','0','Home'].includes(key)){event.preventDefault();if(key==='ArrowLeft'||key==='ArrowRight')engine.current?.rotate(key==='ArrowLeft'?-.18:.18);else if(key==='ArrowUp'||key==='ArrowDown')engine.current?.rotate(0,key==='ArrowUp'?-.1:.1);else if(key==='0'||key==='Home')engine.current?.reset();else engine.current?.zoom(key==='-'?1.15:.87);}
       }}/>
       {status==='ready'&&cut&&labelsOn&&<div className="model-labels" aria-label={w.labels}>
