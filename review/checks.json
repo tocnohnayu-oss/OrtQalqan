@@ -2,10 +2,13 @@
   "passed": true,
   "browser": {
     "channel": "chrome",
-    "version": "156.0.8078.47"
+    "version": "155.0.8059.39"
   },
-  "sourceSha": "73af3cdf7d6d9df19b1975a4439ba9e236505202",
+  "sourceSha": "1f96a10801938ea715c3c090a7e35e658aae6f76",
   "checks": [
+    "workspace camera controls and open-floor action fit the desktop before scrolling",
+    "real floor thumbnails distinguish contours, images and missing plans",
+    "redesigned workspace keeps 320px KK navigation touch targets and source parameters",
     "restore 3D selection and exact camera after parameter edits while releasing GPU",
     "room-scoped attention keeps complete CSV and exact equipment identities",
     "attention-to-3D source location and mixed image/contour fallback",
