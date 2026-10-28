@@ -62,6 +62,7 @@
 .attention-empty .button{margin:auto;min-height:44px}
 .attention-sheet button:focus-visible,.walk-attention-link:focus-visible,.attention-scope>select:focus-visible{outline:2px solid #b5452b;outline-offset:3px}
 @media(max-width:720px){
+  .attention-sheet.is-room-scoped{padding-top:16px}
   .walk-attention-link{min-height:44px;margin-block:-13px;gap:5px}.walk-attention-link>svg{display:none}
   .inspection-workspace .walk-simple-top>div:last-child>.icon-button,.inspection-workspace .walk-simple-top>div:last-child>.button{width:44px;min-width:44px;height:44px}
   .attention-sheet{padding:22px 17px 28px}
@@ -88,3 +89,14 @@
 }
 .attention-room-scope{display:flex;align-items:center;gap:12px;margin:15px 0;padding:12px 14px;border:1px solid #b7c3ac;border-left:3px solid #b5452b;background:#f7f2e5;color:#253b42}.attention-room-scope>svg{flex-shrink:0;color:#9a472d}.attention-room-scope>div{flex:1;min-width:0}.attention-room-scope small{display:block;font-size:10px;line-height:1.5;color:#5b7057}.attention-room-scope strong{display:block;font:600 22px/1.2 var(--display);overflow-wrap:anywhere;margin:3px 0}.attention-room-scope span{font-size:11px;color:#5b7057;line-height:1.5}.attention-room-scope>button{display:grid;place-items:center;flex-shrink:0;width:44px;height:44px;border:1px solid #b9c5b0;background:#fffdf8;color:#3f594b}.attention-room-scope>button:focus-visible{outline:2px solid #b5452b;outline-offset:2px}
 @media(max-width:720px){.attention-room-scope{gap:9px;padding:10px;margin:11px 0}.attention-room-scope strong{font-size:21px}}
+@media(max-width:720px){
+  .is-room-scoped .attention-cover{grid-template-columns:minmax(0,1fr);padding-bottom:12px;gap:0}
+  .is-room-scoped .attention-cover h3{font-size:24px;margin:6px 0 0}
+  .is-room-scoped .attention-illustration{display:none}
+  .is-room-scoped .attention-return{margin-bottom:4px}
+  .is-room-scoped .attention-room-scope{padding:9px;margin-block:8px}
+  .is-room-scoped .attention-reference{padding:10px 0 12px}
+  .is-room-scoped .attention-group{margin-top:18px}
+  .is-room-scoped.is-short-list .attention-tools{display:none}
+  .is-room-scoped.is-short-list .attention-list-status{padding-top:8px}
+}

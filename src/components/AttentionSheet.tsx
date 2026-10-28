@@ -42,7 +42,7 @@ export function AttentionSheet({active,initialZoneId='',preferModel=false,buildi
   ].join(' ')).includes(token)));
   const shown=matches.slice(0,limit);
   const clear=()=>{setQuery('');setGroup('all');setLimit(40);setZoneScope('');};
-  return <section className="attention-sheet" ref={root} aria-label={w.title}>
+  return <section className={'attention-sheet'+(scope?' is-room-scoped':'')+(scope&&scopedItems.length<=1&&!query&&group==='all'?' is-short-list':'')} ref={root} aria-label={w.title}>
     <button className="attention-return" onClick={onRooms}><ArrowLeft size={15}/>{w.rooms}</button>
     <header className="attention-cover"><div><span className="eyebrow">{building.demo?w.demo:w.eyebrow}</span><h3 tabIndex={-1}>{w.heading}</h3><p>{w.intro}</p></div><SheetIllustration/></header>
     {scope&&<div className="attention-room-scope"><MapPin size={19}/><div><small>{w.roomScope}</small><strong>{name(scope.zone)}</strong><span>{name(scope.floor)}</span></div><button aria-label={w.wholeObject} title={w.wholeObject} onClick={()=>{setZoneScope('');setLimit(40);}}><X size={18}/></button></div>}
