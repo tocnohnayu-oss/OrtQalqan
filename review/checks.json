@@ -4,7 +4,7 @@
     "channel": "chrome",
     "version": "156.0.8078.47"
   },
-  "sourceSha": "0cc63ca0decaec6d98c3e9e214542343ef95f462",
+  "sourceSha": "8f9122c1f2e18c7c8fcecbfec9a8179f425c6335",
   "checks": [
     "inspection attention includes text observations and missing service dates with separate clarification states",
     "inspection drafts, other-date stamps and explicit completion survive reload without changing geometry",
