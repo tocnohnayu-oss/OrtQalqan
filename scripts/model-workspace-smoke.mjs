@@ -20,9 +20,9 @@ export async function modelWorkspaceSmoke(browser,errors){
   const close=page=>page.locator('dialog[open]>.modal-heading button').click();
   const checkLabels=async page=>{
     await expect.poll(()=>page.locator('.model-room-label').count(),{timeout:10000}).toBeGreaterThan(0);
-    const stage=await page.locator('.building-model-stage').boundingBox(),labels=await page.locator('.model-room-label').evaluateAll(nodes=>nodes.map(node=>{const r=node.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,font:parseFloat(getComputedStyle(node.querySelector('strong')).fontSize)};}));
+    const {stage,labels}=await page.evaluate(()=>{const r=document.querySelector('.building-model-stage').getBoundingClientRect();return {stage:{x:r.x,y:r.y,width:r.width,height:r.height},labels:Array.from(document.querySelectorAll('.model-room-label')).map(node=>{const box=node.getBoundingClientRect();return {x:box.x,y:box.y,w:box.width,h:box.height,font:parseFloat(getComputedStyle(node.querySelector('strong')).fontSize)};})};});
     assert.ok(labels.length>0,'real projected room names are visible');
-    for(const a of labels){assert.ok(a.w>=44&&a.h>=44&&a.font>=14);assert.ok(a.x>=stage.x&&a.y>=stage.y&&a.x+a.w<=stage.x+stage.width+1&&a.y+a.h<=stage.y+stage.height+1);for(const b of labels)if(a!==b)assert.ok(a.x+a.w<=b.x||b.x+b.w<=a.x||a.y+a.h<=b.y||b.y+b.h<=a.y,'projected names do not overlap');}
+    for(const a of labels){assert.ok(a.w>=44&&a.h>=44&&a.font>=14,'readable projected label: '+JSON.stringify(a));assert.ok(a.x>=stage.x&&a.y>=stage.y&&a.x+a.w<=stage.x+stage.width+1&&a.y+a.h<=stage.y+stage.height+1);for(const b of labels)if(a!==b)assert.ok(a.x+a.w<=b.x||b.x+b.w<=a.x||a.y+a.h<=b.y||b.y+b.h<=a.y,'projected names do not overlap');}
   };
   let active;
   try{
