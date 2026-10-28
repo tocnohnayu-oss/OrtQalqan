@@ -5,7 +5,8 @@ import {validateBuilding} from '../src/domain/calculator.mjs';
 
 /** Date, evidence and completion are different states in an actual room-by-room visit. */
 export async function inspectionReviewSmoke(browser,errors){
-  const building=createShowcase({id:'inspection-review',date:'2026-10-28'}),floor=building.floors[0];
+  // Use the same JSON representation as a stored/imported object (no undefined properties).
+  const building=JSON.parse(JSON.stringify(createShowcase({id:'inspection-review',date:'2026-10-28'}))),floor=building.floors[0];
   for(const zone of floor.zones){zone.assets=[];delete zone.notes;delete zone.inspection;}
   const [library,classroom,server,lab]=floor.zones,answered={access:'ok',marking:'ok',passport:'ok'};
   library.notes='Учебная запись: проверить доступ у стеллажа. Оқу жазбасы: сөре жанындағы қолжетімділікті тексеру.';
