@@ -20,7 +20,7 @@ export function BuildingModel3D({building,model,language,selected,layer,viewSess
   const w=modelWords(language),aw=atlasWords(language),name=(item:{name:string;nameKk:string})=>language==='ru'?item.name:item.nameKk;
   const root=useRef<HTMLDivElement>(null),canvas=useRef<HTMLCanvasElement>(null),expandButton=useRef<HTMLButtonElement>(null),engine=useRef<Scene|null>(null);
   const callbacks=useRef({onSelect,onLocated});callbacks.current={onSelect,onLocated};
-  const [initialView]=useState(()=>restoreModelSession(building,viewSession.current,selected)),initialCamera=useRef(initialView.camera);
+  const [initialView]=useState(()=>restoreModelSession(building,viewSession.current,selected)),initialCamera=useRef(locate?.buildingId===building.id?null:initialView.camera);
   const [cut,setCut]=useState(initialView.cut),[height,setHeight]=useState(initialView.height),[draft,setDraft]=useState(String(initialView.height)),[epoch,setEpoch]=useState(0),[status,setStatus]=useState<'loading'|'ready'|'error'>('loading');
   const [picked,setPicked]=useState<{floorId:string;zoneId:string}|null>(()=>initialView.zoneId?{floorId:selected,zoneId:initialView.zoneId}:null),[labelsOn,setLabelsOn]=useState(initialView.labelsOn),[expanded,setExpanded]=useState(initialView.expanded);
   const [projection,setProjection]=useState<Projection>({width:0,height:0,points:[]});
@@ -39,17 +39,18 @@ export function BuildingModel3D({building,model,language,selected,layer,viewSess
 
   useEffect(()=>{
     if(!hasGeometry||!canvas.current)return;
-    let active=true;setStatus('loading');
+    let active=true,restoreFrame=0;setStatus('loading');
     void import('../scene/building-scene.mjs').then(({createBuildingScene})=>{
       if(!active||!canvas.current)return;
       engine.current=createBuildingScene(canvas.current,latest.current,{
-        onReady:()=>{if(active)setStatus('ready');},onError:()=>{if(active)setStatus('error');},
+        onReady:()=>{if(active&&!initialCamera.current)setStatus('ready');},onError:()=>{if(active)setStatus('error');},
         onProject:(value:Projection)=>{if(active)setProjection(value);},
         onPick:(floorId:string,zoneId?:string)=>{if(!active||!floorId)return;callbacks.current.onSelect(floorId);setPicked(zoneId?{floorId,zoneId}:null);if(zoneId)setCut(true);},
       });
-      if(initialCamera.current){engine.current.restoreView(initialCamera.current);initialCamera.current=null;}
+      // Restore after the viewport and source readout have completed their first layout.
+      if(initialCamera.current){const saved=initialCamera.current;restoreFrame=requestAnimationFrame(()=>{restoreFrame=requestAnimationFrame(()=>{if(!active||!engine.current)return;if(latest.current.selected===selected&&latest.current.selectedZone===initialView.zoneId&&!pendingFocus.current)engine.current.restoreView(saved);initialCamera.current=null;setStatus('ready');});});}
     }).catch(error=>{if(active){console.error('Building model failed',error);setStatus('error');}});
-    return()=>{active=false;const value=latest.current;viewSession.current=captureModelSession(value.building,{floorId:value.selected,zoneId:value.selectedZone,cut:value.cut,height:value.height,labelsOn:value.labelsOn,expanded:value.expanded,camera:engine.current?.captureView()||null});engine.current?.dispose();engine.current=null;};
+    return()=>{active=false;cancelAnimationFrame(restoreFrame);const value=latest.current;viewSession.current=captureModelSession(value.building,{floorId:value.selected,zoneId:value.selectedZone,cut:value.cut,height:value.height,labelsOn:value.labelsOn,expanded:value.expanded,camera:engine.current?.captureView()||null});engine.current?.dispose();engine.current=null;};
   },[building.id,hasGeometry,epoch]);
   useEffect(()=>{if(!locate||locate.buildingId!==building.id||locate.floorId!==selected)return;setPicked({floorId:selected,zoneId:locate.zoneId});setCut(true);pendingFocus.current=locate.zoneId;callbacks.current.onLocated(locate.token);},[locate?.token,building.id,selected]);
   useEffect(()=>{
