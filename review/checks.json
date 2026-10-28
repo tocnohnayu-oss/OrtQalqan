@@ -4,8 +4,9 @@
     "channel": "chrome",
     "version": "155.0.8059.39"
   },
-  "sourceSha": "ae7b4dc0998e3b11f56987490205cf8035d07662",
+  "sourceSha": "dbfa608b7b8b990f3ad64df9d53b29dbcdaafb83",
   "checks": [
+    "equipment search never combines query terms from different asset records",
     "search offers separate native source and spatial actions with real keyboard focus",
     "search locates exact cross-floor model rooms without losing the current layer",
     "mixed image and unplaced search results preserve actual geometry boundaries",
