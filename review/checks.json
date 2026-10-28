@@ -4,7 +4,7 @@
     "channel": "chrome",
     "version": "155.0.8059.39"
   },
-  "sourceSha": "ee294836553c9298fe1d92ed03b4d6f642ad20fd",
+  "sourceSha": "ae7b4dc0998e3b11f56987490205cf8035d07662",
   "checks": [
     "search offers separate native source and spatial actions with real keyboard focus",
     "search locates exact cross-floor model rooms without losing the current layer",
