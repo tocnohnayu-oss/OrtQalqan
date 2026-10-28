@@ -15,5 +15,6 @@ import './styles/signature.css';
 import './styles/attention.css';
 import './styles/building-atlas.css';
 import './styles/building-model.css';
+import './styles/workspace.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);
