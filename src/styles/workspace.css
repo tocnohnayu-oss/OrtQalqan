@@ -14,6 +14,7 @@
 .simple-nav>.global-search-trigger{border:0;background:#edf1e9;padding-inline:13px;font-size:12px}
 .simple-nav>.global-search-trigger kbd{font-size:11px}
 .simple-shell main{max-width:1800px;padding:16px 24px 18px}
+.simple-shell.plan-focus main{max-width:none;padding:0}
 .studio-object-header{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center;margin:0;padding:0 0 19px}
 .object-heading-block{display:grid;grid-template-columns:58px minmax(0,1fr);grid-template-areas:'sketch location' 'sketch title';gap:0 16px;min-width:0}
 .studio-object-header .object-sketch{width:58px;height:70px;align-self:center}
@@ -144,6 +145,7 @@
 
 @media(min-width:1051px){
  .studio-layout .studio-plan{min-width:0}
+ .model-context-bar{grid-template-columns:minmax(150px,220px) minmax(0,1fr)}
 }
 @media(min-width:721px) and (max-width:1150px){
  .simple-shell .simple-topbar{padding-inline:20px;gap:22px}
@@ -169,13 +171,14 @@
  .atlas-model .atlas-desk{padding:0}
  .building-model-stage{height:400px}
  .model-mode-bar{flex-direction:row;flex-wrap:wrap;align-items:center}
+ .model-mode-bar>div[role=group]>button{white-space:nowrap}
  .model-mode-bar>div{width:auto}
  .model-bottom-bar{align-items:flex-start;flex-direction:column;gap:8px}
  .model-camera-controls{align-self:flex-start}
  .atlas-model .atlas-selected-floor{flex-direction:row;flex-wrap:wrap}
 }
 @media(max-width:720px){
- .simple-shell .simple-topbar{padding:10px 12px 0;gap:6px;min-height:0}
+ .simple-shell .simple-topbar{padding:6px 12px 0;gap:0;min-height:0}
  .simple-shell .brand{font-size:26px;gap:7px;letter-spacing:-.9px}
  .simple-shell .brand-symbol{width:27px;height:30px}
  .simple-nav{gap:0;min-height:46px}
@@ -198,14 +201,16 @@
  .studio-actions>.button{min-height:46px;font-size:12px;padding:10px 13px}
  .studio-actions>.compact-result{width:100%;max-width:none;text-align:left;min-height:24px;margin:0;font-size:11px}
  .studio-actions>.button.primary{flex:1}
- .building-atlas-top{display:grid;grid-template-columns:minmax(0,1fr);gap:0;min-height:0;padding:11px 12px 0}
- .building-atlas-top>div:first-child{gap:8px;justify-content:flex-start}
- .building-atlas-top h2{font-size:19px;line-height:1.3}
- .atlas-demo{margin-left:auto;font-size:9px;max-width:115px}
- .atlas-reference{font-size:10px;gap:5px;margin:7px 0 3px;flex-wrap:wrap}
+ .building-atlas-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 9px;min-height:0;padding:10px 10px 0}
+ .building-atlas-top>div:first-child{gap:6px;justify-content:flex-start;flex-wrap:wrap;align-self:center}
+ .building-atlas-top>div:first-child>svg{display:none}
+ .building-atlas-top h2{font-size:17px;line-height:1.3}
+ .atlas-demo{margin:0;font-size:8px;max-width:100px;padding:3px 5px}
+ .atlas-reference{font-size:10px;gap:5px;margin:0;flex-wrap:nowrap;align-self:center}
  .atlas-reference time{font-size:11px}
  .atlas-reference>svg{width:13px;height:13px}
- .atlas-layer-switch{order:3;width:100%;margin:0;gap:0}
+ .atlas-reference>span{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+ .atlas-layer-switch{order:3;grid-column:1/-1;width:100%;margin:3px 0 0;gap:0}
  .atlas-layer-switch>button,.atlas-layer-switch>button:last-child{min-height:46px;flex:1;font-size:12px;padding:11px 7px}
  .building-atlas-body{grid-template-columns:minmax(0,1fr)}
  .atlas-index{background:var(--workspace-paper);color:var(--workspace-index);border-top:1px solid var(--workspace-line)}
