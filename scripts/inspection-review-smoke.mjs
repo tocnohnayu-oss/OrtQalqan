@@ -16,7 +16,7 @@ export async function inspectionReviewSmoke(browser,errors){
   const contexts=[];let active;
   const open=async(language,viewport)=>{
     const context=await browser.newContext({viewport,hasTouch:true});contexts.push(context);
-    await context.addInitScript(({building,language})=>{localStorage.setItem('ortqalqan.guide.v1','seen');localStorage.setItem('ortqalqan.language',language);localStorage.setItem('ortqalqan.workspace.view','floor');localStorage.setItem('ortqalqan.building.v1',JSON.stringify({version:2,activeId:building.id,buildings:[building]}));},{building,language});
+    await context.addInitScript(({building,language})=>{localStorage.setItem('ortqalqan.guide.v1','seen');localStorage.setItem('ortqalqan.language',language);localStorage.setItem('ortqalqan.workspace.view','floor');if(!localStorage.getItem('ortqalqan.building.v1'))localStorage.setItem('ortqalqan.building.v1',JSON.stringify({version:2,activeId:building.id,buildings:[building]}));},{building,language});
     const page=await context.newPage();active=page;page.on('pageerror',error=>errors.push(error.message));await page.goto('http://127.0.0.1:4173');await page.getByRole('button',{name:language==='ru'?'Обход':'Аралау',exact:true}).click();await page.evaluate(()=>document.fonts.ready);return page;
   };
   const stored=page=>page.evaluate(()=>JSON.parse(localStorage.getItem('ortqalqan.building.v1')).buildings[0]);
@@ -41,7 +41,7 @@ export async function inspectionReviewSmoke(browser,errors){
     await expect(room.locator('h3')).toHaveText(server.nameKk);await expect(mobile.locator('.walk-reference-date time')).toBeInViewport({ratio:1});await expect(actions.locator('time')).toHaveText('2026-10-20');await expect(actions).toHaveAttribute('data-record-state','draft');
     assert.equal(await mobile.evaluate(node=>node.scrollWidth>node.clientWidth),false);
     const footerBox=await actions.boundingBox();for(const group of await room.locator('.quick-check').all()){
-      for(const control of await group.locator('.quick-answer>span,.walk-answer-reset').all()){const box=await control.boundingBox();assert.ok(box.width>=44&&box.height>=44,'44px inspection answer/reset '+JSON.stringify(box));assert.ok(box.y>=0&&box.y+box.height<=footerBox.y,'three complete answer rows fit above the fixed footer at 320×740');}
+      for(const control of await group.locator('.quick-answer>span,.walk-answer-reset').all()){const box=await control.boundingBox();assert.ok(box.width>=44&&box.height>=44,'44px inspection answer/reset '+JSON.stringify(box));assert.ok(box.y>=0&&box.y+box.height<=footerBox.y,'three complete answer rows fit above the fixed footer at 320×740: '+JSON.stringify({box,footerBox}));}
       assert.ok(await group.locator('.quick-answer>span').first().evaluate(node=>parseFloat(getComputedStyle(node).fontSize))>=11);
     }
     await phone.screenshot({path:'qa/walk-review-mobile-kk.png',fullPage:false});const first=room.locator('.quick-check').first();await first.locator('.walk-answer-reset').tap();await expect(first.locator('input:checked')).toHaveCount(0);await expect(first.locator('input[value="ok"]')).toBeFocused();await expect(first.locator('.walk-answer-reset')).toBeDisabled();await expect(actions.locator('button')).toBeDisabled();await expect(actions).toContainText('Жоба');await expect.poll(async()=>(await zone(phone,server.id)).inspection.access).toBe('unknown');await expect.poll(async()=>(await zone(phone,server.id)).inspection.checkedOn).toBeUndefined();await phone.screenshot({path:'qa/walk-review-draft-mobile-kk.png',fullPage:false});
