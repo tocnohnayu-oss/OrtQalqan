@@ -358,6 +358,10 @@
 .walk-selection-notice>span>svg{flex-shrink:0}
 .walk-selection-notice>button{display:flex;align-items:center;gap:8px;min-height:44px;flex-shrink:0;padding:8px 0;border:0;background:none;color:#3e5b44;font-size:11px;text-align:left}
 .walk-selection-notice>button:focus-visible{outline:2px solid #b5452b;outline-offset:3px}
+.walk-record-footer>.walk-selection-notice{margin:0}
+@media(min-width:721px){
+ .inspection-modal .walk-record-footer{position:sticky;bottom:0;z-index:2;background:#fffdf8;padding-block:12px}
+}
 .walk-record .quick-check-options{grid-template-columns:repeat(3,minmax(0,1fr)) 44px;gap:6px;padding-left:0}
 .walk-record .quick-check legend{padding-right:0}
 .walk-record .quick-answer>span{min-height:44px}
