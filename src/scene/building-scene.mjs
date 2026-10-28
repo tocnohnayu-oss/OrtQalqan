@@ -116,9 +116,10 @@ export function createBuildingScene(canvas,initial,{onReady,onPick,onError,onPro
     return box;
   }
   function focusRoom(zoneId){const box=roomBox(zoneId);if(!box)return;activeFitBox=box;activeFitZone=zoneId;fit(box,false,true);}
-  function captureView(){return {position:camera.position.toArray(),target:controls.target.toArray(),aspect:camera.aspect,near:camera.near,far:camera.far,minDistance:controls.minDistance,maxDistance:controls.maxDistance,focusZone:activeFitZone};}
+  function captureView(){const value={position:camera.position.toArray(),target:controls.target.toArray(),aspect:camera.aspect,near:camera.near,far:camera.far,minDistance:controls.minDistance,maxDistance:controls.maxDistance,focusZone:activeFitZone};canvas.dataset.capturedView=JSON.stringify(value);return value;}
   function restoreView(saved){
     if(!validModelCamera(saved))return;
+    canvas.dataset.restoredView=JSON.stringify({saved,aspect:camera.aspect,width:canvas.clientWidth,height:canvas.clientHeight});
     camera.position.fromArray(saved.position);controls.target.fromArray(saved.target);camera.near=saved.near;camera.far=saved.far;camera.updateProjectionMatrix();controls.minDistance=saved.minDistance;controls.maxDistance=saved.maxDistance;
     activeFitBox=saved.focusZone?roomBox(saved.focusZone):null;activeFitZone=activeFitBox?saved.focusZone:'';controls.update();
     if(Math.abs(saved.aspect-camera.aspect)>.1)fit(activeFitBox||fitBox,false,true);requestRender();
