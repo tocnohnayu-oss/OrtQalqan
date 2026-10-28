@@ -4,9 +4,19 @@ import { attentionCSV, attentionItems } from './attention.mjs';
 import { calculate } from './calculator.mjs';
 import { attentionReason, attentionSource } from '../locales/attention.mjs';
 import { createShowcase } from '../data/showcase.mjs';
+import { needsAttention } from './inspection.mjs';
 
 const asset=(id,patch={})=>({id,label:'DEMO-'+id,model:'ОП-4',type:'OP',condition:'available',nextService:'2026-12-15',...patch});
 const fixture=()=>{const b=createShowcase({id:'attention',date:'2026-10-25'});for(const f of b.floors)for(const z of f.zones){delete z.inspection;delete z.notes;z.assets=[];}return b;};
+
+test('field attention agrees with the source index for notes, dates and unknown data',()=>{
+  const b=fixture(),base=structuredClone(b.floors[0].zones[0]);delete b.floors[0].layout;
+  const cases=[{}, {notes:'  '}, {notes:'Освободить подход.'}, {inspection:{access:'attention',marking:'ok',passport:'na'}},
+    {assets:[asset('unknown',{condition:'unknown'})]}, {assets:[asset('missing',{nextService:''})]}, {assets:[asset('overdue',{nextService:'2026-10-24'})]},
+    {assets:[asset('soon',{nextService:'2026-11-24'})]}, {assets:[asset('scheduled')]}, {assets:[asset('service',{condition:'service'})]}];
+  b.floors[0].zones=cases.map((patch,i)=>({...structuredClone(base),...patch,id:'review-'+i}));
+  for(const date of ['2026-10-25','']){b.date=date;const indexed=new Set(attentionItems(b).map(item=>item.zone.id));for(const floor of b.floors)for(const z of floor.zones)assert.equal(needsAttention(z,date),indexed.has(z.id),z.id+' at '+date);}
+});
 
 test('attention index includes completed observations and combines asset reasons without duplicating equipment',()=>{
   const b=fixture(),z=b.floors[0].zones[0];z.inspection={access:'attention',marking:'ok',passport:'na',checkedOn:b.date};z.notes='Освободить подход.';

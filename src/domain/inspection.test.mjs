@@ -8,6 +8,20 @@ const zone=(patch={})=>({id:'z',name:'Room',nameKk:'Бөлме',area:240,hazard:
 const building=(patch={})=>({id:'b',name:'Office',nameKk:'Кеңсе',address:'',addressKk:'',inspector:'',date:'2026-10-24',demo:false,revision:1,floors:[{id:'f',name:'Floor',nameKk:'Қабат',markers:[],zones:[zone()]}],...patch});
 const complete={access:'ok',marking:'attention',passport:'na',checkedOn:'2026-10-24'};
 
+test('saved text observations stay in attention even without unfinished checks or equipment',()=>{
+  assert.equal(needsAttention(zone({notes:'Проверить свободный подход.'}),'2026-10-24'),true);
+  assert.equal(needsAttention(zone({notes:'  \n  '}),'2026-10-24'),false);
+  const observed=zone({notes:'Уточнить размещение.',inspection:{...complete,marking:'ok'}}),b=building();b.floors[0].zones=[observed];
+  assert.equal(inspectionStatus(observed,b.date),'visited');assert.equal(inspectionSummary(b).attention,1);assert.equal(inspectionSummary(b).visited,1);
+});
+test('a missing asset service date needs clarification without inventing deadlines from an invalid reference date',()=>{
+  assert.equal(needsAttention(zone({assets:[asset({nextService:''})]}),'2026-10-24'),true);
+  assert.equal(needsAttention(zone({assets:[asset()]}),'2026-10-24'),false);
+  assert.equal(needsAttention(zone({assets:[asset()]}),''),false);
+  assert.equal(needsAttention(zone({assets:[asset({nextService:''})]}),''),true);
+  assert.equal(needsAttention(zone(),''),false);
+});
+
 test('calendar dates reject impossible values and use exact leap days',()=>{
   assert.equal(validDate('2028-02-29'),true);assert.equal(validDate('2026-02-29'),false);
   for(const date of ['',undefined,'2026-13-01','2026-04-31','2026-1-1','0000-01-01','2026-10-24T12:00:00Z'])assert.equal(validDate(date),false);

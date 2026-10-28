@@ -1,0 +1,52 @@
+import assert from 'node:assert/strict';
+import {expect} from '@playwright/test';
+import {createShowcase} from '../src/data/showcase.mjs';
+import {validateBuilding} from '../src/domain/calculator.mjs';
+
+/** Date, evidence and completion are different states in an actual room-by-room visit. */
+export async function inspectionReviewSmoke(browser,errors){
+  const building=createShowcase({id:'inspection-review',date:'2026-10-28'}),floor=building.floors[0];
+  for(const zone of floor.zones){zone.assets=[];delete zone.notes;delete zone.inspection;}
+  const [library,classroom,server,lab]=floor.zones,answered={access:'ok',marking:'ok',passport:'ok'};
+  library.notes='Учебная запись: проверить доступ у стеллажа. Оқу жазбасы: сөре жанындағы қолжетімділікті тексеру.';
+  classroom.assets=[{id:'inspection-review-asset',label:'EQ-01',model:'ОП-4 · учебная запись',type:'OP',condition:'available',nextService:''}];
+  classroom.inspection={...answered,checkedOn:building.date};server.inspection={...answered,checkedOn:'2026-10-20'};lab.inspection={...answered,checkedOn:building.date};
+  const unplaced={...structuredClone(lab),id:'inspection-review-unplaced',name:'Помещение без привязки',nameKk:'Орны белгіленбеген бөлме',inspection:{access:'unknown',marking:'unknown',passport:'unknown'}};floor.zones.push(unplaced);
+  assert.equal(validateBuilding(building),true);
+  const contexts=[];let active;
+  const open=async(language,viewport)=>{
+    const context=await browser.newContext({viewport,hasTouch:true});contexts.push(context);
+    await context.addInitScript(({building,language})=>{localStorage.setItem('ortqalqan.guide.v1','seen');localStorage.setItem('ortqalqan.language',language);localStorage.setItem('ortqalqan.workspace.view','floor');localStorage.setItem('ortqalqan.building.v1',JSON.stringify({version:2,activeId:building.id,buildings:[building]}));},{building,language});
+    const page=await context.newPage();active=page;page.on('pageerror',error=>errors.push(error.message));await page.goto('http://127.0.0.1:4173');await page.getByRole('button',{name:language==='ru'?'Обход':'Аралау',exact:true}).click();await page.evaluate(()=>document.fonts.ready);return page;
+  };
+  const stored=page=>page.evaluate(()=>JSON.parse(localStorage.getItem('ortqalqan.building.v1')).buildings[0]);
+  const zone=async(page,id)=>(await stored(page)).floors[0].zones.find(item=>item.id===id);
+  try{
+    const page=await open('ru',{width:1440,height:1050}),walk=page.locator('.inspection-modal'),record=walk.locator('.walk-record'),footer=record.locator('.walk-record-footer'),rooms=walk.locator('.walk-room');
+    await expect(record.locator('h3')).toHaveText(server.name);await expect(walk.locator('.walk-reference-date time')).toHaveText(building.date);await expect(footer).toHaveAttribute('data-record-state','draft');await expect(footer).toContainText('Нужна новая отметка');await expect(footer.locator('time')).toHaveText('2026-10-20');await expect.poll(()=>stored(page)).toEqual(building);await page.screenshot({path:'qa/walk-review-desktop.png',fullPage:false});
+    await walk.locator('.walk-filters').getByRole('button',{name:/Требует внимания/}).click();await expect(rooms).toHaveCount(2);await expect(rooms.filter({hasText:library.name})).toContainText('Есть наблюдение или срок');await expect(rooms.filter({hasText:classroom.name})).toContainText('Уточнить данные');await expect(rooms.filter({hasText:classroom.name}).locator('.walk-room-state.verify')).toBeVisible();
+    await rooms.filter({hasText:library.name}).click();for(const group of await record.locator('.quick-check').all())await group.locator('input[value="ok"]').check();
+    await expect(footer).toHaveAttribute('data-record-state','draft');await expect.poll(async()=>(await zone(page,library.id)).inspection.checkedOn).toBeUndefined();await footer.getByRole('button',{name:'Сохранить и перейти дальше',exact:true}).click();
+    await expect(record.locator('h3')).toHaveText(classroom.name);await expect(footer).toHaveAttribute('data-record-state','recorded');await expect(rooms).toHaveCount(2);await expect.poll(async()=>(await zone(page,library.id)).inspection.checkedOn).toBe(building.date);await expect(rooms.filter({hasText:library.name})).toContainText('Есть наблюдение или срок');
+    await record.locator('.walk-equipment-fold>summary').click();await record.locator('.asset-open').click();await expect(footer).toContainText('Завершите редактирование записи');await expect(footer.locator('button')).toBeDisabled();
+    await record.getByLabel('Следующее обслуживание',{exact:true}).fill('2026-12-20');page.once('dialog',dialog=>dialog.dismiss());await rooms.filter({hasText:library.name}).click();await expect(record.locator('h3')).toHaveText(classroom.name);await expect(record.getByLabel('Следующее обслуживание',{exact:true})).toHaveValue('2026-12-20');await expect.poll(async()=>(await zone(page,classroom.id)).assets[0].nextService).toBe('');
+    await record.getByRole('button',{name:'Сохранить запись',exact:true}).click();await expect(record.locator('.asset-open')).toBeFocused();await expect(rooms).toHaveCount(1);await expect(record.locator('h3')).toHaveText(classroom.name);await expect(footer).toHaveAttribute('data-record-state','draft');await expect.poll(async()=>(await zone(page,classroom.id)).inspection.checkedOn).toBeUndefined();await expect(record.locator('.walk-selection-notice')).toContainText('Помещение не входит в текущую выборку');await page.screenshot({path:'qa/walk-review-selection-desktop.png',fullPage:false});
+    await record.locator('.walk-selection-notice button').click();await expect(rooms.first()).toBeFocused();await page.keyboard.press('Enter');await expect(record.locator('h3')).toHaveText(library.name);
+    await walk.getByRole('searchbox',{name:'Найти помещение',exact:true}).fill('несуществующеепомещение');await expect(rooms).toHaveCount(0);await record.getByRole('button',{name:'Сбросить поиск и фильтр',exact:true}).click();await expect(rooms).toHaveCount(5);await expect(record.locator('h3')).toBeFocused();await expect(walk.getByRole('searchbox')).toHaveValue('');
+    await rooms.filter({hasText:classroom.name}).click();await record.locator('.walk-equipment-fold>summary').click();await record.locator('.asset-open').click();await record.locator('.asset-form-actions').getByRole('button',{name:'Отмена',exact:true}).click();await expect(record.locator('.asset-open')).toBeFocused();await record.getByRole('button',{name:'Добавить оборудование',exact:true}).click();await record.locator('.asset-form-actions').getByRole('button',{name:'Отмена',exact:true}).click();await expect(record.getByRole('button',{name:'Добавить оборудование',exact:true})).toBeFocused();
+    await rooms.filter({hasText:unplaced.name}).click();await expect(record.locator('.walk-unplaced')).toHaveText('Расположение не указано');await expect(record.locator('.walk-room-heading button')).toHaveCount(0);await expect(record.locator('.quick-check')).toHaveCount(3);
+    await page.reload();await page.getByRole('button',{name:'Обход',exact:true}).click();assert.equal((await zone(page,classroom.id)).assets[0].nextService,'2026-12-20');assert.equal((await zone(page,library.id)).inspection.checkedOn,building.date);assert.equal((await zone(page,server.id)).inspection.checkedOn,'2026-10-20');assert.deepEqual((await stored(page)).floors[0].layout,floor.layout);
+
+    const phone=await open('kk',{width:320,height:740}),mobile=phone.locator('.inspection-modal'),room=mobile.locator('.walk-record'),actions=room.locator('.walk-record-footer');
+    await expect(room.locator('h3')).toHaveText(server.nameKk);await expect(mobile.locator('.walk-reference-date time')).toBeInViewport({ratio:1});await expect(actions.locator('time')).toHaveText('2026-10-20');await expect(actions).toHaveAttribute('data-record-state','draft');
+    assert.equal(await mobile.evaluate(node=>node.scrollWidth>node.clientWidth),false);
+    const footerBox=await actions.boundingBox();for(const group of await room.locator('.quick-check').all()){
+      for(const control of await group.locator('.quick-answer>span,.walk-answer-reset').all()){const box=await control.boundingBox();assert.ok(box.width>=44&&box.height>=44,'44px inspection answer/reset '+JSON.stringify(box));assert.ok(box.y>=0&&box.y+box.height<=footerBox.y,'three complete answer rows fit above the fixed footer at 320×740');}
+      assert.ok(await group.locator('.quick-answer>span').first().evaluate(node=>parseFloat(getComputedStyle(node).fontSize))>=11);
+    }
+    await phone.screenshot({path:'qa/walk-review-mobile-kk.png',fullPage:false});const first=room.locator('.quick-check').first();await first.locator('.walk-answer-reset').tap();await expect(first.locator('input:checked')).toHaveCount(0);await expect(first.locator('input[value="ok"]')).toBeFocused();await expect(first.locator('.walk-answer-reset')).toBeDisabled();await expect(actions.locator('button')).toBeDisabled();await expect(actions).toContainText('Жоба');await expect.poll(async()=>(await zone(phone,server.id)).inspection.access).toBe('unknown');await expect.poll(async()=>(await zone(phone,server.id)).inspection.checkedOn).toBeUndefined();await phone.screenshot({path:'qa/walk-review-draft-mobile-kk.png',fullPage:false});
+    await first.locator('input[value="ok"]').check();await expect(actions).toHaveAttribute('data-record-state','draft');await expect(actions.locator('button')).toBeEnabled();await actions.locator('button').tap();await expect(room.locator('h3')).toHaveText(unplaced.nameKk);await expect(room.locator('.walk-unplaced')).toHaveText('Орналасуы көрсетілмеген');await expect(room.locator('.walk-room-heading button')).toHaveCount(0);await expect.poll(async()=>(await zone(phone,server.id)).inspection.checkedOn).toBe(building.date);
+    for(const group of await room.locator('.quick-check').all())await group.locator('input[value="na"]').check();await expect(actions).toHaveAttribute('data-record-state','draft');await actions.getByRole('button',{name:'Сақтап, әрі қарай өту',exact:true}).tap();await expect.poll(async()=>(await zone(phone,unplaced.id)).inspection.checkedOn).toBe(building.date);assert.deepEqual((await stored(phone)).floors[0].layout,floor.layout);assert.deepEqual(errors,[]);
+  }catch(error){await active?.screenshot({path:'qa/walk-review-failure.png',fullPage:true}).catch(()=>{});console.log('Inspection review failure:',String(error));throw error;}
+  finally{for(const context of contexts)await context.close();}
+}

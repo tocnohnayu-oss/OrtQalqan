@@ -28,7 +28,8 @@ export function serviceStatus(asset, date) {
 }
 
 export function needsAttention(zone, date) {
-  return CHECK_KEYS.some(key => zone.inspection?.[key] === 'attention') || (zone.assets || []).some(asset => asset.condition !== 'available' || serviceStatus(asset, date) === 'overdue' || serviceStatus(asset, date) === 'soon');
+  return !!zone.notes?.trim() || CHECK_KEYS.some(key => zone.inspection?.[key] === 'attention')
+    || (zone.assets || []).some(asset => asset.condition !== 'available' || !validDate(asset.nextService) || ['overdue','soon'].includes(serviceStatus(asset,date)));
 }
 
 export function inspectionSummary(building) {
