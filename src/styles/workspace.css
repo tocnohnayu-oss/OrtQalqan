@@ -359,6 +359,7 @@
 .walk-selection-notice>button{display:flex;align-items:center;gap:8px;min-height:44px;flex-shrink:0;padding:8px 0;border:0;background:none;color:#3e5b44;font-size:11px;text-align:left}
 .walk-selection-notice>button:focus-visible{outline:2px solid #b5452b;outline-offset:3px}
 .walk-record .quick-check-options{grid-template-columns:repeat(3,minmax(0,1fr)) 44px;gap:6px;padding-left:0}
+.walk-record .quick-check legend{padding-right:0}
 .walk-record .quick-answer>span{min-height:44px}
 .walk-record .walk-answer-reset{position:static;display:grid;place-items:center;align-self:stretch;min-width:44px;min-height:44px;width:44px;height:44px;padding:8px;margin:0;border:1px solid #c1cdb6;background:#f6f8ef;color:#4f6b53}
 .walk-record .walk-answer-reset:disabled{opacity:.4;cursor:default}
@@ -380,4 +381,10 @@
  .walk-record .quick-check-options{gap:5px}
  .walk-record .quick-answer>span{font-size:11px;line-height:1.35;padding:7px 3px;gap:3px}
  .walk-record .quick-answer>span>svg{flex-shrink:0;width:12px;height:12px}
+}
+@media(max-width:360px){
+ .inspection-modal .walk-record{padding-top:14px}
+ .walk-record .walk-room-heading{padding-bottom:9px}
+ .quick-walk-checks>.walk-section-title{padding:12px 0 9px}
+ .walk-record .quick-check{padding-block:10px}
 }
