@@ -440,7 +440,7 @@
 .change-room-heading{display:flex;align-items:center;justify-content:space-between;gap:15px;padding-bottom:18px}
 .change-room-heading .eyebrow{font-size:9px;color:#8f624a}
 .change-room-heading h3{font:600 29px/1.25 Atlas,Noto,sans-serif;margin:7px 0 0;overflow-wrap:anywhere;scroll-margin-top:90px}
-.change-edit-room{min-height:44px;flex-shrink:0}
+.change-review .change-edit-room{min-height:44px;min-width:44px;flex-shrink:0}
 .change-side-switch{display:none}
 .change-plans{display:grid;grid-template-columns:1fr 1fr;border:1px solid #bfcbb7;min-width:0}
 .change-plan-pane{min-width:0;background:#fffdf8}
