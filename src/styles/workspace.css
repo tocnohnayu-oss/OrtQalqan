@@ -158,6 +158,65 @@
 .simple-inspector .field>select,.simple-inspector .field>input{font-size:14px;min-height:44px}
 .global-search-trigger:focus-visible,.object-switch-button:focus-visible,.atlas-floor-index>button:focus-visible,.atlas-layer-switch>button:focus-visible{outline:2px solid #b5452b;outline-offset:3px}
 
+/* The floor workspace shares the same quiet source catalogue as the building. */
+.simple-shell .studio-layout,.simple-shell .studio-layout.has-inspector{border:0;box-shadow:none}
+.simple-shell .studio-sidebar{background:#fff;color:var(--workspace-index);border-color:var(--workspace-line);padding-top:12px}
+.simple-shell .studio-sidebar-title{color:var(--workspace-muted);font-size:12px;font-weight:500;padding-left:8px}
+.simple-shell .studio-sidebar-title .icon-button{color:#52635d;width:44px;min-width:44px;height:44px}
+.simple-shell .studio-sidebar-title .icon-button:hover{background:#f3f5f5;color:#253b42}
+.simple-shell .studio-floor-list{border:0;gap:0}
+.simple-shell .studio-floor{min-height:64px;padding:10px 8px;gap:12px;border:0;border-bottom:1px solid var(--workspace-line);background:transparent;color:#253b42}
+.simple-shell .studio-floor .floor-thumbnail{width:44px;height:32px;min-width:44px;flex:0 0 44px}
+.simple-shell .studio-floor-copy{min-width:0;flex:1}
+.simple-shell .studio-floor strong{display:block;font-size:13px;line-height:1.6;font-weight:500;color:inherit}
+.simple-shell .studio-floor small{display:block;margin-top:2px;font-size:10px;line-height:1.5;color:var(--workspace-muted)}
+.simple-shell .studio-floor:hover:not(.active){background:#f7f8f8;color:#253b42}
+.simple-shell .studio-floor.active{background:#f3f5f5;border-color:var(--workspace-line);color:#253b42;box-shadow:inset 2px 0 #b5452b}
+.simple-shell .studio-sidebar .room-index-search{background:#fff;border:1px solid #bac5ca;color:#52635d}
+.simple-shell .studio-sidebar .room-index-search input,.simple-shell .studio-sidebar .room-index-search button{color:#253b42}
+.simple-shell .studio-sidebar .room-index-search:focus-within{outline:2px solid #b5452b;outline-offset:2px}
+.simple-shell .studio-sidebar .room-index-scope,.simple-shell .studio-sidebar .studio-zone-caption{color:var(--workspace-muted)}
+.simple-shell .studio-zone-caption{text-transform:none;letter-spacing:0;font-size:11px;margin-block:22px 8px}
+.simple-shell .studio-sidebar .studio-zone-list>.room-index-room{background:transparent;color:#253b42;border:0;border-left:2px solid transparent;padding:10px 7px}
+.simple-shell .studio-sidebar .studio-zone-list>.room-index-room:hover{background:#f7f8f8}
+.simple-shell .studio-sidebar .studio-zone-list>.room-index-room>.room-glyph{color:#526b5b;background:none;padding:0}
+.simple-shell .studio-sidebar .room-glyph-accent{stroke:#b5452b}
+.simple-shell .studio-sidebar .studio-zone-list>.room-index-room.active{background:#f3f5f5;color:#253b42;border-left-color:#b5452b}
+.simple-shell .studio-sidebar .studio-add-zone{color:#52635d;border-color:var(--workspace-line)}
+.simple-shell .studio-sidebar .studio-add-zone:hover{background:#f7f8f8}
+.simple-shell .studio-sidebar .room-index-found,.simple-shell .studio-sidebar .room-index-match,.simple-shell .studio-sidebar .room-index-more{color:#253b42;border-color:var(--workspace-line)}
+.simple-shell .studio-sidebar .room-index-matches h3,.simple-shell .studio-sidebar .room-index-empty>strong{color:#253b42}
+.simple-shell .studio-sidebar .room-index-match:hover{background:#f7f8f8}
+.simple-shell .studio-sidebar .room-index-match small,.simple-shell .studio-sidebar .room-index-empty{color:var(--workspace-muted)}
+.simple-shell .studio-sidebar .room-index-match small b,.simple-shell .studio-sidebar .room-index-empty .text-button{color:#963f29}
+.simple-shell .studio-sidebar .room-index-marker,.simple-shell .studio-sidebar .room-index-marker>.room-glyph,.simple-shell .studio-sidebar .room-index-empty>svg{color:#526b5b}
+.simple-shell .studio-sidebar button:focus-visible{outline:2px solid #b5452b;outline-offset:-3px}
+.simple-shell .floor-sheet-index{display:none}
+.simple-shell .studio-plan-actions>button[data-guide=plan]{background:#fff;border-color:#bac5ca;color:#253b42}
+.simple-shell .studio-plan-actions>button[data-guide=plan]:hover{background:#f3f5f5;border-color:#7f939c}
+.simple-shell .built-plan-viewport{background:#fafbfb}
+.simple-shell .built-plan-viewport:after{display:none}
+.simple-shell .empty-floor-plan{background:#fafbfb;background-image:none}
+.simple-shell .empty-floor-plan p{background:none}
+.simple-shell .simple-inspector{background:#fff;border-color:var(--workspace-line)}
+.simple-shell .simple-inspector-heading,.simple-shell .room-context-nav,.simple-shell .room-context-nav button{border-color:var(--workspace-line)}
+.simple-shell .simple-inspector .room-context h3{font-size:22px;line-height:1.4;letter-spacing:0}
+.simple-shell .room-context-picture{background:#fafbfb;border-color:var(--workspace-line)}
+.simple-shell .room-context-nav button:hover:not(:disabled){background:#f3f5f5;color:#253b42}
+.simple-shell .simple-zone-result{background:#fff;border-top:1px solid var(--workspace-line)}
+.simple-shell .room-result-equipment>.equipment-illustration{display:none}
+.simple-shell .room-result-equipment{margin-block:12px}
+.simple-shell .room-result-equipment strong{font-size:30px;line-height:1.3}
+.simple-shell .room-inventory-gap>strong{font-size:24px}
+@media(max-width:720px){
+ .simple-shell .studio-floor-list{gap:8px}
+ .simple-shell .studio-floor{min-height:52px;min-width:175px;padding:8px;gap:8px}
+ .simple-shell .studio-sidebar .studio-zone-list>.room-index-room{padding:8px 4px;border-left:0;border-bottom:2px solid transparent}
+ .simple-shell .studio-sidebar .studio-zone-list>.room-index-room.active{background:none;border-bottom-color:#b5452b}
+ .simple-shell .simple-inspector .room-context h3{font-size:24px}
+ .simple-shell.plan-focus .studio-sidebar{padding-top:5px}
+}
+
 /* Expanded mode owns the viewport; keep the same canvas and all existing focus guards. */
 .model-expanded{background:var(--workspace-paper);border:1px solid #b9c7b2}
 .model-expanded .building-model-stage{height:auto;min-height:180px}
@@ -207,16 +266,16 @@
  .simple-nav>button,.more-menu>summary{font-size:12px;min-height:44px;min-width:44px;padding-inline:4px}
  .simple-nav .guide-nav-button{min-width:44px;padding-inline:0}
  .simple-nav>.global-search-trigger{background:none;min-width:44px;width:44px;padding:0;border:0}
- .simple-shell main{padding:12px 10px 18px}
- .studio-object-header{grid-template-columns:minmax(0,1fr);gap:12px;padding-bottom:17px}
+ .simple-shell main{padding:8px 10px 18px}
+ .studio-object-header{grid-template-columns:minmax(0,1fr);gap:8px;padding-bottom:12px}
  .object-heading-block{grid-template-columns:minmax(0,1fr);gap:0;grid-template-areas:'location' 'title'}
  .object-location{min-height:44px;gap:4px 12px;justify-content:flex-start}
  .object-location>.object-switch-button{font-size:12px;min-height:44px;padding:6px 0;white-space:normal}
- .studio-object-name{margin-top:8px;gap:4px}
+ .studio-object-name{margin-top:0;gap:4px}
  .studio-object-name h1{font-size:25px;line-height:1.35;letter-spacing:-.3px}
  .studio-object-name h1.long-object-name{font-size:23px;line-height:1.35}
  .studio-object-name>.icon-button{width:44px;height:44px;align-self:center}
- .studio-save{font-size:11px;margin-top:4px}
+ .studio-save{font-size:11px;margin-top:0}
  .studio-actions{display:flex;align-items:center;max-width:none;gap:8px;width:100%}
  .studio-actions>.button{min-height:46px;font-size:12px;padding:10px 13px}
  .studio-actions>.compact-result{width:100%;max-width:none;text-align:left;min-height:24px;margin:0;font-size:11px}
@@ -224,7 +283,7 @@
  .building-atlas-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 9px;min-height:0;padding:10px 10px 0}
  .building-atlas-top>div:first-child{gap:6px;justify-content:flex-start;flex-wrap:wrap;align-self:center}
  .building-atlas-top>div:first-child>svg{display:none}
- .building-atlas-top h2{font-size:17px;line-height:1.3}
+ .building-atlas-top h2{font-size:14px;line-height:1.5}
  .atlas-demo{margin:0;font-size:8px;max-width:100px;padding:3px 5px}
  .atlas-reference{font-size:10px;gap:5px;margin:0;flex-wrap:nowrap;align-self:center}
  .atlas-reference time{font-size:11px}
@@ -268,13 +327,13 @@
  .model-settings>summary{flex-direction:row;flex-wrap:wrap;align-items:center;padding:9px 11px;gap:4px 9px;font-size:10px}
  .model-settings>summary>span:last-child{font-size:10px;min-height:32px}
  .model-room-sheet{padding:10px;gap:8px 10px}
- .model-room-context>h3{font-size:23px}
+ .model-room-context>h3{font-size:20px}
  .model-room-context>small{font-size:10px}
  .model-room-context>p{font-size:11px}
  .model-room-actions>button{font-size:10px}
  .model-room-evidence{font-size:11px}
  .atlas-model .atlas-selected-floor{padding:13px 12px;gap:10px}
- .atlas-selected-floor h3{font-size:24px}
+ .atlas-selected-floor h3{font-size:16px}
  .atlas-selected-floor p{font-size:11px}
  .atlas-selected-floor .button.primary{font-size:11px}
  .atlas-desk>.atlas-legend{padding:10px 12px 12px}
@@ -572,12 +631,18 @@
 .simple-shell .proof-totals{background:none;border-color:var(--workspace-line)}
 .simple-shell .proof-totals .equipment-illustration{display:none}
 .simple-shell .proof-totals>section{padding:16px 12px}
+.simple-shell .proof-totals>section:first-child,.simple-shell .proof-totals>section:last-child{background:none}
 .simple-shell .proof-totals>section+section{border-color:var(--workspace-line)}
 .simple-shell .proof-totals strong{font-size:30px;line-height:1.4}
 .simple-shell .proof-object h3{font-size:22px;line-height:1.4;font-weight:600}
 .simple-shell .proof-zone{background:none;border-color:var(--workspace-line);box-shadow:none}
 .simple-shell .proof-scope{background:none}
 .simple-shell .proof-answer{background:#f3f5f5;color:#253b42}
+.simple-shell .proof-equation{background:#fafbfb}
+.simple-shell .proof-floor>h3{font-size:19px;line-height:1.5}
+.simple-shell .proof-zone h4{font-size:18px;line-height:1.5}
+.simple-shell .proof-scope strong{font-size:16px;line-height:1.5}
+.simple-shell .proof-footer{background:#fff;border-top:1px solid var(--workspace-line)}
 
 .inspection-modal .walk-simple-top,.inspection-modal .walk-sidebar-toggle,.inspection-modal .walk-sidebar,.inspection-modal .walk-record{background:#fff}
 .inspection-modal .walk-filters>button{background:none;border-color:transparent}
