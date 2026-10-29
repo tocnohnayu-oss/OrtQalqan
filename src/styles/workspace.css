@@ -89,7 +89,7 @@
 .model-mode-bar>.model-view-tools{gap:5px}
 .model-view-tools>button:not([aria-pressed=true]){border-color:transparent;background:transparent}
 .model-context-bar{padding:5px 16px;gap:14px;background:#f6f7f1;border-bottom:1px solid var(--workspace-line)}
-.model-context-bar label>span{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.model-context-bar label>span{font-size:11px;line-height:1.5;color:var(--workspace-muted)}
 .model-context-bar select{font-size:14px;min-height:38px;border-bottom-color:#c7d1c0;background:none;padding-block:6px}
 .building-model-stage{height:clamp(350px,calc(100dvh - 620px),620px);background:var(--workspace-desk)}
 .building-model-stage:after{display:none}
@@ -100,6 +100,7 @@
 .model-camera-controls>button:hover{background:#e0e9d8}
 .model-bottom-bar>p{font-size:11px;line-height:1.6;color:var(--workspace-muted)}
 .model-bottom-bar>p>small{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.model-settings .model-shortcuts{grid-column:1/-1;font-size:11px;line-height:1.7;color:var(--workspace-muted);margin:0}
 .model-bottom-bar small{font-size:10px;color:var(--workspace-muted)}
 .model-settings{background:#f7f8f2;border-top:1px solid var(--workspace-line)}
 .model-settings>summary{font-size:11px;padding:9px 16px}
