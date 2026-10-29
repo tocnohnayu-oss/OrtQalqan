@@ -584,6 +584,18 @@
 .inspection-modal .walk-filters>button.active{color:#253b42;border-bottom-color:#253b42;box-shadow:none}
 .inspection-modal .walk-room.active{background:#f5f6f6;border-color:transparent;border-left-color:#b5452b;box-shadow:none}
 
+/* The source index prioritizes records over a cover-sized title. */
+.simple-shell .attention-sheet{background:#fff}
+.simple-shell .attention-cover{grid-template-columns:minmax(0,1fr);gap:0;border-bottom:1px solid var(--workspace-line);padding-bottom:16px}
+.simple-shell .attention-illustration{display:none}
+.simple-shell .attention-cover h3{font:600 24px/1.4 var(--display);letter-spacing:0;margin:7px 0 10px}
+.simple-shell .attention-group>header{grid-template-columns:minmax(0,1fr);border-color:var(--workspace-line)}
+.simple-shell .attention-group-index{display:none}
+.simple-shell .attention-group h4,.simple-shell .attention-row h5,.simple-shell .attention-room-scope strong{font-size:18px;line-height:1.5;letter-spacing:0}
+.simple-shell .attention-scope>select,.simple-shell .attention-room-scope{background:#fafbfb}
+.simple-shell .attention-export{border-top:1px solid var(--workspace-line)}
+@media(max-width:720px){.simple-shell .attention-cover h3{font-size:22px;line-height:1.4}}
+
 /* Account screens use the same compact type scale rather than display-sized titles. */
 .simple-shell .account-entry{grid-template-columns:minmax(0,1fr);background:#fff}
 .simple-shell .account-entry-story{display:block;width:100%;max-width:460px;min-height:0;padding:22px 24px 0;margin-inline:auto;background:#fff}
