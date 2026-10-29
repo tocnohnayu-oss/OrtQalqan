@@ -4,7 +4,7 @@
     "channel": "chrome",
     "version": "156.0.8078.47"
   },
-  "sourceSha": "2d46fe5232ef187545cfd6dd2a6b384b2077050a",
+  "sourceSha": "dc6c8a57f4614ac767ccf65ced70c4b6810ea45c",
   "checks": [
     "source comparison explains rounding through exact previous and current results without resizing contours",
     "comparison preserves immutable sources, exact equipment ids and the stale PDF guard until explicit recalculation",
