@@ -29,7 +29,7 @@ export async function navigationSmoke(browser,errors){
     await expect(page.locator('.studio-floor.active')).toContainText('Второй этаж');await expect(page.locator('[data-zone-area]')).toBeFocused();
     await page.locator('[data-zone-area]').fill('401');
     await expect(svg.locator('.plan-count')).toHaveCount(0);await expect(footer).toContainText('Обновите расчёт');
-    await page.locator('.compact-result').click();assert.ok(await page.locator('.proof-edit-zone:disabled').count()>0,'stale snapshots cannot edit old zone identities');await page.locator('dialog .modal-heading button').click();
+    await page.locator('.compact-result').click();await page.locator('.change-review').getByRole('button',{name:'Исходный результат',exact:true}).click();assert.ok(await page.locator('.proof-edit-zone:disabled').count()>0,'stale snapshots cannot edit old zone identities');await page.locator('dialog .modal-heading button').click();
     await page.locator('.simple-inspector-heading button').click();
     await page.setViewportSize({width:320,height:900});await page.getByRole('button',{name:'ҚАЗ',exact:true}).click();
     await footer.getByRole('button',{name:'Жоспарды толық көрсету',exact:true}).click();await svg.scrollIntoViewIfNeeded();

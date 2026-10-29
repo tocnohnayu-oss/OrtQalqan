@@ -12,3 +12,4 @@ import '../src/domain/building-atlas.test.mjs';
 import '../src/domain/building-model.test.mjs';
 import '../src/domain/model-labels.test.mjs';
 import '../src/domain/model-session.test.mjs';
+import '../src/domain/change-review.test.mjs';
