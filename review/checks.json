@@ -2,10 +2,15 @@
   "passed": true,
   "browser": {
     "channel": "chrome",
-    "version": "155.0.8059.39"
+    "version": "156.0.8078.47"
   },
-  "sourceSha": "ca69045e14a20f523d90d7a3b81f86305455e12e",
+  "sourceSha": "2d46fe5232ef187545cfd6dd2a6b384b2077050a",
   "checks": [
+    "source comparison explains rounding through exact previous and current results without resizing contours",
+    "comparison preserves immutable sources, exact equipment ids and the stale PDF guard until explicit recalculation",
+    "comparison supports native keyboard focus and current room parameter navigation",
+    "320px KK comparison supports paired values and before-after touch controls without overflow",
+    "mixed image and unplaced comparisons preserve actual source boundaries",
     "inspection attention includes text observations and missing service dates with separate clarification states",
     "inspection drafts, other-date stamps and explicit completion survive reload without changing geometry",
     "filtered room corrections retain selection, dirty guards and asset-row keyboard focus",
