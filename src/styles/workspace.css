@@ -583,3 +583,37 @@
 .inspection-modal .walk-filters>button{background:none;border-color:transparent}
 .inspection-modal .walk-filters>button.active{color:#253b42;border-bottom-color:#253b42;box-shadow:none}
 .inspection-modal .walk-room.active{background:#f5f6f6;border-color:transparent;border-left-color:#b5452b;box-shadow:none}
+
+/* Account screens use the same compact type scale rather than display-sized titles. */
+.simple-shell .account-entry{grid-template-columns:minmax(0,1fr);background:#fff}
+.simple-shell .account-entry-story{display:block;width:100%;max-width:460px;min-height:0;padding:22px 24px 0;margin-inline:auto;background:#fff}
+.simple-shell .account-entry-story:before,.simple-shell .account-entry-story:after{display:none}
+.simple-shell .account-entry-story h3{font:600 22px/1.4 var(--display);max-width:none;margin:0 0 9px}
+.simple-shell .account-entry-story>p{font-size:12px;line-height:1.8;max-width:none;margin:0}
+.simple-shell .account-entry-story>.account-illustration,.simple-shell .account-story-index{display:none}
+.simple-shell .account-entry-form{width:100%;max-width:460px;min-width:0;padding:24px;margin-inline:auto}
+.simple-shell .account-auth-tabs>button{font-size:16px;min-height:44px}
+.simple-shell .team-heading{background:#fff;border-color:var(--workspace-line);gap:18px;padding:22px 24px}
+.simple-shell .team-title h3{font-size:22px;line-height:1.4;letter-spacing:0}
+.simple-shell .team-workspace-select select{font-size:18px;min-height:44px;min-width:0;max-width:100%;letter-spacing:0}
+.simple-shell .team-passport{min-width:0;border:0;background:none;padding:0;gap:10px}
+.simple-shell .team-passport:after,.simple-shell .team-passport>.account-monogram{display:none}
+.simple-shell .team-passport strong{font-size:15px;line-height:1.5}
+.simple-shell .team-tabs{gap:16px;padding-inline:24px;background:#fff;border-color:var(--workspace-line);min-width:0}
+.simple-shell .team-tabs>button:not(.icon-button){font-size:13px;line-height:1.5;min-height:44px;gap:6px}
+.simple-shell .team-tabs>button>span{display:none}
+.simple-shell .team-tabs>.icon-button{width:44px;min-width:44px;min-height:44px}
+.simple-shell .team-object-index,.simple-shell .team-object-open>.object-illustration{display:none}
+.simple-shell .team-object-open h4{font-size:16px;line-height:1.5}
+.simple-shell .team-member-list strong{font-size:16px;line-height:1.5}
+@media(max-width:720px){
+ .simple-shell .account-entry-story{padding:20px 18px 0}
+ .simple-shell .account-entry-form{padding:22px 18px}
+ .simple-shell .team-heading{padding:20px 18px}
+ .simple-shell .team-tabs{gap:8px;padding-inline:14px}
+}
+
+@media(min-width:721px){.simple-shell .account-modal:has(.account-entry){width:min(520px,calc(100vw - 48px))}}
+
+.simple-shell .guide-card{background:#fff;box-shadow:0 12px 44px #253b4214}
+.simple-shell .guide-copy h2{font:600 24px/1.4 var(--display);letter-spacing:0}
