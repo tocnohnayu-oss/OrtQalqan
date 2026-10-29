@@ -1,6 +1,6 @@
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {ArrowLeftRight,ArrowRight,BookOpen,Check,ChevronDown,FileClock,Info,Layers3,MapPinOff,Pencil,Plus,RotateCcw} from 'lucide-react';
-import type {Building,Floor,Language,Snapshot} from '../domain/types';
+import type {Building,Floor,Language,Snapshot,Zone} from '../domain/types';
 import {reviewChanges} from '../domain/change-review.mjs';
 import {layoutBounds} from '../domain/layout.mjs';
 import {changeWords} from '../locales/changes';
@@ -37,7 +37,7 @@ export function ChangeReview({building,snapshot,language,onRefresh,onSaved,onEdi
       <div className="change-review-content">
         <div className="change-room-heading"><div><span className="eyebrow">{room?w[room.kind as 'changed'|'added'|'removed']:selected?w.unchanged:w.object}</span><h3 tabIndex={-1} ref={heading}>{selected?selectedName:name(pair?.after||pair?.before)}</h3></div>{afterZone&&<button className="button subtle small change-edit-room" aria-label={w.edit} onClick={()=>onEdit(afterZone.id)}><Pencil size={14}/><span>{w.edit}</span></button>}</div>
         <div className="change-side-switch" aria-label={w.preview}>{(['before','after'] as const).map(value=><button key={value} aria-pressed={side===value} onClick={()=>setSide(value)}>{value==='before'?<BookOpen size={15}/>:<Pencil size={15}/>} {w[value]}</button>)}</div>
-        <div className="change-plans" data-mobile-side={side}>{(['before','after'] as const).map(value=>{const floor=value==='before'?beforeFloor:afterFloor,source=value==='before'?snapshot:preview,sourceZone=floor?.zones.find(zone=>zone.id===selected);return <section className={`change-plan-pane ${value}`} key={value} aria-label={w[value]}><header><span><b>{value==='before'?'01':'02'}</b>{w[value]}</span><small>{name(floor)}{sourceZone?` · ${name(sourceZone)}`:''}</small></header><ReviewPlan floor={floor} selected={selected} snapshot={source} language={language} onPick={pick}/></section>;})}</div>
+        <div className="change-plans" data-mobile-side={side}>{(['before','after'] as const).map(value=>{const floor=value==='before'?beforeFloor:afterFloor,source=value==='before'?snapshot:preview,sourceZone=floor?.zones.find((zone:Zone)=>zone.id===selected);return <section className={`change-plan-pane ${value}`} key={value} aria-label={w[value]}><header><span><b>{value==='before'?'01':'02'}</b>{w[value]}</span><small>{name(floor)}{sourceZone?` · ${name(sourceZone)}`:''}</small></header><ReviewPlan floor={floor} selected={selected} snapshot={source} language={language} onPick={pick}/></section>;})}</div>
         <p className="change-plan-hint"><Info size={14}/>{w.planHint}</p>
         {selected&&<>
           <div className="change-equations" aria-label={w.round}>{([oldRow,newRow]).map((row,i)=><div key={i}><span>{i?w.after:w.before}</span>{row?<strong>{row.type?<><span>{row.area}</span><i>÷</i><span>{row.rate}</span><ArrowRight size={16}/><b>{row.count} {typeName(row.type)}</b></>:w.manual}</strong>:<small>{w.noRoom}</small>}</div>)}</div>
