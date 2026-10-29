@@ -11,7 +11,8 @@ export async function identityReview(browser,errors){
     try{
       await context.addInitScript(building=>{localStorage.setItem('ortqalqan.guide.v1','seen');localStorage.setItem('ortqalqan.workspace.view','floor');localStorage.setItem('ortqalqan.building.v1',JSON.stringify({version:2,activeId:building.id,buildings:[building]}));},building);await page.goto('http://127.0.0.1:4173');await page.evaluate(()=>document.fonts.ready);
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'the object masthead fits the desktop');
-      drawings.push({svg:await page.locator('.object-sketch').evaluate(svg=>svg.outerHTML),names:names[kind]});
+      // The working header is deliberately plain; thematic drawings remain in the constructor.
+      await page.locator('.empty-plan-actions .button.primary').click();drawings.push({svg:await page.locator('.room-kits-heading .object-sketch').evaluate(svg=>svg.outerHTML),names:names[kind]});await page.locator('.plan-editor-modal>.modal-heading button').click();
       if(kind==='warehouse')await page.screenshot({path:'qa/identity-empty-desktop.png',fullPage:true});
       if(kind==='education'){
         await page.setViewportSize({width:320,height:844});await page.getByRole('button',{name:'ҚАЗ',exact:true}).click();assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'the new empty composition fits the narrow phone');await page.screenshot({path:'qa/identity-empty-mobile-kk.png',fullPage:true});
