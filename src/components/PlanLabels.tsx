@@ -24,13 +24,14 @@ export function usePlanViewport(ref:RefObject<SVGSVGElement|null>) {
 let context:CanvasRenderingContext2D|null=null;
 const textWidth=(text:string,size:number,weight=400)=>{context??=document.createElement('canvas').getContext('2d');if(!context)return text.length*size*.62;context.font=`${weight} ${size}px Noto,Arial,sans-serif`;return context.measureText(text).width;};
 
-export function PlanLabels({layout,zones,language,selected,view,viewport,showCounts=false,showField=false,fieldDate='',snapshot,stale=false,onRoomDown,onHiddenChange}:{layout:FloorLayout;zones:Zone[];language:Language;selected:string;view:PlanView;viewport:PlanViewport;showCounts?:boolean;showField?:boolean;fieldDate?:string;snapshot?:Snapshot;stale?:boolean;onRoomDown?:(event:React.PointerEvent,room:LayoutRoom)=>void;onHiddenChange?:(hidden:number)=>void}) {
+export function PlanLabels({layout,zones,language,selected,view,viewport,showCounts=false,showField=false,fieldDate='',areaSource='drawing',snapshot,stale=false,onRoomDown,onHiddenChange}:{layout:FloorLayout;zones:Zone[];language:Language;selected:string;view:PlanView;viewport:PlanViewport;showCounts?:boolean;showField?:boolean;fieldDate?:string;areaSource?:'drawing'|'calculation';snapshot?:Snapshot;stale?:boolean;onRoomDown?:(event:React.PointerEvent,room:LayoutRoom)=>void;onHiddenChange?:(hidden:number)=>void}) {
   const p=planWords(language);
   const items=layout.rooms.map(room=>{
     const zone=zones.find(zone=>zone.id===room.zoneId),row=snapshot?.rows.find(row=>row.zoneId===room.zoneId),name=language==='kk'?zone?.nameKk||room.nameKk:zone?.name||room.name;
     const field=showField&&zone?atlasWords(language)[roomFieldState(zone,fieldDate) as 'visited'|'attention'|'verify'|'pending'|'started']:'';
     const count=showCounts&&room.zoneId&&!stale?(row?.type?`${row.type==='OP'?'ОП':'ОУ'} ${row.count}`:p.countsManual):'';
-    return {id:room.id,name,detail:`${polygonArea(room.points)} ${p.sqm}${count?' · '+count:''}${field?' · '+field:''}`,count,row,center:labelPoint(room.points),bounds:labelBounds(room.points),priority:room.id===selected||room.zoneId===selected?10:room.zoneId?1:0};
+    const area=areaSource==='calculation'&&zone?`${p.inputArea}: ${zone.area}`:String(polygonArea(room.points));
+    return {id:room.id,name,detail:`${area} ${p.sqm}${count?' · '+count:''}${field?' · '+field:''}`,count,row,center:labelPoint(room.points),bounds:labelBounds(room.points),priority:room.id===selected||room.zoneId===selected?10:room.zoneId?1:0};
   });
   const result=placePlanLabels(items,view,viewport,textWidth);
   useEffect(()=>{onHiddenChange?.(result.hidden);},[result.hidden,onHiddenChange]);

@@ -405,6 +405,7 @@
 .change-review-intro p{font-size:12px;line-height:1.7;color:#576c64;margin:0}
 .change-preview-stamp{display:flex;align-items:center;gap:8px;font-size:11px;line-height:1.6;color:#526858;padding:9px 12px;border:1px solid #becab6;flex-shrink:0}
 .change-total-rail{display:grid;grid-template-columns:1fr 1fr;border-block:1px solid #bdc9b7;background:#f2f3e9}
+.change-total-scope{grid-column:1/-1;text-align:center;font-size:10px;color:#526858;line-height:1.5;padding:7px 10px 0}
 .change-total-rail>section{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:18px;min-width:0;padding:16px 24px}
 .change-total-rail>section+section{border-left:1px solid #bdc9b7}
 .change-total-type{font:600 22px Atlas,Noto,sans-serif;color:#526858}
@@ -504,6 +505,7 @@
 .change-review-footer>div{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .change-review-footer .button{min-height:44px;font-size:12px}
 .change-review button:focus-visible,.change-review select:focus-visible,.change-review summary:focus-visible,.change-room-heading h3:focus-visible{outline:2px solid #b5452b;outline-offset:3px}
+.change-review button,.change-review summary{-webkit-tap-highlight-color:transparent}
 @media(max-width:1000px){
  .change-review-layout{grid-template-columns:195px minmax(0,1fr)}
  .change-review-content{padding:18px}
