@@ -93,8 +93,8 @@ export function createBuildingScene(canvas,initial,{onReady,onPick,onError,onPro
     const used=new Set();world.traverse(object=>{if(object.material)used.add(object.material);});for(const material of [wallMaterial,glassMaterial,frameMaterial,doorMaterial,fittingMaterial,slabMaterial,roofMaterial,accentMaterial])if(!used.has(material))material.dispose();
     if(ground){disposeGroup(ground);ground=null;}
     const size=Math.max(b.maxX-b.minX,b.maxY-b.minY,model.totalHeight,12),groundSize=size*3;
-    ground=new THREE.Group();const plane=new THREE.Mesh(new THREE.PlaneGeometry(groundSize,groundSize),new THREE.MeshStandardMaterial({color:'#edf0e6',roughness:1}));plane.rotation.x=-Math.PI/2;plane.position.y=-.21;plane.receiveShadow=true;ground.add(plane);
-    const grid=new THREE.GridHelper(groundSize,Math.min(70,Math.round(groundSize/2)),'#bac6b2','#d8e0d0');grid.position.y=-.2;grid.material.transparent=true;grid.material.opacity=.32;ground.add(grid);scene.add(ground);
+    ground=new THREE.Group();const plane=new THREE.Mesh(new THREE.PlaneGeometry(groundSize,groundSize),new THREE.MeshStandardMaterial({color:'#f7f8f8',roughness:1}));plane.rotation.x=-Math.PI/2;plane.position.y=-.21;plane.receiveShadow=true;ground.add(plane);
+    scene.add(ground);
     sun.shadow.camera.left=-size;sun.shadow.camera.right=size;sun.shadow.camera.top=size;sun.shadow.camera.bottom=-size;sun.shadow.camera.far=size*8;sun.shadow.camera.updateProjectionMatrix();sun.position.set(-size*1.1,size*2,size*1.1);sun.target.position.set(0,model.totalHeight/2,0);sun.target.updateMatrixWorld();
     canvas.dataset.floorCount=String(model.floors.length);canvas.dataset.meshes=String(targets.length);canvas.dataset.mode=config.cut?'cut':'whole';canvas.dataset.height=String(config.height);canvas.dataset.layer=config.layer;canvas.dataset.selectedFloor=config.selected;
     if(first){reset();first=false;}else if(refit)reset(false,true);requestRender();
